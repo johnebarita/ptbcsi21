@@ -54,14 +54,11 @@
 </head>
 <body>
 
-<?php
-if (session('isLoggedIn')) {
-	echo view('auth\_navbar');
-}
-?>
+@include('auth._navbar')
 
 <main role="main" class="wrapper">
-	<?= $this->renderSection('main') ?>
+    @yield('main')
+
 </main>
 
 </body>

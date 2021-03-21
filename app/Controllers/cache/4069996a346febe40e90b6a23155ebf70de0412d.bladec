@@ -1,0 +1,36 @@
+<?php $_shouldextend[1]=1; ?>
+<?php $this->startSection('main'); ?>
+
+<h1><?php echo \htmlentities(lang('Auth.registration'), ENT_QUOTES, 'UTF-8', false); ?></h1>
+
+<?php echo $this->runChild('auth._notifications'); ?>
+
+<form method="POST" action="<?php echo \htmlentities(route_to('register'), ENT_QUOTES, 'UTF-8', false); ?>" accept-charset="UTF-8"
+	onsubmit="registerButton.disabled = true; return true;">
+	<input type='hidden' name='<?php  echo '_token'; ?>' value='<?php echo $this->csrf_token; ?>'/>
+	<p>
+	    <label><?php echo \htmlentities(lang('Auth.name'), ENT_QUOTES, 'UTF-8', false); ?></label><br />
+	    <input required minlength="2" type="text" name="name" value="<?php echo \htmlentities(old('name'), ENT_QUOTES, 'UTF-8', false); ?>" />
+	</p>
+	<p>
+	    <label><?php echo \htmlentities(lang('Auth.email'), ENT_QUOTES, 'UTF-8', false); ?></label><br />
+	    <input required type="email" name="email" value="<?php echo \htmlentities(old('email'), ENT_QUOTES, 'UTF-8', false); ?>" />
+	</p>
+	<p>
+	    <label><?php echo \htmlentities(lang('Auth.password'), ENT_QUOTES, 'UTF-8', false); ?></label><br />
+	    <input required minlength="5" type="password" name="password" value="" />
+	</p>
+	<p>
+	    <label><?php echo \htmlentities(lang('Auth.passwordAgain'), ENT_QUOTES, 'UTF-8', false); ?></label><br />
+	    <input required minlength="5" type="password" name="password_confirm" value="" />
+	</p>
+	<p>
+	    <button name="registerButton" type="submit"><?php echo \htmlentities(lang('Auth.register'), ENT_QUOTES, 'UTF-8', false); ?></button>
+	</p>
+	<p>
+ <a href="<?php echo \htmlentities(route_to('login'), ENT_QUOTES, 'UTF-8', false); ?>" class="float-right"><?php echo \htmlentities(lang('Auth.alreadyRegistered'), ENT_QUOTES, 'UTF-8', false); ?></a>
+	</p>
+</form>
+
+<?php $this->stopSection(); ?>
+<?php if (isset($_shouldextend[1])) { echo $this->runChild('layouts.guest'); } ?>

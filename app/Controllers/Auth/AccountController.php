@@ -1,12 +1,13 @@
 <?php
 namespace App\Controllers\Auth;
 
+use App\Controllers\BaseController;
 use CodeIgniter\Controller;
 use Config\Email;
 use Config\Services;
 use Auth\Models\UserModel;
 
-class AccountController extends Controller
+class AccountController extends BaseController
 {
 
 	/**
@@ -44,10 +45,9 @@ class AccountController extends Controller
 		if (! $this->session->isLoggedIn) {
 			return redirect()->to('login');
 		}
-		return view($this->config->views['account'], [
-			'userData' => $this->session->userData,
-			'config' => $this->config
-		]);
+        return $this->blade->run('auth.account',[
+            'userData' => $this->session->userData,
+        ]);
 	}
 
     //--------------------------------------------------------------------
