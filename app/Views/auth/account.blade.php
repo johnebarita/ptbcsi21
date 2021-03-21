@@ -2,9 +2,10 @@
 
 @section('content')
 
-@include('auth._notifications')
-<div class="container rounded p-0 ">
-	<header class="rounded bg-white">
+<div class=" container rounded p-0 ">
+
+	@include('auth._notifications')
+	<header class="rounded ">
 		<h4 class="font-weight-bold py-2 ml-3">{{ lang('Auth.accountSettings') }}</h4>
 	</header>
 	<div class="rounded p-3 bg-grey profile-overflow max-width-8">

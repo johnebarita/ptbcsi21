@@ -2,10 +2,10 @@
 namespace App\Controllers\Auth;
 
 use App\Controllers\BaseController;
+use App\Models\UserModel;
 use CodeIgniter\Controller;
 use Config\Email;
 use Config\Services;
-use Auth\Models\UserModel;
 
 class AccountController extends BaseController
 {

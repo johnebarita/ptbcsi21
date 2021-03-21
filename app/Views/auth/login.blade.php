@@ -1,28 +1,40 @@
 @extends('layouts.guest')
 @section('main')
 
-<h1>{{ lang('Auth.login') }}</h1>
 
-@include('auth._notifications')
-<?//= view('auth\_notifications') ?>
 
-<form method="POST" action="{{ route_to('login') }}" accept-charset="UTF-8">
-    <p>
-        <label>{{ lang('Auth.email') }}</label><br />
-        <input required type="email" name="email" value="<?= old('email') ?>" />
-    </p>
-    <p>
-        <label>{{ lang('Auth.password') }}</label><br />
-        <input required minlength="5" type="password" name="password" value="" />
-    </p>
-    <p>
-        @csrf
-        <button type="submit">{{ lang('auth.login') }}</button>
-    </p>
-    <p>
-    	<a href="{{ route_to('forgot-password') }}" class="float-right">{{ lang('Auth.forgotYourPassword') }}</a>
-    </p>
-</form>
+    <!-- Sing in  Form -->
+<section class="sign-in vh-100 flex">
+        <div class="container my-auto">
 
+            @include('auth._notifications')
+
+            <div class="signin-content">
+                <div class="signin-image">
+                    <figure><img src="assets/images/signin-image.jpg" alt="sing up image"></figure>
+                    {{--                <a href="#" class="signup-image-link">Create an account</a>--}}
+                </div>
+
+                <div class="signin-form">
+                    <h2 class="form-title">{{ lang('Auth.login') }}</h2>
+                    <form method="POST" action="{{ route_to('login') }}" accept-charset="UTF-8"
+                          class="register-form" id="login-form">
+                        @csrf
+                        <div class="form-group">
+                            <label for="email"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                            <input type="email" name="email" id="email" placeholder="Email"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="password"><i class="zmdi zmdi-lock"></i></label>
+                            <input type="password" name="password" id="password" placeholder="Password"/>
+                        </div>
+                        <div class="form-group form-button">
+                            <input type="submit" name="signin" id="signin" class="form-submit" value="Log in"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 
 @endsection
