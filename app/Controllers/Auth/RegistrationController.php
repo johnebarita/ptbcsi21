@@ -1,12 +1,12 @@
 <?php
 namespace App\Controllers\Auth;
 
+use App\Controllers\BaseController;
 use App\Models\UserModel;
-use CodeIgniter\Controller;
-use Config\Email;
 use Config\Services;
 
-class RegistrationController extends Controller
+
+class RegistrationController extends BaseController
 {
 	/**
 	 * Access to current session.
@@ -42,8 +42,8 @@ class RegistrationController extends Controller
 //		if ($this->session->isLoggedIn) {
 //			return redirect()->to('account');
 //		}
-
-		return view($this->config->views['register'], ['config' => $this->config]);
+        return $this->blade->run('auth.register');
+//		return view($this->config->views['register'], ['config' => $this->config]);
 	}
 
     //--------------------------------------------------------------------

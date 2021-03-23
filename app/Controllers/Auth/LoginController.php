@@ -1,12 +1,13 @@
 <?php
 namespace App\Controllers\Auth;
 
+use App\Controllers\BaseController;
 use App\Models\UserModel;
 use CodeIgniter\Controller;
 use Config\Services;
 
 
-class LoginController extends Controller
+class LoginController extends BaseController
 {
 	/**
 	 * Access to current session.
@@ -43,7 +44,7 @@ class LoginController extends Controller
 			return redirect()->to('account');
 		}
 
-		return view($this->config->views['login'], ['config' => $this->config]);
+        return $this->blade->run('auth.login');
 	}
 
     //--------------------------------------------------------------------
