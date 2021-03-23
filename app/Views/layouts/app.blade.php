@@ -420,13 +420,16 @@
         setInputFilter(document.getElementsByClassName("time_h_input"), function (value) {
             return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 12);
         });
+
         setInputFilter(document.getElementsByClassName("time_m_input"), function (value) {
 
             return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 59);
         });
+
         setInputFilter(document.getElementsByClassName("ca-num-input"), function (value) {
             return /^\d*$/.test(value) && (value === "" || parseInt(value) >= 1);
         });
+
         $('#payroll-table').stickyTable({
             copyTableClass: true,
             overflowy: true
@@ -451,6 +454,7 @@
             $('#edit_cash_advance #repayment').val(data[5]);
             $('#edit_cash_advance #purpose').val(data[7]);
         });
+
         $('.delete_cash_advance').on('click', function () {
             alert('delete    ');
         });
@@ -462,7 +466,7 @@
                     return $(this).text();
                 }).get();
                 var ca_details = $(this).data('json');
-                $('#ca_name').text(ca[1].toUpperCase());
+                $('#ca_name').text(ca[1].toUpperCase());-
                 $('#ca_amount').text(ca[4]);
                 $('#ca_balance').text(ca[6]);
                 $('#ca_purpose').text(ca[7]);
@@ -511,8 +515,13 @@
 
         $('.edit_payroll').on('click', function () {
             $('#edit_payroll').modal('show');
+            {{$test = 'sad'}}
             var id = $(this).data('id');
-            
+            var tr = $(this).closest('tr');
+            var payroll = tr.children("td").map(function () {
+                return $(this).text();
+            }).get();
+            console.log(payroll);
         });
 
 

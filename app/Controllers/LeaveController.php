@@ -23,7 +23,7 @@ class LeaveController extends BaseController
         $data['employees'] = Employee::all();
         $data['leave_types'] = LeaveType::all();
 //        return view('template\template', $data);
-        return $this->blade->run('request.leave.index',$data);
+        return $this->blade->run('request.leave.leave',$data);
     }
 
     public function create()

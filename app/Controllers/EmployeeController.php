@@ -27,7 +27,7 @@ class EmployeeController extends BaseController
         ])->get();
         $data['marital_statuses'] = MaritalStatus::all();
 //        return view('template\template', $data);
-         return $this->blade->run('employee-management.employee.index',$data);
+         return $this->blade->run('employee-management.employee.employee',$data);
     }
 
     public function create()

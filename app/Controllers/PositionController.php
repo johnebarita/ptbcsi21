@@ -19,7 +19,7 @@ class PositionController extends BaseController
         $data['view'] = 'position\index';
         $data['positions'] = Position::with('schedule')->has('schedule')->get();
         $data['schedules'] = Schedule::all();
-        return view('template\template', $data);
+        return $this->blade->run('employee-management.position.position',$data);
     }
 
     public function create()

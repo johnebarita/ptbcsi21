@@ -23,7 +23,7 @@ class OvertimeController extends BaseController
         $data['overtimes'] = Overtime::with('employee')->get();
         $data['employees'] = Employee::all();
 //        return view('template\template', $data);
-        return $this->blade->run('request.overtime.index', $data);
+        return $this->blade->run('request.overtime.overtime', $data);
     }
 
     public function create()

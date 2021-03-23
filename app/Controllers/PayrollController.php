@@ -48,9 +48,9 @@ class PayrollController extends BaseController
 
 
         $data['positions'] = $positions;
-
+        $data['test'] ='test';
 //        return view('template\template', $data);
-        return $this->blade->run('payroll.index', $data);
+        return $this->blade->run('payroll.payroll', $data);
     }
 
     private function calculate_payroll($start, $end, $half)

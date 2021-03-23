@@ -21,7 +21,7 @@ class ScheduleController extends BaseController
         $data['view'] = 'schedule\index';
         $data['schedules'] = Schedule::all();
 //        return view('template\template', $data);
-        return $this->blade->run('schedule.index', $data);
+        return $this->blade->run('schedule.schedule', $data);
     }
 
     public function create()

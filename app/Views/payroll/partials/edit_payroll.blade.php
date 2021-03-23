@@ -11,6 +11,7 @@
             <div class="modal-body">
                 <form action="{{ route_to('cash-advance.update') }}" method="post">
                     {!! csrf_field() !!}
+                    <input type="text" class="form-control" id="id" name="id" value="" hidden>
                     <div class="flex payroll_details_table">
                         <div class="w-50 mr-4 ">
                             <div class="mb-3">
@@ -24,39 +25,39 @@
                                     <tbody>
                                     <tr>
                                         <td>Name</td>
-                                        <td class="w-32"></td>
+                                        <td class="w-32" id="name" ></td>
                                         <td>Mobile No.</td>
-                                        <td class="w-32"></td>
+                                        <td class="w-32" id="mobile"></td>
                                     </tr>
                                     <tr>
                                         <td>Address</td>
-                                        <td></td>
+                                        <td id="address"></td>
                                         <td>Bank</td>
-                                        <td></td>
+                                        <td id="bank"></td>
                                     </tr>
                                     <tr>
                                         <td>Email</td>
-                                        <td></td>
+                                        <td id="email"></td>
                                         <td>Tin No.</td>
-                                        <td></td>
+                                        <td id="tin_no"></td>
                                     </tr>
                                     <tr>
                                         <td>Company</td>
-                                        <td></td>
+                                        <td id="company"></td>
                                         <td>SSS No.</td>
-                                        <td></td>
+                                        <td id="sss_no"></td>
                                     </tr>
                                     <tr>
                                         <td>Position</td>
-                                        <td></td>
+                                        <td id="position"></td>
                                         <td>Philheath No.</td>
-                                        <td></td>
+                                        <td id="philhealth_no"></td>
                                     </tr>
                                     <tr>
                                         <td>Home Tel. No.</td>
-                                        <td></td>
+                                        <td id="tel_no"></td>
                                         <td>Pag-ibig No.</td>
-                                        <td></td>
+                                        <td id="pagibig_no"></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -72,19 +73,19 @@
                                     <tbody>
                                     <tr>
                                         <td class="text-right">DTR Time:</td>
-                                        <td><input type="number"></td>
+                                        <td id="dtr_time"><input type="number"></td>
                                         <td class="text-right">Late:</td>
-                                        <td><input type="number"></td>
+                                        <td id="late"><input type="number"></td>
                                     </tr>
                                     <tr>
                                         <td class="text-right">Leave:</td>
-                                        <td><input type="number"></td>
+                                        <td id="leave"><input type="number"></td>
                                         <td class="text-right">Absent:</td>
-                                        <td><input type="number"></td>
+                                        <td id="absent"><input type="number"></td>
                                     </tr>
                                     <tr>
                                         <td class="text-right">Total Over Time (hrs):</td>
-                                        <td class="border-right-0"><input type="number"></td>
+                                        <td class="border-right-0" id="total_ot"><input type="number"></td>
                                         <td class="border-left-0" colspan="2"></td>
                                     </tr>
                                     </tbody>
@@ -101,27 +102,27 @@
                                     <tbody>
                                     <tr>
                                         <td class="text-right">With Tax:</td>
-                                        <td><input type="number"></td>
-                                        <td class="text-right">PhilHealth:</td>
-                                        <td><input type="number"></td>
+                                        <td id="with_tax"><input type="number"></td>
+                                        <td class="text-right" id="philhealth">PhilHealth:</td>
+                                        <td id="number"><input type="number"></td>
                                     </tr>
                                     <tr>
                                         <td class="text-right">SSS:</td>
-                                        <td><input type="number"></td>
+                                        <td id="sss"><input type="number"></td>
                                         <td class="text-right">HDMF:</td>
-                                        <td><input type="number"></td>
+                                        <td id="hdmf"><input type="number"></td>
                                     </tr>
                                     <tr>
                                         <td class="text-right">Cash Advance:</td>
-                                        <td><input type="number"></td>
+                                        <td id="cash_Advance"><input type="number"></td>
                                         <td class="text-right">SSS Loan:</td>
-                                        <td><input type="number"></td>
+                                        <td id="sss_loan"><input type="number"></td>
                                     </tr>
                                     <tr>
                                         <td class="text-right">Other Deduction:</td>
-                                        <td><input type="number"></td>
+                                        <td id="other_deduction"><input type="number"></td>
                                         <td class="text-right">PAG-IBIG Loan:</td>
-                                        <td><input type="number"></td>
+                                        <td id="pagibig_loan"><input type="number"></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -142,18 +143,18 @@
                                     </tr>
                                     <tr>
                                         <td class="text-right">Basic Salary:</td>
-                                        <td><input type="number"></td>
+                                        <td id="basic_salary"><input type="number"></td>
                                         <td class="text-right">Normal Day OT:</td>
-                                        <td><input type="number"></td>
+                                        <td id="nd_ot_pay"><input type="number"></td>
                                     </tr>
                                     <tr>
                                         <td class="sub-header" colspan="4">Rest Day and Sunday Holiday(s) Over Time</td>
                                     </tr>
                                     <tr>
                                         <td class="text-right">Regular:</td>
-                                        <td><input type="number"></td>
+                                        <td id="regular"><input type="number"></td>
                                         <td class="text-right">Double:</td>
-                                        <td><input type="number"></td>
+                                        <td id="double"><input type="number"></td>
                                     </tr>
                                     <tr>
                                         <td class="text-right">Regular:</td>
@@ -221,7 +222,6 @@
                                     </tbody>
                                 </table>
                             </div>
-
                         </div>
                     </div>
                 </form>

@@ -9,7 +9,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{route_to('position.update'}}" method="post" id="edit_position">
+                <form action="{{route_to('position.update')}}" method="post" id="edit_position">
                     {!!   csrf_field()!!}
                     <div class="form-group">
                         <label for="position">Position</label>

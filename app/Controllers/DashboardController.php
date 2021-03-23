@@ -112,7 +112,7 @@ class DashboardController extends BaseController
         }
 
 
-        return $this->blade->run('dashboard.index', compact(['employees', 'time_sheets', 'lates', 'monthly_lates', 'monthly_absences', 'monthly_presences']), 1, 60);
+        return $this->blade->run('dashboard.dashboard', compact(['employees', 'time_sheets', 'lates', 'monthly_lates', 'monthly_absences', 'monthly_presences']), 1, 60);
 
 
 //        $data['view'] = 'dashboard\index';

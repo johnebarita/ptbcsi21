@@ -46,7 +46,7 @@ class DtrController extends BaseController
 
 
 
-        return $this->blade->run('dtr.index', $data);
+        return $this->blade->run('dtr.dtr', $data);
 //        return view('template\template', $data);
     }
 

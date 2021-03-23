@@ -34,7 +34,7 @@ class CalendarController extends BaseController
         $data['events'] = $events;
 
 //        return view('template\template', $data);
-        return $this->blade->run('calendar.index', $data);
+        return $this->blade->run('calendar.calendar', $data);
     }
 
     public function create()
