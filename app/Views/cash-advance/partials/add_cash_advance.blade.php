@@ -9,7 +9,7 @@
             </div>
             <div class="modal-body">
                 <form action="{{route_to('cash-advance.create')}}" method="post">
-                    {!! csrf_field()  !!}
+                 @csrf
                     <div class="form-group">
                         <label for="employee_id">Employee Name</label>
                         <select class="form-control" id="employee_id" name="employee_id" required>

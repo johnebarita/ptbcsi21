@@ -10,7 +10,7 @@
             </div>
             <div class="modal-body">
                 <form action="{{route_to('schedule.create')}}" method="post" id="add_schedule">
-                    {!! csrf_field() !!}
+                 @csrf
                     <div class="form-group">
                         <label for="time_in">Time In</label>
                         <input type="time" class="form-control" id="time_in" name="time_in" value="08:00" required>

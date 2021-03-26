@@ -1,4 +1,5 @@
-<div class="modal fade" id="edit_event" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="edit_event" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -9,10 +10,10 @@
             </div>
             <div class="modal-body">
                 <form action="{{route_to('calendar.create')}}" method="post">
-                    {!! csrf_field()  !!}
+                    @csrf
                     <div class="form-group">
                         <label for="title">Title</label>
-                        <input type="text" id="title" class="form-control" name="title"  required>
+                        <input type="text" id="title" class="form-control" name="title" required>
                     </div>
                     <div class="form-group">
                         <label for="start">Start</label>
@@ -29,7 +30,7 @@
                     </div>
                     <div class="modal-footer mt-5">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-<!--                        <input type="submit" class="btn btn-primary" value="Submit"/>-->
+                        <!--                        <input type="submit" class="btn btn-primary" value="Submit"/>-->
                     </div>
                 </form>
             </div>

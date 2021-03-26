@@ -10,7 +10,7 @@
             </div>
             <div class="modal-body">
                 <form method="post" action="{{route_to("schedule.update")}}">
-                    {!! csrf_field() !!}
+                    @csrf
                     <div class="form-group">
                         <input type="text" id="id" name="id" hidden value="">
                         <label for="time_in">Time In</label>

@@ -10,7 +10,7 @@
             </div>
             <div class="modal-body">
                 <form action="{{route_to('calendar.create')}}" method="post">
-                    {!! csrf_field() !!}
+                    @csrf
                     <div class="form-group">
                         <label for="title">Title</label>
                         <input type="text" id="title" class="form-control" name="title" required>

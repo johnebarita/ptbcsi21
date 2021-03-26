@@ -11,7 +11,7 @@
             <div class="modal-body">Are you sure you want to reject this overtime?</div>
             <div class="modal-footer">
                 <form action="{{route_to('overtime.update')}}" method="post" id="reject_overtime">
-                    {!! csrf_field() !!}
+                  @csrf
                     <input type="text" name="id" id="id" value="" hidden/>
                     <input type="text" name="status" id="status" value="rejected" hidden/>
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>

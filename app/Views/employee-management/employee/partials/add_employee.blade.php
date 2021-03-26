@@ -10,7 +10,7 @@
             </div>
             <div class="modal-body">
                 <form action="{{ route_to('employee.create') }}" method="post">
-                    {!!  csrf_field()  !!}
+                    @csrf
                     <div class="font-weight-bold mb-3">BASIC INFORMATION</div>
                     <div class="form-row">
                         <div class="col-md-3 mb-3">

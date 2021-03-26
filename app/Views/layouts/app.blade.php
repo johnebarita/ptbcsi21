@@ -523,7 +523,5 @@
             }).get();
             console.log(payroll);
         });
-
-
     })(jQuery);
 </script>

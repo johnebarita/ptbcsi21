@@ -10,7 +10,6 @@
             </div>
             <div class="modal-body">Are you sure you want to move this leave event?</div>
             <div class="modal-footer">
-
                     <input type="text" name="id" id="id" value="" hidden>
                     <input type="text" name="status" id="status" value="accepted" hidden>
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>

@@ -25,7 +25,7 @@
                     </a>
                     <div class="flex-sm-grow-1 ml-2 mr-2 mt-3">
                         <form action="{{ route_to('calendar.index') }}" method="post">
-                            {!! csrf_field() !!}
+                           @csrf
                             <div class="form-group flex ml-auto">
                                 <label for="half" class="mt-auto pr-2">Filter: </label>
                                 <select class="form-control mr-2 w-50" name="month" id="month">

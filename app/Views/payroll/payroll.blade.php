@@ -22,7 +22,7 @@
                     <div class="flex select-md">
                         <div class="flex-sm-grow-1 ">
                             <form action="{{ route_to('payroll.index') }}" method="post">
-                                {!! csrf_field() !!}
+                               @csrf
                                 <div class="form-group flex ml-auto">
                                     <label for="half" class="m-auto pr-2">Filter: </label>
                                     <select class="form-control  mr-2 select-small" name="half" id="half">

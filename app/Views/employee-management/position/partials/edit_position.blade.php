@@ -10,7 +10,7 @@
             </div>
             <div class="modal-body">
                 <form action="{{route_to('position.update')}}" method="post" id="edit_position">
-                    {!!   csrf_field()!!}
+                   @csrf
                     <div class="form-group">
                         <label for="position">Position</label>
                         <input type="text" class="form-control" id="id" name="id" value="" hidden>

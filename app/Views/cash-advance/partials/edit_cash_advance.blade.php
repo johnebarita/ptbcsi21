@@ -10,7 +10,7 @@
             </div>
             <div class="modal-body">
                 <form action="{{route_to('cash-advance.update') }}" method="post">
-                    {!! csrf_field() !!}
+                    @csrf
                     <div class="form-group">
                         <label for="employee_id">Employee Name</label>
                         <input type="text" hidden id="cash_advance_id" class="form-control" name="cash_advance_id"/>
