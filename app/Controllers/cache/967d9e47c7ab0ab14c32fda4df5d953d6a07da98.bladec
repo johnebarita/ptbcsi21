@@ -42,6 +42,19 @@
  <!-- Topbar -->
  <?php echo $this->runChild('includes.topbar'); ?>
  <!-- End of Topbar -->
+ <div class="container-fluid">
+ <?php if(session()->has('status')): ?>
+ <div class="alert alert-<?php echo \htmlentities(session('status')['key'], ENT_QUOTES, 'UTF-8', false); ?> alert-dismissible fade show " role="alert">
+ <?php echo \htmlentities(session('status')['message'], ENT_QUOTES, 'UTF-8', false); ?>
+
+ <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+ <span aria-hidden="true">&times;</span>
+ </button>
+ </div>
+ <?php endif; ?>
+ </div>
+
+
  <?php echo $this->yieldContent('content'); ?>
 
  </div>
@@ -109,8 +122,6 @@
 <script type="text/javascript" src="/assets/js/jquery-stickytable.min.js"></script>
 
 
-
-
 <!-- Page level custom scripts -->
 <?php /*<script src="/assets/js/chart.js/chart-bar-demo.js"></script>*/ ?>
 <?php /*<script src="/assets/js/chart.js/chart-pie-demo.js"></script>*/ ?>
@@ -142,10 +153,10 @@
 
  }
 
- if(state=='true'){
+ if (state == 'true') {
  $("body").remove("sidebar-toggled");
  $(".sidebar").remove("toggled");
- }else{
+ } else {
  $("body").toggleClass("sidebar-toggled");
  $(".sidebar").toggleClass("toggled");
  }
@@ -466,7 +477,8 @@
  return $(this).text();
  }).get();
  var ca_details = $(this).data('json');
- $('#ca_name').text(ca[1].toUpperCase());-
+ $('#ca_name').text(ca[1].toUpperCase());
+ -
  $('#ca_amount').text(ca[4]);
  $('#ca_balance').text(ca[6]);
  $('#ca_purpose').text(ca[7]);
@@ -515,14 +527,56 @@
 
  $('.edit_payroll').on('click', function () {
  $('#edit_payroll').modal('show');
- <?php echo \htmlentities($test = 'sad', ENT_QUOTES, 'UTF-8', false); ?>
-
  var id = $(this).data('id');
- var tr = $(this).closest('tr');
- var payroll = tr.children("td").map(function () {
- return $(this).text();
- }).get();
+ $.ajax({
+ url: "payroll/get/" + id, success: function (result) {
+ var payroll = JSON.parse(result);
+ //Employee Basic Information
+ $('#edit_payroll #name').text(payroll.employee.lastname + " " + payroll.employee.firstname);
+ $('#edit_payroll #email').text(payroll.employee.email);
+ $('#edit_payroll #position').text(payroll.employee.position.position);
+ $('#edit_payroll #tel_no').text(payroll.employee.tel_no);
+ $('#edit_payroll #mobile').text(payroll.employee.mobile_no);
+ $('#edit_payroll #bank').text(payroll.employee.bank);
+ $('#edit_payroll #tin_no').text(payroll.employee.tin_no);
+ $('#edit_payroll #sss_no').text(payroll.employee.sss_no);
+ $('#edit_payroll #philhealth_no').text(payroll.employee.philhealth_no);
+ $('#edit_payroll #pagibig_no').text(payroll.employee.pagibig_no);
+ //Employee Time Record
+ $('#edit_payroll #dtr_time').val(payroll.dtr_time);
+ $('#edit_payroll #late').val(payroll.late);
+ $('#edit_payroll #absent').val(payroll.absent);
+ $('#edit_payroll #total_ot').val(payroll.total_ot);
+ $('#edit_payroll #with_tax').val(payroll.with_tax);
+ $('#edit_payroll #phi').val(payroll.phi);
+ $('#edit_payroll #sss').val(payroll.sss);
+ $('#edit_payroll #hdmf').val(payroll.hdmf);
+ $('#edit_payroll #cash_advance').val(payroll.cash_advance);
+ $('#edit_payroll #sss_loan').val(payroll.sss_loan);
+ $('#edit_payroll #other_deduction').val(payroll.other_deduction);
+ $('#edit_payroll #hdmf_loan').val(payroll.hdmf_loan);
+ // Employee Deduction
+ $('#edit_payroll #basic_salary').val(payroll.basic_salary);
+ $('#edit_payroll #normal_ot_pay').val(payroll.normal_ot_pay);
+ $('#edit_payroll #rd_sunday_ot_pay').val(payroll.rd_sunday_ot_pay);
+ $('#edit_payroll #rd_special_ot_pay').val(payroll.rd_special_ot_pay);
+ $('#edit_payroll #rd_regular_ot_pay').val(payroll.rd_regular_ot_pay);
+ $('#edit_payroll #rd_double_ot_pay').val(payroll.rd_double_ot_pay);
+ $('#edit_payroll #rd_sunday_pay').val(payroll.rd_sunday_pay);
+ $('#edit_payroll #rd_special_pay').val(payroll.rd_special_pay);
+ $('#edit_payroll #rd_regular_pay').val(payroll.rd_regular_pay);
+ $('#edit_payroll #rd_double_pay').val(payroll.rd_double_pay);
+ $('#edit_payroll #nd_regular_ot_pay').val(payroll.nd_regular_ot_pay);
+ $('#edit_payroll #nd_special_ot_pay').val(payroll.nd_special_ot_pay);
+ $('#edit_payroll #nd_double_ot_pay').val(payroll.nd_double_ot_pay);
+ $('#edit_payroll #nd_regular_pay').val(payroll.nd_regular_pay);
+ $('#edit_payroll #nd_special_pay').val(payroll.nd_special_pay);
+ $('#edit_payroll #nd_double_pay').val(payroll.nd_double_pay);
+ $('#edit_payroll #allowance').val(payroll.allowance);
+ $('#edit_payroll #other_income').val(payroll.other_income);
  console.log(payroll);
+ }
+ });
  });
  })(jQuery);
 </script>

@@ -10,15 +10,6 @@
                 <i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
         </div>
 
-        @if(session()->has('status'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Holy guacamole!</strong> You should check in on some of those fields below.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-    @endif
-
     <!-- Content Row -->
         <div class="flex mb-5 ">
 

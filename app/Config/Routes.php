@@ -90,6 +90,8 @@ $routes->group('position',function ($routes){
 $routes->group('payroll',function ($routes){
     $routes->get('','PayrollController::index',['as'=>'payroll.index']);
     $routes->post('','PayrollController::index',['as'=>'payroll.index']);
+    $routes->post('','PayrollController::update',['as'=>'payroll.update']);
+    $routes->get('get/(:any)','PayrollController::get/$1');
 });
 
 $routes->group('cash-advance',function ($routes){
@@ -142,6 +144,7 @@ $routes->group('', ['namespace' => 'App\Controllers\Auth'], function($routes) {
     $routes->post('delete-account', 'AccountController::deleteAccount');
 });
 
+$routes->cli('cli-push', 'Cli/AttendancePusher::push');
 /**
  * --------------------------------------------------------------------
  * Additional Routing

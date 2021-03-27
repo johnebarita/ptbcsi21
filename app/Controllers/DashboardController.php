@@ -42,6 +42,8 @@ class DashboardController extends BaseController
         $monthly_absences = [];
         $monthly_presences = [];
 
+        $this->push();
+
         foreach ($time_sheets as $time_sheet) {
             if (Carbon::parse($time_sheet->morning_in)->gt(Carbon::parse($time_sheet->employee->position->schedule->time_in))
                 || Carbon::parse($time_sheet->afternoon_in)->gt(Carbon::parse($time_sheet->employee->position->schedule->time_out))) {
@@ -81,7 +83,7 @@ class DashboardController extends BaseController
                     $mt = TimeSheet::where('employee_id', $employee->id)->whereBetween('date', [Carbon::createFromFormat('n', $number)->startOfMonth(), Carbon::createFromFormat('n', $number)->endOfMonth()])->get();
                     $periods = CarbonPeriod::create(Carbon::createFromFormat('n', $number)->startOfMonth(), Carbon::createFromFormat('n', $number)->endOfMonth());
                     foreach ($periods as $period) {
-                        if($period->lte(Carbon::now())){
+                        if ($period->lte(Carbon::now())) {
                             $time_sheet = $mt->where('date', $period)->first();
                             if ($time_sheet == null) {
                                 if ($period->format('D') != 'Sun') {
@@ -124,6 +126,7 @@ class DashboardController extends BaseController
     {
 
         if ($this->zk->connect()) {
+
             $attendances = $this->zk->getAttendance();
             foreach ($attendances as $attendance) {
 
@@ -174,7 +177,20 @@ class DashboardController extends BaseController
             $this->zk->disconnect();
         }
 
+    }
 
+    public function pushUser()
+    {
+        $employees = Employee::all();
+        if ($this->zk->connect()) {
+            foreach ($employees as $employee) {
+                $this->zk->setUser($employee->id, $employee->id, strtoupper($employee->lastname . ' ' . $employee->firstname), '');
+            }
+            $this->zk->disconnect();
+        }
+//
+//
+//        }
     }
 
     public function get_time_diff($in, $out)

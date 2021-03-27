@@ -27,50 +27,62 @@ class TimeSheets extends Migration
             'morning_in' => [
                 'type' => 'VARCHAR',
                 'constraint' => '10',
+                'null'=>true
             ],
             'morning_out' => [
                 'type' => 'VARCHAR',
                 'constraint' => '10',
+                'null'=>true,
             ],
             'morning_time' => [
                 'type' => 'VARCHAR',
                 'constraint' => '10',
+                'null'=>true,
             ],
             'afternoon_in' => [
                 'type' => 'VARCHAR',
                 'constraint' => '10',
+                'null'=>true,
             ],
             'afternoon_out' => [
                 'type' => 'VARCHAR',
                 'constraint' => '10',
+                'null'=>true,
             ],
             'afternoon_time' => [
                 'type' => 'VARCHAR',
                 'constraint' => '10',
+                'null'=>true,
             ],
             'overtime_in' => [
                 'type' => 'VARCHAR',
                 'constraint' => '10',
+                'null'=>true,
             ],
             'overtime_out' => [
                 'type' => 'VARCHAR',
                 'constraint' => '10',
+                'null'=>true,
             ],
             'overtime_time' => [
                 'type' => 'VARCHAR',
                 'constraint' => '10',
+                'null'=>true,
             ],
             'pre' => [
                 'type' => 'VARCHAR',
                 'constraint' => '10',
+                'null'=>true,
             ],
             'ot' => [
                 'type' => 'VARCHAR',
                 'constraint' => '10',
+                'null'=>true,
             ],
             'late' => [
                 'type' => 'VARCHAR',
                 'constraint' => '10',
+                'null'=>true,
             ],
             'on_leave' => [
                 'type' => 'TINYINT',

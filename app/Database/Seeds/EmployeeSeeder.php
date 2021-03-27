@@ -1,5 +1,6 @@
 <?php namespace App\Database\Seeds;
 
+use App\Models\Eloquent\Employee;
 use App\Models\Eloquent\Position;
 use CodeIgniter\Database\Seeder;
 use Faker\Factory;

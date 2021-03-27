@@ -48,9 +48,14 @@ class PayrollController extends BaseController
 
 
         $data['positions'] = $positions;
-        $data['test'] ='test';
+        $data['test'] = 'test';
 //        return view('template\template', $data);
         return $this->blade->run('payroll.payroll', $data);
+    }
+
+    public function get($id)
+    {
+        return json_encode(Payroll::with('employee.position')->find($id)->toArray());
     }
 
     private function calculate_payroll($start, $end, $half)
@@ -282,5 +287,12 @@ class PayrollController extends BaseController
             }
 
         }
+    }
+
+    public function update()
+    {
+        $key = (true ? "success" : "danger");
+        $message = (true ? "Schedule updated successfully!" : "Opps! There is an error while updating the schedule.");
+        return redirect()->route('payroll.index')->with('status', ['key' => "success", 'message' => "Schedule updated successfully!"]);
     }
 }

@@ -7,14 +7,7 @@ use Carbon\Carbon;
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Leave</h1>
         </div>
-        @if(session()->has('status'))
-            <div class="alert alert-{{session('status')['key']}} alert-dismissible fade show " role="alert">
-                {{ session('status')['message']}}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
+
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
