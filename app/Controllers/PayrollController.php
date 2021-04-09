@@ -208,7 +208,7 @@ class PayrollController extends BaseController
             //0.073669 (2018)
             //.080 (2019 to present);
             if (!empty($employee->sss_no)) {
-                $sss_lookup = SssLookup::where('from', '<=', $employee->monthly_pay)->where('to', '>=', $employee->monthly_pay)->first();
+                $sss_lookup = SSSLookup::where('from', '<=', $employee->monthly_pay)->where('to', '>=', $employee->monthly_pay)->first();
                 $sss = $sss_lookup->ss_ee / 2;
             }
             if (!empty($employee->pagibig_no)) {

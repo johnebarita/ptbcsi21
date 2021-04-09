@@ -43,8 +43,6 @@ class DtrController extends BaseController
         $data['time_sheets'] = $time_sheets;
 
         return $this->blade->run('dtr.dtr', $data);
-
-//        return view('template\template', $data);
     }
 
     public function update()

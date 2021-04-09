@@ -6,7 +6,7 @@ namespace App\Models\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SssLookup extends Model
+class SSSLookup extends Model
 {
     protected $guarded =[];
 }
