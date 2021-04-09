@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Payroll extends Model
 {
     protected $guarded = [];
-    protected $table='sss_lookups';
+
     public function payrolls(){
         return $this->hasMany(Payroll::class);
     }
