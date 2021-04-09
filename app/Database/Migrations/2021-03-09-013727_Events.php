@@ -21,12 +21,10 @@ class Events extends Migration
 
             ],
             'start' => [
-                'type' => 'VARCHAR',
-                'constraint' => 50
+                'type' => 'DATETIME',
             ],
             'end' => [
-                'type' => 'VARCHAR',
-                'constraint' => 50
+                'type' => 'DATETIME',
             ],
             'note' =>[
                 'type' =>'VARCHAR',

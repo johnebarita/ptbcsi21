@@ -18,7 +18,7 @@
                            @csrf
                             <div class="form-group flex ml-auto">
                                 <label for="half" class="mt-auto pr-2">Filter: </label>
-                                <select class="form-control mr-2 w-50" name="month" id="month">
+                                <select class="form-control mr-2 w-40" name="month" id="month">
                                     @foreach (range(1, 12) as $number)
                                         <option value='{{ $number }}' {{ ($month == $number ? 'selected' : '') }}>{{ \Carbon\Carbon::createFromFormat('m', $number)->format('F') }}</option>
                                     @endforeach
@@ -34,7 +34,7 @@
                     </div>
                     <div class="overflow-auto h-50 m-2">
                         @foreach ($events as $event)
-                            <p class="p-2 bg-primary text-white rounded ">{{$event->title }}</p>
+                            <p class="p-2 bg-primary text-white rounded event_sidebar"  data-id="{{$event->id}}">{{$event->title }}</p>
                         @endforeach
                     </div>
                 </div>

@@ -15,7 +15,7 @@ class TimeSheetSeeder extends Seeder
 
             foreach ($period as $date) {
                 if($date->format('D')!='Sun'){
-                    $this->db->table('time_sheets')->insert(['employee_id'=>$number,'date'=>$date->format('Y-m-d'),'morning_in' => '08:00', 'morning_out' => '12:00', 'morning_time' => '4', 'afternoon_in' => '01:00', 'afternoon_out' => '05:00', 'afternoon_time' => '4','pre'=>'8']);
+                    $this->db->table('time_sheets')->insert(['employee_id'=>$number,'date'=>$date->format('Y-m-d'),'morning_in' => '08:00', 'morning_out' => '12:00', 'morning_time' => '4.00', 'afternoon_in' => '13:00', 'afternoon_out' => '17:00', 'afternoon_time' => '4.00','pre'=>'8.00']);
                 }
             }
         }

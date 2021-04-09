@@ -26,28 +26,38 @@
                         </thead>
                         <tbody>
                         @foreach ($employees as $employee)
-                        <tr>
-                            <td>{{strtoupper($employee->lastname . ' ' . $employee->firstname . ' ' . $employee->middle)}}</td>
-                            <td>{{$employee->position->position}}</td>
-                            <td>
-                                {{\Carbon\Carbon::createFromFormat('G:i', $employee->position->schedule->time_in)->format('h:i A') . ' - ' .
-                                \Carbon\Carbon::createFromFormat('G:i', $employee->position->schedule->time_out)->format('h:i A')}}
-                            </td>
-                            <td>{{$employee->date_hired}}</td>
-                            <td>
-                                <div class="flex">
-                                    <a href="#" class="btn btn-primary btn-circle btn-sm m-auto">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-success btn-circle btn-sm m-auto">
-                                        <i class="fas fa-pen"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-danger btn-circle btn-sm m-auto">
-                                        <i class="fas fa-trash fa-sm"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>{{strtoupper($employee->lastname . ' ' . $employee->firstname . ' ' . $employee->middle)}}</td>
+                                <td>{{$employee->position->position}}</td>
+                                <td>
+                                    {{\Carbon\Carbon::createFromFormat('G:i', $employee->position->schedule->morning_in)->format('h:i A').' - '.
+                                      \Carbon\Carbon::createFromFormat('G:i', $employee->position->schedule->afternoon_out)->format('h:i A').''}}
+                                    (<span>
+                                        @foreach(explode(',',$employee->position->schedule->working_days) as $key=>$day)
+                                            <?php $first = new \Carbon\Carbon('first Monday of January');?>
+                                            {{$first->addDays($day)->format('D')}}
+                                            @if($key<count(explode(',',$employee->position->schedule->working_days))-1)
+                                                {{',  '}}
+                                            @endif
+                                        @endforeach
+                                    </span>)
+                                </td>
+                                {{--                                <td>{{$employee->date_hired}}</td>--}}
+                                <td>{{\Carbon\Carbon::now()->format('Y-m-d')}}</td>
+                                <td>
+                                    <div class="flex">
+                                        <a href="#" class="btn btn-primary btn-circle btn-sm m-auto">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-success btn-circle btn-sm m-auto">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-danger btn-circle btn-sm m-auto">
+                                            <i class="fas fa-trash fa-sm"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
                         @endforeach
                         </tbody>
                     </table>

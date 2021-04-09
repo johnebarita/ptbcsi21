@@ -8,10 +8,12 @@
 
 namespace App\Models\Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 
 class Employee extends Model
 {
+
     protected $guarded = [];
 
     public function position(){

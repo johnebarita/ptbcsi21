@@ -6,8 +6,8 @@ use CodeIgniter\Database\Migration;
 
 class Employees extends Migration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->forge->addField([
             'id' => [
                 'type' => 'INT',
@@ -23,11 +23,11 @@ class Employees extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '50',
             ],
-            'gender' => [
+            'middle' => [
                 'type' => 'VARCHAR',
                 'constraint' => '50',
             ],
-            'middle' => [
+            'gender' => [
                 'type' => 'VARCHAR',
                 'constraint' => '50',
             ],
@@ -40,15 +40,19 @@ class Employees extends Migration
                 'constraint' => '11',
                 'unsigned' => true,
             ],
-            'email' => [
+            'address' => [
                 'type' => 'VARCHAR',
-                'constraint' => '50',
+                'constraint' => '255',
             ],
             'mobile_no' => [
                 'type' => 'VARCHAR',
                 'constraint' => '50',
             ],
             'tel_no' => [
+                'type' => 'VARCHAR',
+                'constraint' => '50',
+            ],
+            'email' => [
                 'type' => 'VARCHAR',
                 'constraint' => '50',
             ],
@@ -60,56 +64,9 @@ class Employees extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '50',
             ],
-            'monthly_pay' => [
-                'type' => 'double',
-            ],
-            'is_fixed_salary' => [
-                'type' => 'TINYINT',
-                'constraint' => '1',
-            ],
-            'basic_pay' => [
-                'type' => 'DOUBLE',
-            ],
-            'allowance' => [
-                'type' => 'DOUBLE',
-            ],
-            'sss_no' => [
+            'date_hired' => [
                 'type' => 'VARCHAR',
                 'constraint' => '50',
-            ],
-            'philhealth_no' => [
-                'type' => 'VARCHAR',
-                'constraint' => '50',
-            ],
-            'pagibig_no' => [
-                'type' => 'VARCHAR',
-                'constraint' => '50',
-            ],
-            'tin_no' => [
-                'type' => 'VARCHAR',
-                'constraint' => '50',
-            ],
-            'user_role_id' => [
-                'type' => 'INT',
-                'constraint' => '11',
-            ],
-            'employee_login_id' => [
-                'type' => 'INT',
-                'constraint' => '11',
-            ],
-//            'address_id'         => [
-//                'type'           => 'INT',
-//                'constraint'     => '11',
-//                'unsigned'       => true,
-//            ],
-            'can_ot' => [
-                'type' => 'TINYINT',
-                'constraint' => '1',
-            ],
-            'position_id' => [
-                'type' => 'INT',
-                'constraint' => '11',
-                'unsigned' => true,
             ],
             'bank_name' => [
                 'type' => 'VARCHAR',
@@ -118,22 +75,61 @@ class Employees extends Migration
             'office_location' => [
                 'type' => 'VARCHAR',
                 'constraint' => '100',
+                'null' => true,
             ],
-            'date_hired' => [
+            'tin_no' => [
                 'type' => 'VARCHAR',
                 'constraint' => '50',
             ],
-            'employee_status' => [
+            'philhealth_no' => [
                 'type' => 'VARCHAR',
                 'constraint' => '50',
             ],
-            'internet_allowance' => [
+            'sss_no' => [
+                'type' => 'VARCHAR',
+                'constraint' => '50',
+            ],
+            'pagibig_no' => [
+                'type' => 'VARCHAR',
+                'constraint' => '50',
+            ],
+            'is_active' => [
+                'type' => 'TINYINT',
+                'constraint' => '1',
+            ],
+            'position_id' => [
+                'type' => 'INT',
+                'constraint' => '11',
+                'unsigned' => true,
+            ],
+            'monthly_pay' => [
+                'type' => 'double',
+            ],
+            'basic_pay' => [
                 'type' => 'DOUBLE',
+            ],
+            'schedule_id' => [
+                'type' => 'INT',
+                'constraint' => '11',
+                'unsigned' => true,
+                'null' => true
+            ],
+            'is_fixed_salary' => [
+                'type' => 'TINYINT',
+                'constraint' => '1',
+            ],
+            'can_ot' => [
+                'type' => 'TINYINT',
+                'constraint' => '1',
+                'default' => 0
             ],
             'transportation_allowance' => [
                 'type' => 'DOUBLE',
             ],
             'meal_allowance' => [
+                'type' => 'DOUBLE',
+            ],
+            'internet_allowance' => [
                 'type' => 'DOUBLE',
             ],
             'phone_allowance' => [
@@ -142,40 +138,53 @@ class Employees extends Migration
             'total_allowance' => [
                 'type' => 'DOUBLE',
             ],
-            'is_active' => [
-                'type' => 'TINYINT',
-                'constraint' => '1',
-            ],
-            'new_email' => [
-                'type' => 'varchar',
-                'constraint' => 191,
-                'null' => true
-            ],
-            'password_hash' => [
-                'type' => 'varchar',
-                'constraint' => 191
-            ],
-            'activate_hash' => [
-                'type' => 'varchar',
-                'constraint' => 191,
-                'null' => true
-            ],
-            'activated' => [
-                'type' => 'tinyint',
-                'constraint' => 1,
-                'null' => 0,
-                'default' => 0
-            ],
-            'reset_hash' => [
-                'type' => 'varchar',
-                'constraint' => 191,
-                'null' => true
-            ],
-            'reset_expires' => [
-                'type' => 'bigint',
-                'null' => true
-            ],
-
+//            'employee_login_id' => [
+//                'type' => 'INT',
+//                'constraint' => '11',
+//            ],
+//            'address_id'         => [
+//                'type'           => 'INT',
+//                'constraint'     => '11',
+//                'unsigned'       => true,
+//            ],
+//            'employee_status' => [
+//                'type' => 'VARCHAR',
+//                'constraint' => '50',
+//
+//            ],
+//            'user_role_id' => [
+//                'type' => 'INT',
+//                'constraint' => '11',
+//            ],
+//            'new_email' => [
+//                'type' => 'varchar',
+//                'constraint' => 191,
+//                'null' => true
+//            ],
+//            'password_hash' => [
+//                'type' => 'varchar',
+//                'constraint' => 191
+//            ],
+//            'activate_hash' => [
+//                'type' => 'varchar',
+//                'constraint' => 191,
+//                'null' => true
+//            ],
+//            'activated' => [
+//                'type' => 'tinyint',
+//                'constraint' => 1,
+//                'null' => 0,
+//                'default' => 0
+//            ],
+//            'reset_hash' => [
+//                'type' => 'varchar',
+//                'constraint' => 191,
+//                'null' => true
+//            ],
+//            'reset_expires' => [
+//                'type' => 'bigint',
+//                'null' => true
+//            ],
             'created_at datetime default current_timestamp',
             'updated_at datetime default current_timestamp on update current_timestamp',
         ]);
@@ -183,12 +192,13 @@ class Employees extends Migration
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('marital_status_id', 'marital_statuses', 'id', 'CASCADE', "CASCADE");
 //        $this->forge->addForeignKey('address_id','addresses','id');
+        $this->forge->addForeignKey('schedule_id', 'schedules', 'id', 'CASCADE', "CASCADE");
         $this->forge->addForeignKey('position_id', 'positions', 'id', 'CASCADE', "CASCADE");
         $this->forge->createTable('employees');
-	}
+    }
 
-	public function down()
-	{
-      $this->forge->dropTable('employees');
-	}
+    public function down()
+    {
+        $this->forge->dropTable('employees');
+    }
 }

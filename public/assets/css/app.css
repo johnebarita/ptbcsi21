@@ -1109,10 +1109,17 @@ pre code {
     }
 
     .col-md-13 {
-        flex: 0 0 16%;
-        max-width: 16%;
+        flex: 0 0 13%;
+        max-width: 13%;
     }
-
+    .col-md-14 {
+        flex: 0 0 14%;
+        max-width: 14%;
+    }
+    .col-md-18 {
+        flex: 0 0 18%;
+        max-width: 18%;
+    }
     .col-md-2 {
         flex: 0 0 16.66667%;
         max-width: 16.66667%;
@@ -1121,6 +1128,48 @@ pre code {
     .col-md-3 {
         flex: 0 0 25%;
         max-width: 25%;
+    }
+    .col-md-18 {
+        flex: 0 0 18%;
+        max-width: 18%;
+    }
+    .col-md-19 {
+        flex: 0 0 19%;
+        max-width: 19%;
+    }
+    .col-md-30 {
+        flex: 0 0 30%;
+        max-width: 30%;
+    }
+
+    .col-md-20 {
+        flex: 0 0 20%;
+        max-width: 20%;
+    }
+
+    .col-md-22 {
+        flex: 0 0 22%;
+        max-width: 22%;
+    }
+
+    .col-md-ten {
+        flex: 0 0 10%;
+        max-width: 10%;
+    }
+
+    .col-md-26 {
+        flex: 0 0 26%;
+        max-width: 26%;
+    }
+
+    .col-md-27 {
+        flex: 0 0 27%;
+        max-width: 27%;
+    }
+
+    .col-md-26-5 {
+        flex: 0 0 25.5%;
+        max-width: 25.5%;
     }
 
     .col-md-28 {
@@ -6104,7 +6153,7 @@ a.close.disabled {
 @media (min-width: 992px) {
     .modal-lg,
     .modal-xl {
-        max-width: 800px;
+        max-width: 850px;
     }
 }
 
@@ -8034,6 +8083,11 @@ button.bg-dark:focus {
 .w-30 {
     width: 30% !important;
 }
+
+.w-20 {
+    width: 20% !important;
+}
+
 
 .w-32 {
     width: 32% !important;
@@ -10413,6 +10467,40 @@ button.bg-dark:focus {
     color: #fff !important;
 }
 
+.text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.text-ssm {
+    font-size: 0.79rem;
+    line-height: 1.2rem;
+}
+.text-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+.text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+.text-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+}
+
 .text-primary {
     color: #4e73df !important;
 }
@@ -10471,6 +10559,10 @@ a.text-light:hover, a.text-light:focus {
 
 .text-dark {
     color: #5a5c69 !important;
+}
+
+.text-black {
+    color: #000000 !important;
 }
 
 a.text-dark:hover, a.text-dark:focus {
@@ -12154,8 +12246,8 @@ body.sidebar-toggled footer.sticky-footer {
     width: 4rem !important;
 }
 
-.sunday, .sunday input {
-    background-color: #FFCCCC;
+.sunday, .sunday input , .sunday input:disabled{
+    background-color: #FFCCCC !important;
 }
 
 .holiday, .holiday input {
@@ -12254,6 +12346,10 @@ body.sidebar-toggled footer.sticky-footer {
     background-color: #ff52524d !important;
 }
 
+.payroll-table tr:hover, .sticky-col tr:hover {
+    background-color: #ffae42 !important;
+}
+
 .fixed-salary th, .fixed-salary td {
     background-color: #ee82ee !important;
 }
@@ -12333,4 +12429,45 @@ body.sidebar-toggled footer.sticky-footer {
     padding: .25rem !important;
     background-color: #858796 !important;
     color: #FFFFFF !important;
+}
+
+.edited-salary th, .edited-salary td {
+    background-color: #f6c23e !important;
+}
+
+.payslip_background {
+    background-image: repeating-linear-gradient(
+            135deg, rgba(0, 0, 0, .3), rgba(0, 0, 0, .3) 1px, transparent 2px, transparent 2px, rgba(0, 0, 0, .3) 3px);
+}
+.border-dashed{
+    border:1px dashed gray;
+}
+
+.border-bottom-dashed{
+   border-bottom: 1px dashed gray;
+}
+
+.dtr-flag{
+    background-color: #f2552c !important;
+    color: #FFFFFF !important;
+}
+
+.dtr-table input:disabled{
+    background-color:#ffffff ;
+}
+
+.on-top{
+    z-index: 160 !important;
+}
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
 }

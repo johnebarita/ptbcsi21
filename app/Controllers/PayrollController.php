@@ -12,6 +12,7 @@ use App\Models\Eloquent\Holidays;
 use App\Models\Eloquent\Leave;
 use App\Models\Eloquent\Payroll;
 use App\Models\Eloquent\Position;
+use App\Models\Eloquent\Schedule;
 use App\Models\Eloquent\SSSLookup;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Carbon;
@@ -21,7 +22,6 @@ class PayrollController extends BaseController
     public function index()
     {
 
-        $data['view'] = 'payroll\index';
         $half = (isset($_POST['half']) ? $_POST['half'] : (Carbon::now()->format('d') < 15 ? 'A' : 'B'));
         $month = (isset($_POST['month']) ? $_POST['month'] : Carbon::now()->format('m'));
         $year = (isset($_POST['year']) ? $_POST['year'] : Carbon::now()->format('Y'));
@@ -36,6 +36,7 @@ class PayrollController extends BaseController
         $s = $year . '-' . $month . '-' . $start;
         $e = $year . '-' . $month . '-' . $end;
 
+
         if (count(Payroll::where(['from' => $s, 'to' => $e])->get()) == 0 || !Carbon::now()->gt(Carbon::parse($e))) {
             $this->calculate_payroll($s, $e, $half);
         }
@@ -45,7 +46,6 @@ class PayrollController extends BaseController
                 $q2->where(['from' => $s, 'to' => $e]);
             }]);
         }])->orderBy('position')->get();
-
 
         $data['positions'] = $positions;
         $data['test'] = 'test';
@@ -60,6 +60,7 @@ class PayrollController extends BaseController
 
     private function calculate_payroll($start, $end, $half)
     {
+
         $employees = Employee::with(['time_sheets' => function ($query2) use ($start, $end) {
             $query2->whereBetween('date', [$start, $end])->get();
         }])->get();
@@ -67,7 +68,6 @@ class PayrollController extends BaseController
         $holidays = Holiday::with('holiday_type')->whereBetween('start', [$start, $end])->get();
         $period = CarbonPeriod::create($start, $end);
         $now = Carbon::now()->format('Y-m-d');
-
 
         foreach ($employees as $employee) {
 //            $leaves = Leave::where('employee_id',$employee->id)->where('status','accepted')->get();
@@ -79,6 +79,7 @@ class PayrollController extends BaseController
             $late = 0;
             $basic_salary = $employee->monthly_pay / 2;
             $normal_ot = 0;
+
             // REST DAY AND SUNDAY HOLIDAYS
             $rd_sunday_ot = 0;
             $rd_regular_ot = 0;
@@ -100,6 +101,8 @@ class PayrollController extends BaseController
             $nd_special_pre = 0;
 
             $total_ot = 0;
+            $total_ot_pay = 0;
+            $total_holiday_pay = 0;
             $other_income = 0;
             $with_tax = 0;
             $cash_advance = ($ca ? ($ca->repayment > $ca->balance ? $ca->balance : $ca->repayment) : 0);
@@ -169,6 +172,8 @@ class PayrollController extends BaseController
                     $absent++;
                 }
             }
+
+
             $absent_pay = $absent * $daily_rate;
             $late_pay = ($daily_rate / 480) * $late;
             $basic_salary -= $absent_pay + $late_pay;
@@ -187,6 +192,10 @@ class PayrollController extends BaseController
             $nd_regular_pre_pay = (($daily_rate / 8) * 2.0) * $nd_regular_pre;
             $nd_double_pre_pay = (($daily_rate / 8) * 3.0) * $nd_double_pre;
             $nd_special_pre_pay = (($daily_rate / 8) * 1.3) * $nd_special_pre;
+
+            $total_ot_pay = $normal_ot_pay + $rd_sunday_ot_pay + $rd_regular_ot_pay + $rd_double_ot_pay + $rd_special_ot_pay + $nd_regular_ot_pay + $nd_double_ot_pay + $nd_special_ot_pay;
+            $total_holiday_pay = $rd_sunday_pre_pay + $rd_regular_pre_pay + $rd_double_pre_pay + $rd_special_pre_pay + $nd_regular_pre_pay + $nd_double_pre_pay + $nd_special_pre_pay;
+
 
             $gross_pay = $basic_salary + $employee->total_allowance + $rd_sunday_pre_pay + $rd_regular_pre_pay + $rd_double_pre_pay + $rd_special_pre_pay;
             $gross_pay += $nd_regular_pre_pay + $nd_double_pre_pay + $nd_special_pre_pay;
@@ -252,6 +261,8 @@ class PayrollController extends BaseController
                     'nd_special_pay' => round($nd_special_pre_pay, 2),
                     'can_ot' => $employee->can_ot,
                     'total_ot' => round($total_ot, 2),
+                    'total_ot_pay' => round($total_ot_pay, 2),
+                    'total_holiday_pay' => round($total_holiday_pay, 2),
                     'other_income' => round($other_income, 2),
                     'gross_pay' => round($gross_pay, 2),
                     'with_tax' => round($with_tax, 2),
@@ -263,7 +274,8 @@ class PayrollController extends BaseController
                     'hdmf_loan' => round($hdmf_loan, 2),
                     'other_deduction' => round($other_deduction, 2),
                     'total_deduction' => round($total_deduction, 2),
-                    'net_pay' => round($net_pay, 2)
+                    'net_pay' => round($net_pay, 2),
+                    'thirteenth_month_pay' => 0
                 ]
             );
 
@@ -291,8 +303,38 @@ class PayrollController extends BaseController
 
     public function update()
     {
-        $key = (true ? "success" : "danger");
-        $message = (true ? "Schedule updated successfully!" : "Opps! There is an error while updating the schedule.");
-        return redirect()->route('payroll.index')->with('status', ['key' => "success", 'message' => "Schedule updated successfully!"]);
+        $payroll = Payroll::find($_POST['id']);
+        $payroll->late = $_POST['late'];
+        $payroll->with_tax = $_POST['with_tax'];
+        $payroll->phi = $_POST['phi'];
+        $payroll->sss = $_POST['sss'];
+        $payroll->hdmf = $_POST['hdmf'];
+        $payroll->cash_advance = $_POST['cash_advance'];
+        $payroll->sss_loan = $_POST['sss_loan'];
+        $payroll->other_deduction = $_POST['other_deduction'];
+        $payroll->hdmf_loan = $_POST['hdmf_loan'];
+        $payroll->basic_salary = $_POST['basic_salary'];
+        $payroll->normal_ot_pay = $_POST['normal_ot_pay'];
+        $payroll->rd_sunday_ot_pay = $_POST['rd_sunday_ot_pay'];
+        $payroll->rd_special_ot_pay = $_POST['rd_special_ot_pay'];
+        $payroll->rd_regular_ot_pay = $_POST['rd_regular_ot_pay'];
+        $payroll->rd_double_ot_pay = $_POST['rd_double_ot_pay'];
+        $payroll->rd_sunday_pay = $_POST['rd_sunday_pay'];
+        $payroll->rd_special_pay = $_POST['rd_special_pay'];
+        $payroll->rd_regular_pay = $_POST['rd_regular_pay'];
+        $payroll->rd_double_pay = $_POST['rd_double_pay'];
+        $payroll->nd_regular_ot_pay = $_POST['nd_regular_ot_pay'];
+        $payroll->nd_special_ot_pay = $_POST['nd_special_ot_pay'];
+        $payroll->nd_double_ot_pay = $_POST['nd_double_ot_pay'];
+        $payroll->nd_regular_pay = $_POST['nd_regular_pay'];
+        $payroll->nd_special_pay = $_POST['nd_special_pay'];
+        $payroll->nd_double_pay = $_POST['nd_double_pay'];
+        $payroll->allowance = $_POST['allowance'];
+        $payroll->other_income = $_POST['other_income'];
+        $payroll->edited = true;
+        $status = $payroll->save();
+        $key = ($status ? "success" : "danger");
+        $message = ($status ? "Schedule updated successfully!" : "Opps! There is an error while updating the schedule.");
+        return redirect()->route('payroll.index')->with('status', ['key' => $key, 'message' => $message]);
     }
 }

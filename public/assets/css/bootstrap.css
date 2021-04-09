@@ -7462,6 +7462,9 @@ a.bg-dark:focus, a.bg-dark:hover, button.bg-dark:focus, button.bg-dark:hover {
 .w-75 {
     width: 75% !important
 }
+.w-70 {
+    width: 70% !important
+}
 
 .w-100 {
     width: 100% !important
@@ -8971,6 +8974,9 @@ a.text-light:focus, a.text-light:hover {
 
 .text-dark {
     color: #343a40 !important
+}
+.text-black {
+    color: #000000 !important
 }
 
 a.text-dark:focus, a.text-dark:hover {

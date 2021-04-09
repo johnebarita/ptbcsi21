@@ -45,7 +45,7 @@
             <div class="container-fluid">
                 @if(session()->has('status'))
                     <div class="alert alert-{{session('status')['key']}} alert-dismissible fade show " role="alert">
-                        {{ session('status')['message']}}
+                        {!! session('status')['message']!!}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -233,19 +233,78 @@
                     center: 'title',
                     left: ''
                 },
+                customButtons: {
+                    prev: {
+                        text: 'Prev',
+                        click: function () {
+                            calendar.prev();
+                            var date = calendar.getDate().toLocaleString().split(',')[0].split('/');
+                            $.ajax({
+                                url: "calendar/getEventsPerMonth/" + date[0] + "/" + date[2],
+                                method: 'post',
+                                success: function (response) {
+                                    calendar.removeAllEvents();
+                                    var events = JSON.parse(response);
+                                    events.map(function (value) {
+                                        calendar.addEvent(value);
+                                    });
+                                },
+                            });
+                            console.log(calendar.getEvents());
+
+                        }
+                    },
+                    next: {
+                        text: 'Next',
+                        click: function () {
+                            calendar.next();
+                            var date = calendar.getDate().toLocaleString().split(',')[0].split('/');
+                            $.ajax({
+                                url: "calendar/getEventsPerMonth/" + date[0] + "/" + date[2],
+                                method: 'post',
+                                success: function (response) {
+                                    calendar.removeAllEvents();
+                                    var events = JSON.parse(response);
+                                    events.map(function (value) {
+                                        calendar.addEvent(value);
+                                    });
+                                },
+                            });
+                        }
+                    },
+                    today: {
+                        text: 'Today',
+                        click: function () {
+                            calendar.today();
+                            var date = calendar.getDate().toLocaleString().split(',')[0].split('/');
+                            $.ajax({
+                                url: "calendar/getEventsPerMonth/" + date[0] + "/" + date[2],
+                                method: 'post',
+                                success: function (response) {
+                                    calendar.removeAllEvents();
+                                    var events = JSON.parse(response);
+                                    events.map(function (value) {
+                                        calendar.addEvent(value);
+                                    });
+                                },
+                            });
+
+                        }
+                    }
+                },
                 editable: true,
                 selectable: true,
                 eventLimit: true, // when too many events in a day, show the popover
-
-                events: [
-                    <?php
-                    if (isset($events)) {
-                        foreach ($events as $event) {
-                            echo $event . ',';
-                        }
-                    }
-                    ?>],
+                {{--events: [--}}
+                {{--    <?php--}}
+                {{--    if (isset($events)) {--}}
+                {{--        foreach ($events as $event) {--}}
+                {{--            echo $event . ',';--}}
+                {{--        }--}}
+                {{--    }--}}
+                {{--    ?>],--}}
                 dateClick: function (info) {
+                    console.log(calendar.getDate().toLocaleString());
                     $('#add_event').modal('show');
                     $('#add_event #start').val(info.dateStr);
                     $('#add_event #end').val(info.dateStr);
@@ -267,9 +326,12 @@
                         url: "<?=route_to('calendar.update')?>",
                         method: 'post',
                         data: {
+                            drag: true,
                             id: info.event.id,
+                            title: info.event.title,
                             start: start,
                             end: end,
+                            note: info.event.extendedProps.note,
                             ["<?=csrf_token();?>"]: "<?=csrf_hash();?>"
                         },
                         dataType: 'json',
@@ -280,20 +342,60 @@
 
                 },
                 eventClick: function (info) {
+                    console.log(info.event);
                     $('#edit_event').modal('show');
-                    $('#edit_event #title').val(info.event.title);
-                    $('#edit_event #start').val(info.event.start.toISOString().substring(0, 10));
-                    if (info.event.end != null) {
-                        $('#edit_event #end').val(info.event.end.toISOString().substring(0, 10));
-                    } else {
-                        $('#edit_event #end').val(info.event.start.toISOString().substring(0, 10));
-                    }
-                    $('#edit_event #note').val(info.event.extendedProps.note);
+                    $('#edit_event #edit_id').val(info.event.id);
+                    $.ajax({
+                        url: "calendar/get/" + info.event.id,
+                        success: function (result) {
+                            var event = JSON.parse(result);
+                            $('#edit_event #edit_id').val(event.id);
+                            $('#edit_event #edit_title').val(event.title);
+                            $('#edit_event #edit_start').val(event.start.substring(0, 10));
+                            $('#edit_event #edit_end').val(event.end.substring(0, 10));
+                            $('#edit_event #edit_note').val(event.note);
+                        }
+                    });
                 }
             });
             <?php if(isset($active) && $active == "calendar"){?>
             calendar.render();
+            var date = calendar.getDate().toLocaleString().split(',')[0].split('/');
+            $.ajax({
+                url: "calendar/getEventsPerMonth/" + date[0] + "/" + date[2],
+                method: 'post',
+                success: function (response) {
+                    calendar.removeAllEvents();
+                    var events = JSON.parse(response);
+                    events.map(function (value) {
+                        calendar.addEvent(value);
+                    });
+                },
+            });
             <?php }?>
+        });
+
+        $('.fc-button-prev span').on('click', function () {
+            console.log('test');
+        });
+
+        $('.fc-button-next span').on('click', function () {
+            console.log('test');
+        });
+
+        $('.event_sidebar').on('click', function () {
+            $('#edit_event').modal('show');
+            var id = $(this).data('id');
+            $.ajax({
+                url: "calendar/get/" + id, success: function (result) {
+                    var event = JSON.parse(result);
+                    $('#edit_event #edit_id').val(event.id);
+                    $('#edit_event #edit_title').val(event.title);
+                    $('#edit_event #edit_start').val(event.start.substring(0, 10));
+                    $('#edit_event #edit_end').val(event.end.substring(0, 10));
+                    $('#edit_event #edit_note').val(event.note);
+                }
+            });
         });
 
         $('.edit_schedule').on('click', function () {
@@ -303,16 +405,24 @@
             var data = tr.children("td").map(function () {
                 return $(this).text();
             }).get();
+            var working_days = $(this).data('days');
 
-            $('#edit_schedule #id').val(id);
-            $('#edit_schedule #time_in').val(convertTo24Hour(data[0]));
-            $('#edit_schedule #time_out').val(convertTo24Hour(data[1]));
+            $('#edit_schedule #edit_id').val(id);
+            $('#edit_schedule #edit_morning_in').val(convertTo24Hour(data[0]));
+            $('#edit_schedule #edit_morning_out').val(convertTo24Hour(data[1]));
+            $('#edit_schedule #edit_afternoon_in').val(convertTo24Hour(data[2]));
+            $('#edit_schedule #edit_afternoon_out').val(convertTo24Hour(data[3]));
+            $('#edit_schedule .working_days').each(function (index) {
+                if (working_days.includes(index)) {
+                    $(this).prop("checked",true);
+                }
+            });
+
         });
 
         $('.delete_schedule').on('click', function () {
             $('#delete_schedule').modal('show');
-            var id = $(this).data('id');
-            $('#delete_schedule #id').val(id);
+            $('#delete_schedule #delete_id').val($(this).data('id'));
         });
 
         $('.edit_position').on('click', function () {
@@ -363,6 +473,18 @@
 
         $('#position_id').on('click', function () {
             $('#monthly_pay').val($(this).find(':selected').data('salary'));
+            var schedule = $(this).find(':selected').data('schedule');
+            $('#add_employee #morning_in').val(schedule['morning_in']);
+            $('#add_employee #morning_out').val(schedule['morning_out']);
+            $('#add_employee #afternoon_in').val(schedule['afternoon_in']);
+            $('#add_employee #afternoon_out').val(schedule['afternoon_out']);
+            $('#add_employee .working_days').each(function (index) {
+                if (schedule['working_days'].includes(index)) {
+                    $(this).prop('checked', true);
+                }else{
+                    $(this).prop('checked', false);
+                }
+            });
         });
 
 
@@ -407,11 +529,9 @@
 
         function setInputFilter(textbox, inputFilter) {
             ["input", "keydown", "keyup", "mousedown", "mouseup", "contextmenu", "drop"].forEach(function (event) {
-
                 for (var i = 0; i < textbox.length; i++) {
-
                     textbox[i].addEventListener(event, function () {
-                        console.log((this.value));
+
                         if (inputFilter(this.value.trim())) {
                             this.oldValue = this.value;
                             this.oldSelectionStart = this.selectionStart;
@@ -422,6 +542,11 @@
                         } else {
                             this.value = "";
                         }
+                        this.value = this.value.trim();
+                        if (this.value != '') {
+                            this.value = parseInt(this.value);
+                        }
+
                     });
                 }
             });
@@ -439,6 +564,145 @@
         setInputFilter(document.getElementsByClassName("ca-num-input"), function (value) {
             return /^\d*$/.test(value) && (value === "" || parseInt(value) >= 1);
         });
+
+        $('.time_h_input').on('blur', function () {
+            var h = $(this);
+            var m = $(this).next();
+
+            h.val(h.val().padStart(2, 0));
+
+            if (h.val() != "" && m.val() == "") {
+                m.val("00");
+            }
+            if ((h.val() == "" || h.val() == "00") && (m.val() == "" || m.val() == "00")) {
+                m.val('');
+                h.val('');
+            }
+            updateDtrTime(h);
+        });
+
+        $('.time_m_input').on('blur', function () {
+            var m = $(this);
+            var h = $(this).prev();
+
+            m.val(m.val().padStart(2, 0));
+
+            if (m.val() != "" && h.val() == "") {
+                h.val("00");
+            }
+
+            if ((h.val() != "" || h.val() != "00") && m.val() == '') {
+                m.val("00");
+            }
+
+
+            if ((h.val() == "" || h.val() == "00") && (m.val() == "" || m.val() == "00")) {
+                m.val('');
+                h.val('');
+            }
+            updateDtrTime(h);
+        });
+
+        function updateDtrTime(input) {
+
+            var tr = $(input).closest('tr');
+            var inputs = $(tr).find("input");
+            var data = inputs.map(function () {
+                return $(this).val();
+            });
+            var m_time = getTimeDiff(data[0], data[1], data[2], data[3]);
+            var a_time = getTimeDiff(data[5], data[6], data[7], data[8]);
+            var o_time = getTimeDiff(data[10], data[11], data[12], data[13]);
+            var pre_time = (Math.round((m_time + a_time) * 100) / 100);
+            var late_time = pre_time - 8;
+            var ot_time = o_time;
+            if (late_time < 0) {
+                late_time = Math.abs(late_time);
+            } else {
+                ot_time += late_time;
+                pre_time = 8;
+                late_time = 0;
+            }
+
+            $(tr).find('.m_time').text(m_time == 0 ? '' : m_time.toFixed(2));
+            $(tr).find('.m_time_i').val(m_time == 0 ? '' : m_time.toFixed(2));
+            $(tr).find('.a_time').text(a_time == 0 ? '' : a_time.toFixed(2));
+            $(tr).find('.a_time_i').val(a_time == 0 ? '' : a_time.toFixed(2));
+            $(tr).find('.o_time').text(o_time == 0 ? '' : o_time.toFixed(2));
+            $(tr).find('.o_time_i').val(o_time == 0 ? '' : o_time.toFixed(2));
+            $(tr).find('.pre_time').text(pre_time != 0 ? pre_time.toFixed(2) : '');
+            $(tr).find('.pre_time_i').val(pre_time != 0 ? pre_time.toFixed(2) : '');
+            $(tr).find('.ot_time').text(ot_time != 0 ? ot_time.toFixed(2) : '');
+            $(tr).find('.ot_time_i').val(ot_time != 0 ? ot_time.toFixed(2) : '');
+            $(tr).find('.late_time').text(late_time != 0 ? late_time.toFixed(2) : '');
+            $(tr).find('.late_time_i').val(late_time != 0 ? late_time.toFixed(2) : '');
+
+            if (pre_time < 8) {
+                $(tr).find('.pre_time_i').closest('td').addClass('dtr-flag');
+                $(tr).find('.ot_time').closest('td').addClass('dtr-flag');
+                $(tr).find('.late_time').closest('td').addClass('dtr-flag');
+            } else {
+                $(tr).find('.pre_time_i').closest('td').removeClass('dtr-flag');
+                $(tr).find('.ot_time').closest('td').removeClass('dtr-flag');
+                $(tr).find('.late_time').closest('td').removeClass('dtr-flag');
+            }
+
+
+            var total_pre = 0;
+            var pre_data = $('.pre_time').map(function () {
+                return $(this).text();
+            });
+            pre_data.each(function (index, item) {
+                if (item.trim() != '') {
+                    total_pre += parseFloat(item);
+                }
+            });
+
+            var total_ot = 0;
+            var ot_data = $('.o_time').map(function () {
+                return $(this).text();
+            });
+            ot_data.each(function (index, item) {
+                if (item.trim() != '') {
+                    total_ot += parseFloat(item);
+                }
+            });
+
+            var total_late = 0;
+            var late_data = $('.late_time').map(function () {
+                return $(this).text();
+            });
+            late_data.each(function (index, item) {
+                if (item.trim() != '') {
+                    total_late += parseFloat(item);
+                }
+            });
+
+            $('#total_pre').text(total_pre);
+            $('#total_ot').text(total_ot);
+            $('#total_late').text(total_late);
+        }
+
+        function getTimeDiff(in_h, in_m, out_h, out_m) {
+
+            if (in_h == '' || in_m == '' || out_h == '' || out_m == '') {
+                return 0;
+            }
+            var time_in = new Date();
+            time_in.setHours(in_h);
+            time_in.setMinutes(in_m);
+
+            var time_out = new Date();
+            time_out.setHours(out_h);
+            time_out.setMinutes(out_m);
+
+
+            var mins = (time_in.getTime() - time_out.getTime()) / 1000;
+            var diff = (mins / 60) / 60;
+
+            return Math.abs(Math.round(diff * 100) / 100);
+        }
+
 
         $('#payroll-table').stickyTable({
             copyTableClass: true,
@@ -531,6 +795,7 @@
                 url: "payroll/get/" + id, success: function (result) {
                     var payroll = JSON.parse(result);
                     //Employee Basic Information
+                    $('#edit_payroll #id').val(payroll.id);
                     $('#edit_payroll #name').text(payroll.employee.lastname + " " + payroll.employee.firstname);
                     $('#edit_payroll #email').text(payroll.employee.email);
                     $('#edit_payroll #position').text(payroll.employee.position.position);
@@ -576,6 +841,53 @@
                     console.log(payroll);
                 }
             });
+        });
+
+        $('.payslip').on('click', function () {
+            $('#payslip').modal('show');
+            var id = $(this).data('id');
+            $.ajax({
+                url: "payroll/get/" + id, success: function (result) {
+                    var payroll = JSON.parse(result);
+                    // $('#payslip #payslip_title').text(payroll.employee.firstname + " " + payroll.employee.lastname+" Payslip For "+
+                    //     date_from.toLocaleString('default', { month: 'long' }) + " "+ date_from.getFullYear() + " "+date_from.getDate()+" - "+date_to.getDate());
+
+                    $('#payslip #id').val(payroll.id);
+                    $('#payslip #name').text(payroll.employee.firstname + " " + payroll.employee.lastname);
+                    $('#payslip #position').text(payroll.employee.position.position);
+                    $('#payslip #monthly_pay').text(payroll.employee.monthly_pay);
+                    $('#payslip #sss_no').text(payroll.employee.sss_no);
+                    var date_from = new Date(payroll.from);
+                    var date_to = new Date(payroll.to);
+                    $('#payslip #payroll_period').text(date_from.toLocaleString('default', {month: 'long'}) + " " +
+                        date_from.getFullYear() + " " + date_from.getDate() + " - " + date_to.getDate());
+                    $('#payslip #bank_name').text(payroll.employee.bank_name);
+                    $('#payslip #tin_no').text(payroll.employee.tin_no);
+                    $('#payslip #philhealth_no').text(payroll.employee.philhealth_no);
+                    $('#payslip #pagibig_no').text(payroll.employee.pagibig_no);
+                    $('#payslip #basic_salary').text(payroll.basic_salary);
+                    $('#payslip #allowance').text(payroll.allowance);
+                    $('#payslip #total_ot_pay').text(payroll.total_ot_pay);
+                    $('#payslip #total_holiday_pay').text(payroll.total_holiday_pay);
+                    $('#payslip #thirteenth_month_pay').text(payroll.thirteenth_month_pay);
+                    $('#payslip #other_income').text(payroll.other_income);
+                    $('#payslip #gross_pay').text(payroll.gross_pay);
+                    $('#payslip #late').text(payroll.late + ' (mins)');
+                    $('#payslip #absent').text(payroll.absent + ' day(s)');
+                    $('#payslip #sss').text(payroll.sss);
+                    $('#payslip #hdmf').text(payroll.hdmf);
+                    $('#payslip #phi').text(payroll.phi);
+                    $('#payslip #with_tax').text(payroll.with_tax);
+                    $('#payslip #cash_advance').text(payroll.cash_advance);
+                    $('#payslip #total_deduction').text(payroll.total_deduction);
+                    $('#payslip #net_pay').text((payroll.net_pay).toFixed(2));
+                    $('#payslip #payslip_title').text(payroll.employee.firstname + " " + payroll.employee.lastname + " Payslip For " +
+                        date_from.toLocaleString('default', {month: 'long'}) + " " + date_from.getFullYear() + " " + date_from.getDate() + " - " + date_to.getDate());
+
+                    console.log(payroll);
+                }
+            });
+
         });
     })(jQuery);
 </script>

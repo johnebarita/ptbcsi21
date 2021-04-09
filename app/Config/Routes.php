@@ -41,11 +41,14 @@ $routes->setAutoRoute(true);
 
 $routes->group('dashboard',function ($routes){
     $routes->get('', 'DashboardController::index',['as' => 'dashboard.index']);
+    $routes->get('pushUser', 'DashboardController::pushUser');
+    $routes->get('pushAttendance', 'DashboardController::push');
 });
 
 $routes->group('dtr',function ($routes){
     $routes->get('', 'DtrController::index',['as' => 'dtr.index']);
     $routes->post('', 'DtrController::index',['as' => 'dtr.index']);
+    $routes->post('update', 'DtrController::update',['as' => 'dtr.update']);
 });
 
 $routes->group('overtime',function ($routes){
@@ -73,6 +76,8 @@ $routes->group('calendar',function ($routes){
     $routes->post('', 'CalendarController::index',['as' => 'calendar.index']);
     $routes->post('create', 'CalendarController::create',['as' => 'calendar.create']);
     $routes->post('update', 'CalendarController::update',['as' => 'calendar.update']);
+    $routes->get('get/(:any)','CalendarController::get/$1');
+    $routes->post('getEventsPerMonth/(:any)/(:any)','CalendarController::getEventsPerMonth/$1/$2');
 });
 
 $routes->group('employee',function ($routes){
@@ -90,7 +95,7 @@ $routes->group('position',function ($routes){
 $routes->group('payroll',function ($routes){
     $routes->get('','PayrollController::index',['as'=>'payroll.index']);
     $routes->post('','PayrollController::index',['as'=>'payroll.index']);
-    $routes->post('','PayrollController::update',['as'=>'payroll.update']);
+    $routes->post('update','PayrollController::update',['as'=>'payroll.update']);
     $routes->get('get/(:any)','PayrollController::get/$1');
 });
 

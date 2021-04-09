@@ -26,7 +26,7 @@
                         <label for="schedule_id">Schedule</label>
                         <select class="form-control" type="number" id="schedule_id" name="schedule_id">
                             @foreach ($schedules as $schedule)
-                                <option value={{$schedule->i}}>
+                                <option value={{$schedule->id}}>
                                     {{ \Carbon\Carbon::createFromFormat('G:i', $schedule->time_in)->format('h:i A').' - '.
                                     \Carbon\Carbon::createFromFormat('G:i', $schedule->time_out)->format('h:i A')}}
                                 </option>

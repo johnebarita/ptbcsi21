@@ -89,6 +89,11 @@ class TimeSheets extends Migration
                 'constraint' => '1',
                 'default' => 0
             ],
+            'has_flag' => [
+                'type' => 'TINYINT',
+                'constraint' => '1',
+                'default' => 0
+            ],
             'created_at datetime default current_timestamp',
             'updated_at datetime default current_timestamp on update current_timestamp',
         ]);

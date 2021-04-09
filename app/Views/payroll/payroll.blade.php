@@ -24,7 +24,7 @@
                                     </select>
                                     <select class="form-control mr-2 w-50" name="month" id="month">
                                         @foreach (range(1, 12) as $number)
-                                            <option value='{{ $number }}' {{ ($month == $number ? 'selected' : '') }} {{$number>\Carbon\Carbon::now()->format('m')?'disabled':''}}>{{ \Carbon\Carbon::createFromFormat('m', $number)->format('F') }}</option>
+                                            <option value='{{ $number }}' {{ ($month == $number ? 'selected' : '') }} {{$number>\Carbon\Carbon::now()->format('m')?'disabled':''}}>{{ Carbon\Carbon::create()->day(1)->month($number)->format('F')}}</option>
                                         @endforeach
                                     </select>
                                     <select class="form-control  mr-2 w-25" name="year" id="year">
@@ -135,7 +135,7 @@
                                     $can_ot = "strikethrough";
 
                                     ?>
-                                    <tr class="{{ ($employee->is_fixed_salary == 1 ? 'fixed-salary' : '') }}">
+                                    <tr class="{{ ($employee->is_fixed_salary == 1 ? 'fixed-salary' : '') }} {{$payroll->edited?'edited-salary':''}}">
                                         <th>{{ $count++}}</th>
                                         <th>{{ strtoupper($employee->lastname . ' ' . $employee->firstname)}}
                                             <span class="font-italic font-weight-lighter">{{ ($employee->is_fixed_salary == 1 ? '(Fixed-salary)' : '') }}</span>
@@ -191,10 +191,10 @@
                                                    class="btn btn-primary btn-circle btn-sm btn-xs edit_payroll">
                                                     <i class="fas fa-pen fa-xs"></i>
                                                 </a>
-                                                <a href="#" data-id="" class="btn btn-primary btn-circle btn-sm btn-xs">
+                                                <a href="#"  data-id="{{$payroll->id}}" class="btn btn-primary btn-circle btn-sm btn-xs ">
                                                     <i class="fas fa-sticky-note fa-xs"></i>
                                                 </a>
-                                                <a href="#" data-id="" class="btn btn-primary btn-circle btn-sm btn-xs">
+                                                <a href="#"data-id="{{$payroll->id}}" class="btn btn-primary btn-circle btn-sm btn-xs payslip">
                                                     <i class="fas fa-file-invoice fa-xs"></i>
                                                 </a>
                                             </div>
@@ -232,5 +232,6 @@
             </div>
         </div>
         @include('payroll.partials.edit_payroll')
+        @include('payroll.partials.payslip')
     </div>
 @endsection

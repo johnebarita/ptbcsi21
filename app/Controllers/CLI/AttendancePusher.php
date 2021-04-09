@@ -26,7 +26,6 @@ class AttendancePusher extends BaseController
                     TimeSheet::create([
                         'employee_id' => $attendance['id'],
                         'date' => $date,
-                        'morning_in' => $time
                     ]);
                 } else {
                     if ($time_sheet->morning_in == '') {
@@ -35,27 +34,27 @@ class AttendancePusher extends BaseController
 
                     } elseif ($time_sheet->morning_out == '') {
 
-                        $time_sheet->morning_out = $time;
-                        $time_sheet->morning_time = $this->get_time_diff($time_sheet->morning_in, $time_sheet->morning_out);
-                        $time_sheet->pre = $time_sheet->morning_time;
+                    $time_sheet->morning_out = $time;
+                    $time_sheet->morning_time = $this->get_time_diff($time_sheet->morning_in, $time_sheet->morning_out);
+                    $time_sheet->pre = $time_sheet->morning_time;
 
-                    } elseif ($time_sheet->afternoon_in == '') {
+                } elseif ($time_sheet->afternoon_in == '') {
 
-                        $time_sheet->afternoon_in = $time;
+                    $time_sheet->afternoon_in = $time;
 
-                    } elseif ($time_sheet->afternoon_out == '') {
+                } elseif ($time_sheet->afternoon_out == '') {
 
-                        $time_sheet->afternoon_out = $time;
-                        $time_sheet->afternoon_time = $this->get_time_diff($time_sheet->afternoon_in, $time_sheet->afternoon_out);
-                        $time_sheet->pre = (float)$time_sheet->morning_time + (float)$time_sheet->afternoon_time;
+                    $time_sheet->afternoon_out = $time;
+                    $time_sheet->afternoon_time = $this->get_time_diff($time_sheet->afternoon_in, $time_sheet->afternoon_out);
+                    $time_sheet->pre = (float)$time_sheet->morning_time + (float)$time_sheet->afternoon_time;
 
-                    } elseif ($time_sheet->overtime_in == '') {
-                        $time_sheet->overtime_in = $time;
+                } elseif ($time_sheet->overtime_in == '') {
+                    $time_sheet->overtime_in = $time;
 
-                    } elseif ($time_sheet->overtime_out == '') {
+                } elseif ($time_sheet->overtime_out == '') {
 
-                        $time_sheet->overtime_out = $time;
-                        $time_sheet->overtime_time = $this->get_time_diff($time_sheet->overtime_in, $time_sheet->overtime_out);
+                    $time_sheet->overtime_out = $time;
+                    $time_sheet->overtime_time = $this->get_time_diff($time_sheet->overtime_in, $time_sheet->overtime_out);
 
                     }
                     $time_sheet->save();

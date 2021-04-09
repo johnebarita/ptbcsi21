@@ -17,7 +17,7 @@ class CashAdvanceController extends BaseController
         $data['employees'] = Employee::all();
         $data['active'] = 'cash-advance';
 //        return view('template\template', $data);
-        return  $this->blade->run('cash-advance.cash-advance', $data);
+        return  $this->blade->run('cash-advance.cash_advance', $data);
     }
 
     public function create(){

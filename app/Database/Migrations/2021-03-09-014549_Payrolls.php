@@ -115,6 +115,15 @@ class Payrolls extends Migration
             'total_ot' => [
                 'type' => 'DOUBLE',
             ],
+            'total_ot_pay' => [
+                'type' => 'DOUBLE',
+            ],
+            'total_holiday_pay' => [
+                'type' => 'DOUBLE',
+            ],
+            'thirteenth_month_pay' => [
+                'type' => 'DOUBLE',
+            ],
             'other_income' => [
                 'type' => 'DOUBLE',
             ],
@@ -151,9 +160,16 @@ class Payrolls extends Migration
             'net_pay' => [
                 'type' => 'DOUBLE',
             ],
+
             'can_ot' => [
                 'type' => 'TINYINT',
                 'constraint' => '1',
+            ],
+            'edited' => [
+                'type' => 'tinyint',
+                'constraint' => 1,
+                'null' => 0,
+                'default' => 0
             ],
             'created_at datetime default current_timestamp',
             'updated_at datetime default current_timestamp on update current_timestamp',

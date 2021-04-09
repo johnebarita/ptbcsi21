@@ -35,14 +35,17 @@ class DashboardController extends BaseController
 
     public function index()
     {
+
         $employees = Employee::all();
+//        d($employees);
+
         $time_sheets = TimeSheet::with('employee.position.schedule')->whereDate('date', Carbon::now())->get();
         $lates = 0;
         $monthly_lates = [];
         $monthly_absences = [];
         $monthly_presences = [];
 
-        $this->push();
+//        $this->push();
 
         foreach ($time_sheets as $time_sheet) {
             if (Carbon::parse($time_sheet->morning_in)->gt(Carbon::parse($time_sheet->employee->position->schedule->time_in))
@@ -125,55 +128,141 @@ class DashboardController extends BaseController
     public function push()
     {
 
+
         if ($this->zk->connect()) {
 
             $attendances = $this->zk->getAttendance();
+
+
             foreach ($attendances as $attendance) {
 
-                $date = Carbon::createFromFormat('Y-m-d G:i:s', $attendance['timestamp'])->format('Y-m-d');
-                $time = Carbon::createFromFormat('Y-m-d G:i:s', $attendance['timestamp'])->format('h:i');
-                $time_sheet = TimeSheet::where([['employee_id', '=', $attendance['id']], ['date', '=', $date]])->first();
+//                $time_stamp = Carbon::createFromFormat('Y-m-d G:i:s', $attendance['timestamp']);
 
-                if ($time_sheet == null) {
-                    TimeSheet::create([
-                        'employee_id' => $attendance['id'],
-                        'date' => $date,
-                        'morning_in' => $time
-                    ]);
-                } else {
+                $time_stamp = Carbon::createFromFormat('G:i:s', '13:00:00');
+                $m_in = Carbon::createFromFormat('G:i:s', '08:00:00');
+                $m_out = Carbon::createFromFormat('G:i:s', '12:00:00');
+                $a_in = Carbon::createFromFormat('G:i:s', '01:00:00');
+                $a_out = Carbon::createFromFormat('G:i:s', '05:00:00');
+
+                $time_sheet = TimeSheet::firstOrCreate(
+                    ['employee_id' => $attendance['id']],
+                    ['date' => $time_stamp->format('Y-m-d')],
+                );
+
+                $employee = Employee::with('position.schedule')->find($attendance['id']);
+
+                $m_in->setTimeFromTimeString($employee->position->schedule->morning_in);
+                $m_out->setTimeFromTimeString($employee->position->schedule->morning_out);
+                $a_in->setTimeFromTimeString($employee->position->schedule->afternoon_in);
+                $a_out->setTimeFromTimeString($employee->position->schedule->afternoon_out);
+
+                d($m_in, $m_out, $a_in, $a_out);
+
+                if ($time_stamp->lte($m_in)) {
                     if ($time_sheet->morning_in == '') {
-
-                        $time_sheet->morning_in = $time;
-
-                    } elseif ($time_sheet->morning_out == '') {
-
-                        $time_sheet->morning_out = $time;
-                        $time_sheet->morning_time = $this->get_time_diff($time_sheet->morning_in, $time_sheet->morning_out);
-                        $time_sheet->pre = $time_sheet->morning_time;
-
-                    } elseif ($time_sheet->afternoon_in == '') {
-
-                        $time_sheet->afternoon_in = $time;
-
-                    } elseif ($time_sheet->afternoon_out == '') {
-
-                        $time_sheet->afternoon_out = $time;
-                        $time_sheet->afternoon_time = $this->get_time_diff($time_sheet->afternoon_in, $time_sheet->afternoon_out);
-                        $time_sheet->pre = (float)$time_sheet->morning_time + (float)$time_sheet->afternoon_time;
-
-                    } elseif ($time_sheet->overtime_in == '') {
-                        $time_sheet->overtime_in = $time;
-
-                    } elseif ($time_sheet->overtime_out == '') {
-
-                        $time_sheet->overtime_out = $time;
-                        $time_sheet->overtime_time = $this->get_time_diff($time_sheet->overtime_in, $time_sheet->overtime_out);
-
+                        d('morning in a');
                     }
-                    $time_sheet->save();
+                } elseif ($time_stamp->gt($m_in) && $time_stamp->lte($m_out)) {
+                    if ($time_sheet->morning_in == '') {
+                        d('morning in b');
+                    } elseif ($time_sheet->morning_out == '') {
+                        d('morning out b');
+                    } else {
+                        d('afternoon in b');
+                    }
+                } elseif ($time_stamp->gt($m_out) && $time_stamp->lte($a_out)) {
+                    if ($time_sheet->morning_in != '' && $time_sheet->morning_out == '') {
+                        d('morning out c');
+                    } elseif ($time_sheet->afternoon_in == '') {
+                        d('afternoon in c');
+                    } else {
+                        d('afternoon out c');
+                    }
+                } elseif ($time_stamp->gt($a_out)) {
+                    if ($time_sheet->afternoon_in != '' && $time_sheet->afternoon_out == '') {
+                        d('afternoon out d');
+                    } elseif ($time_sheet->overtime_in == '') {
+                        d('overtime in d');
+                    } else {
+                        d('overtime out d');
+                    }
                 }
+
+
+//                $noon = Carbon::createFromFormat('G:i:s', '11:59:00');
+//
+//                if ($time_sheet == null) {
+//                    $time_sheet = TimeSheet::create([
+//                        'employee_id' => $attendance['id'],
+//                        'date' => $time_stamp->format('Y-m-d'),
+//                    ]);
+//                }
+//
+//
+//                if ($time_stamp->lte($noon)) {
+//                    if ($time_sheet->morning_in == '') {
+//                        $time_sheet->morning_in = $time_stamp->format('G:i');
+//                        d('morning in a');
+//                    } else {
+//                        $time_sheet->morning_out = $time_stamp->format('G:i');
+//                        d('morning out a');
+//                    }
+//                } else {
+//                    if ($time_sheet->morning_in != '' && $time_sheet->morning_out == "") {
+//                        $time_sheet->morning_out = $time_stamp->format('G:i');
+//                        d('morning out b');
+//                    } elseif ($time_sheet->afternoon_in == '') {
+//                        $time_sheet->afternoon_in = $time_stamp->format('G:i');
+//                        d('afternoon in a');
+//                    } elseif ($time_sheet->afternoon_out == '') {
+//                        $time_sheet->afternoon_out = $time_stamp->format('G:i');
+//                        d('afternoon out a');
+//                    } elseif ($time_sheet->overtime_in == "") {
+//                        $time_sheet->overtime_in = $time_stamp->format('G:i');
+//                        d('overtime in a');
+//                    } elseif ($time_sheet->overtime_out == "") {
+//                        $time_sheet->overtime_out = $time_stamp->format('G:i');
+//                        d('overtime out a');
+//                    }
+//                }
+
+//                $time_sheet->save();
+//                if ($time_sheet->morning_in == '') {
+//                    if ($time_stamp->lt($noon)) {
+//                        $time_sheet->morning_in = $time;
+//
+//                    } elseif ($time_sheet->afternoon_in == '') {
+//                        $time_sheet->afternoon_in = $time;
+//
+//                    }
+//                } elseif ($time_sheet->morning_out == '') {
+//                    $time_sheet->morning_out = $time;
+//                    $time_sheet->morning_time = $this->get_time_diff($time_sheet->morning_in, $time_sheet->morning_out);
+//                    $time_sheet->pre = $time_sheet->morning_time;
+//
+//                } elseif ($time_sheet->afternoon_in == '') {
+//
+//                    $time_sheet->afternoon_in = $time;
+//
+//                } elseif ($time_sheet->afternoon_out == '') {
+//
+//                    $time_sheet->afternoon_out = $time;
+//                    $time_sheet->afternoon_time = $this->get_time_diff($time_sheet->afternoon_in, $time_sheet->afternoon_out);
+//                    $time_sheet->pre = (float)$time_sheet->morning_time + (float)$time_sheet->afternoon_time;
+//
+//                } elseif ($time_sheet->overtime_in == '') {
+//                    $time_sheet->overtime_in = $time;
+//
+//                } elseif ($time_sheet->overtime_out == '') {
+//
+//                    $time_sheet->overtime_out = $time;
+//                    $time_sheet->overtime_time = $this->get_time_diff($time_sheet->overtime_in, $time_sheet->overtime_out);
+//
+//                }
+//                $time_sheet->save();
+
             }
-            $this->zk->clearAttendance();
+//            $this->zk->clearAttendance();
             $this->zk->disconnect();
         }
 
@@ -183,6 +272,7 @@ class DashboardController extends BaseController
     {
         $employees = Employee::all();
         if ($this->zk->connect()) {
+//            $this->zk->clearUsers();
             foreach ($employees as $employee) {
                 $this->zk->setUser($employee->id, $employee->id, strtoupper($employee->lastname . ' ' . $employee->firstname), '');
             }

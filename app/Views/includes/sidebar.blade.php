@@ -40,7 +40,9 @@
             <i class="fas fa-retweet"></i>
             <span>Request</span></a>
         </a>
-        <div id="requestCollapse" class="collapse {{$active=="overtime"?'show':($active=="leave"?'show':'')}}"
+        <div id="requestCollapse" class="on-top collapse
+{{--            {{$active=="overtime"?'show':($active=="leave"?'show':'')}}--}}
+                "
              aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Request Management</h6>
@@ -71,7 +73,9 @@
             <i class="fas fa-users"></i>
             <span>Employees</span>
         </a>
-        <div id="employeeCollapse" class="collapse {{$active=="employee"?'show':($active=="position"?'show':'')}}"
+        <div id="employeeCollapse" class="on-top collapse
+{{--{{$active=="employee"?'show':($active=="position"?'show':'')}}--}}
+                "
              aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Employee Management</h6>
@@ -110,7 +114,7 @@
             <i class="fas fa-chart-line"></i>
             <span>Reports</span>
         </a>
-        <div id="reportCollapse" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="reportCollapse" class="on-top collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Summary Report:</h6>
                 <a class="collapse-item" href="{{route_to('attendance-report.index')}}">Attendance Report</a>

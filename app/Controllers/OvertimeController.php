@@ -19,10 +19,8 @@ class OvertimeController extends BaseController
 
     public function index()
     {
-        $data['view'] = 'overtime\index';
         $data['overtimes'] = Overtime::with('employee')->get();
         $data['employees'] = Employee::all();
-//        return view('template\template', $data);
         return $this->blade->run('request.overtime.overtime', $data);
     }
 
@@ -48,12 +46,13 @@ class OvertimeController extends BaseController
                 $time_sheet->overtime_in = Carbon::createFromFormat('G:i', $overtime->overtime_in)->format('h:i');
                 $time_sheet->overtime_out = Carbon::createFromFormat('G:i', $overtime->overtime_out)->format('h:i');
                 $time_sheet->overtime_time = number_format(Carbon::createFromFormat('G:i', $overtime->overtime_in)->diffInMinutes($overtime->overtime_out) / 60.0, 2);
-                $time_sheet->ot = $time_sheet->overtime_time;
+                $time_sheet->ot += $time_sheet->overtime_time;
             } else {
-                $time_sheet->overtime_in = '';
-                $time_sheet->overtime_out = '';
-                $time_sheet->overtime_time = '';
-                $time_sheet->ot = '';
+                $time_sheet->ot -=$time_sheet->overtime_time;
+                $time_sheet->overtime_in = null;
+                $time_sheet->overtime_out = null;
+                $time_sheet->overtime_time = null;
+
             }
             $status = $time_sheet->save();
         }
