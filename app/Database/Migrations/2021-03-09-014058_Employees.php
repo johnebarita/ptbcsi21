@@ -138,6 +138,12 @@ class Employees extends Migration
             'total_allowance' => [
                 'type' => 'DOUBLE',
             ],
+
+//            'is_archived'=>[
+//                'type' => 'TINYINT',
+//                'constraint' => '1',
+//                'default' => 0
+//            ],
 //            'employee_login_id' => [
 //                'type' => 'INT',
 //                'constraint' => '11',
@@ -187,6 +193,7 @@ class Employees extends Migration
 //            ],
             'created_at datetime default current_timestamp',
             'updated_at datetime default current_timestamp on update current_timestamp',
+            'deleted_at datetime default null on update current_timestamp',
         ]);
 
         $this->forge->addPrimaryKey('id');

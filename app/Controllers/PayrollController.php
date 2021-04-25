@@ -42,10 +42,19 @@ class PayrollController extends BaseController
         }
 
         $positions = Position::with(['employees' => function ($query) use ($s, $e) {
-            $query->with(['payrolls' => function ($q2) use ($s, $e) {
+            $query
+                ->withTrashed()
+                ->with(['payrolls' => function ($q2) use ($s, $e) {
                 $q2->where(['from' => $s, 'to' => $e]);
             }]);
         }])->orderBy('position')->get();
+
+//        foreach ($positions as $position){
+//            foreach ($position->employees as $employee){
+//                d($employee->payrolls->first());
+//            }
+//        }
+//        dd();
 
         $data['positions'] = $positions;
         $data['test'] = 'test';
@@ -61,7 +70,7 @@ class PayrollController extends BaseController
     private function calculate_payroll($start, $end, $half)
     {
 
-        $employees = Employee::with(['time_sheets' => function ($query2) use ($start, $end) {
+        $employees = Employee::withTrashed()->with(['time_sheets' => function ($query2) use ($start, $end) {
             $query2->whereBetween('date', [$start, $end])->get();
         }])->get();
 
@@ -278,6 +287,7 @@ class PayrollController extends BaseController
                     'thirteenth_month_pay' => 0
                 ]
             );
+
 
             if ($ca) {
 

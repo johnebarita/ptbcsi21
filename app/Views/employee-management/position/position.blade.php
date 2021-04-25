@@ -27,25 +27,34 @@
                         </thead>
                         <tbody>
                         @foreach ($positions as $position)
-                        <tr>
-                            <td>{{$position->position}}</td>
-                            <td>{{$position->rate}}</td>
-                            <td data-id="{{$position->schedule->id}}">{{ \Carbon\Carbon::createFromFormat('G:i', $position->schedule->time_in)->format('h:i A') . ' - ' .
-                            \Carbon\Carbon::createFromFormat('G:i', $position->schedule->time_out)->format('h:i A')}}
-                            </td>
-                            <td>
-                                <div class="flex">
-                                    <a href="#" data-id="{{$position->id}}" title="test"
-                                       class="btn btn-success btn-circle btn-sm m-auto edit_position">
-                                        <i class="fas fa-pen"></i>
-                                    </a>
-                                    <a href="#" data-id="{{$position->id}}"
-                                       class="btn btn-danger btn-circle btn-sm m-auto delete_position">
-                                        <i class="fas fa-trash fa-sm"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>{{$position->position}}</td>
+                                <td>{{$position->rate}}</td>
+                                <td data-id="{{$position->schedule->id}}">{{ \Carbon\Carbon::createFromFormat('G:i', $position->schedule->morning_in)->format('h:i A') . ' - ' .
+                            \Carbon\Carbon::createFromFormat('G:i', $position->schedule->afternoon_out)->format('h:i A')}}
+                                    (<span>
+                                        @foreach(explode(',',$position->schedule->working_days) as $key=>$day)
+                                            <?php $first = new \Carbon\Carbon('first Monday of January');?>
+                                            {{$first->addDays($day)->format('D')}}
+                                            @if($key<count(explode(',',$position->schedule->working_days))-1)
+                                                {{',  '}}
+                                            @endif
+                                        @endforeach
+                                    </span>)
+                                </td>
+                                <td>
+                                    <div class="flex">
+                                        <a href="#" data-id="{{$position->id}}" title="test"
+                                           class="btn btn-success btn-circle btn-sm m-auto edit_position">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                        <a href="#" data-id="{{$position->id}}"
+                                           class="btn btn-danger btn-circle btn-sm m-auto delete_position">
+                                            <i class="fas fa-trash fa-sm"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
                         @endforeach
                         </tbody>
                     </table>
@@ -53,8 +62,8 @@
             </div>
         </div>
 
-       @include('employee-management.position.partials.add_position')
-       @include('employee-management.position.partials.edit_position')
-       @include('employee-management.position.partials.delete_position')
+               @include('employee-management.position.partials.add_position')
+{{--               @include('employee-management.position.partials.edit_position')--}}
+{{--               @include('employee-management.position.partials.delete_position')--}}
     </div>
 @endsection

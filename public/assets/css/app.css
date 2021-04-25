@@ -1112,14 +1112,17 @@ pre code {
         flex: 0 0 13%;
         max-width: 13%;
     }
+
     .col-md-14 {
         flex: 0 0 14%;
         max-width: 14%;
     }
+
     .col-md-18 {
         flex: 0 0 18%;
         max-width: 18%;
     }
+
     .col-md-2 {
         flex: 0 0 16.66667%;
         max-width: 16.66667%;
@@ -1129,14 +1132,17 @@ pre code {
         flex: 0 0 25%;
         max-width: 25%;
     }
+
     .col-md-18 {
         flex: 0 0 18%;
         max-width: 18%;
     }
+
     .col-md-19 {
         flex: 0 0 19%;
         max-width: 19%;
     }
+
     .col-md-30 {
         flex: 0 0 30%;
         max-width: 30%;
@@ -10481,6 +10487,7 @@ button.bg-dark:focus {
     font-size: 0.79rem;
     line-height: 1.2rem;
 }
+
 .text-base {
     font-size: 1rem;
     line-height: 1.5rem;
@@ -12246,7 +12253,7 @@ body.sidebar-toggled footer.sticky-footer {
     width: 4rem !important;
 }
 
-.sunday, .sunday input , .sunday input:disabled{
+.sunday, .sunday input, .sunday input:disabled {
     background-color: #FFCCCC !important;
 }
 
@@ -12439,25 +12446,36 @@ body.sidebar-toggled footer.sticky-footer {
     background-image: repeating-linear-gradient(
             135deg, rgba(0, 0, 0, .3), rgba(0, 0, 0, .3) 1px, transparent 2px, transparent 2px, rgba(0, 0, 0, .3) 3px);
 }
-.border-dashed{
-    border:1px dashed gray;
+
+.border-dashed {
+    border: 1px dashed gray;
 }
 
-.border-bottom-dashed{
-   border-bottom: 1px dashed gray;
+.border-bottom-dashed {
+    border-bottom: 1px dashed gray;
 }
 
-.dtr-flag{
+.dtr-flag {
     background-color: #f2552c !important;
     color: #FFFFFF !important;
 }
 
-.dtr-table input:disabled{
-    background-color:#ffffff ;
+.dtr-table input:disabled {
+    background-color: #ffffff;
 }
 
-.on-top{
+.on-top {
     z-index: 160 !important;
+}
+
+#view_employee input[type=text]:disabled,
+#view_employee input[type=number]:disabled,
+#view_employee input[type=date]:disabled,
+#view_employee input[type=time]:disabled,
+#view_employee input[type=tel]:disabled,
+#view_employee input[type=email]:disabled,
+#view_employee select:disabled {
+    background: #ffffff;
 }
 
 

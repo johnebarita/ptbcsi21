@@ -83,6 +83,10 @@ $routes->group('calendar',function ($routes){
 $routes->group('employee',function ($routes){
     $routes->get('', 'EmployeeController::index',['as' => 'employee.index']);
     $routes->post('create', 'EmployeeController::create',['as' => 'employee.create']);
+    $routes->post('update', 'EmployeeController::update',['as' => 'employee.update']);
+    $routes->post('delete', 'EmployeeController::delete',['as' => 'employee.delete']);
+    $routes->post('restore', 'EmployeeController::restore',['as' => 'employee.restore']);
+    $routes->get('get/(:any)','EmployeeController::get/$1');
 });
 
 $routes->group('position',function ($routes){

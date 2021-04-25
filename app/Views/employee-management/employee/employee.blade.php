@@ -46,15 +46,26 @@
                                 <td>{{\Carbon\Carbon::now()->format('Y-m-d')}}</td>
                                 <td>
                                     <div class="flex">
-                                        <a href="#" class="btn btn-primary btn-circle btn-sm m-auto">
+                                        <a href="#" class="btn btn-primary btn-circle btn-sm m-auto view_employee"
+                                           data-id="{{$employee->id}}">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="#" class="btn btn-success btn-circle btn-sm m-auto">
+
+                                        <a href="#" class="btn btn-success btn-circle btn-sm m-auto edit_employee"
+                                           data-id="{{$employee->id}}">
                                             <i class="fas fa-pen"></i>
                                         </a>
-                                        <a href="#" class="btn btn-danger btn-circle btn-sm m-auto">
-                                            <i class="fas fa-trash fa-sm"></i>
-                                        </a>
+                                        @if($employee->trashed())
+                                            <a href="#" class="btn btn-warning btn-circle btn-sm m-auto restore_employee"
+                                               data-id="{{$employee->id}}">
+                                                <i class="fas fa-trash-restore"></i>
+                                            </a>
+                                        @else
+                                            <a href="#" class="btn btn-danger btn-circle btn-sm m-auto delete_employee"
+                                               data-id="{{$employee->id}}">
+                                                <i class="fas fa-trash fa-sm"></i>
+                                            </a>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -65,5 +76,9 @@
             </div>
         </div>
         @include('employee-management.employee.partials.add_employee')
+        @include('employee-management.employee.partials.view_employee')
+        @include('employee-management.employee.partials.edit_employee')
+        @include('employee-management.employee.partials.delete_employee')
+        @include('employee-management.employee.partials.restore_employee')
     </div>
 @endsection

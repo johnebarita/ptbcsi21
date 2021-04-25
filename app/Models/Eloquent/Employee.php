@@ -8,12 +8,13 @@
 
 namespace App\Models\Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 
 class Employee extends Model
 {
-
+    use SoftDeletes;
     protected $guarded = [];
 
     public function position(){
@@ -36,4 +37,7 @@ class Employee extends Model
         return $this->hasMany(CashAdvance::class);
     }
 
+    public function schedule(){
+        return $this->belongsTo(Schedule::class);
+    }
 }

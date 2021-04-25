@@ -85,7 +85,7 @@ class DtrController extends BaseController
             }
         }
 //        $status = $payroll->save();
-//        $key = ($status ? "success" : "danger");
+//        $key = ($status ? "success" : "danger");e
 //        $message = ($status ? "Schedule updated successfully!" : "Opps! There is an error while updating the schedule.");
         $this->session->setFlashdata('half', $_POST['half']);
         $this->session->setFlashdata('month', $_POST['month']);

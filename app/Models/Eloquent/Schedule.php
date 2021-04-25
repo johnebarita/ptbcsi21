@@ -19,7 +19,7 @@ class Schedule extends Model
         return $this->hasMany(Position::class);
     }
 
-    public function course(){
-        return $this->hasOne(Course::class);
+    public function employee(){
+        return $this->hasMany(Employee::class);
     }
 }

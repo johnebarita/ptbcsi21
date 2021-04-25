@@ -27,12 +27,26 @@
  <?php $__currentLoopData = $schedules; $this->addLoop($__currentLoopData);$this->getFirstLoop();
  foreach($__currentLoopData as $schedule): $loop = $this->incrementLoopIndices();  ?>
  <option value=<?php echo \htmlentities($schedule->id, ENT_QUOTES, 'UTF-8', false); ?>>
- <?php echo \htmlentities(\Carbon\Carbon::createFromFormat('G:i', $schedule->time_in)->format('h:i A').' - '.
- \Carbon\Carbon::createFromFormat('G:i', $schedule->time_out)->format('h:i A'), ENT_QUOTES, 'UTF-8', false); ?>
+ <?php echo \htmlentities(\Carbon\Carbon::createFromFormat('G:i', $schedule->morning_in)->format('h:i A').' - '.
+ \Carbon\Carbon::createFromFormat('G:i', $schedule->afternoon_out)->format('h:i A'), ENT_QUOTES, 'UTF-8', false); ?>
 
  </option>
  <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
  </select>
+ </div>
+ <div>
+ <label for="afternoon_out">Working Days</label>
+ <div class="ml-2">
+
+ <?php $__currentLoopData = range(0,6); $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $number): $loop = $this->incrementLoopIndices();  ?>
+ <?php $first = new \Carbon\Carbon('first Monday of January');?>
+ <div class="form-check">
+ <input type="checkbox" class="form-check-input" id="add_<?php echo \htmlentities($number, ENT_QUOTES, 'UTF-8', false); ?>-day" <?php echo \htmlentities($number<6?'checked':'', ENT_QUOTES, 'UTF-8', false); ?> value="<?php echo \htmlentities($number, ENT_QUOTES, 'UTF-8', false); ?>" name="working_days[]">
+ <label class="form-check-label" for="<?php echo \htmlentities($number, ENT_QUOTES, 'UTF-8', false); ?>-day"><?php echo \htmlentities($first->addDays($number)->format('l'), ENT_QUOTES, 'UTF-8', false); ?></label>
+ </div>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </div>
  </div>
  <div class="modal-footer mt-5">
  <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>

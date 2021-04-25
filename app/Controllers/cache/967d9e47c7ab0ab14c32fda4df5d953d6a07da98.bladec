@@ -704,7 +704,6 @@
  return Math.abs(Math.round(diff * 100) / 100);
  }
 
-
  $('#payroll-table').stickyTable({
  copyTableClass: true,
  overflowy: true
@@ -889,6 +888,146 @@
  }
  });
 
+ });
+
+ $('.view_employee').on('click',function () {
+ $('#view_employee').modal('show');
+ var id = $(this).data('id');
+ $.ajax({
+ url: "employee/get/" + id, success: function (result) {
+ var employee = JSON.parse(result);
+
+ $('#view_employee #view_firstname').val(employee.firstname);
+ $('#view_employee #view_middle').val(employee.middle);
+ $('#view_employee #view_lastname').val(employee.lastname);
+ $('#view_employee .sex-radio').each(function () {
+ if ($(this).val() == employee.gender) {
+ $(this).prop('checked', true);
+ } else {
+ $(this).prop('disabled', true);
+ }
+ });
+ $('#view_employee #view_birth_date').val(employee.birth_date);
+ $('#view_employee #view_marital_status_id').val(employee.marital_status_id);
+ $('#view_employee #view_address').val(employee.address);
+ $('#view_employee #view_mobile_no').val(employee.mobile_no);
+ $('#view_employee #view_tel_no').val(employee.tel_no);
+ $('#view_employee #view_email').val(employee.email);
+ $('#view_employee #view_contact_person').val(employee.contact_person);
+ $('#view_employee #view_contact_person_no').val(employee.contact_person_no);
+ $('#view_employee #view_date_hired').val(employee.date_hired);
+ $('#view_employee #view_bank_name').val(employee.bank_name);
+ $('#view_employee #view_tin_no').val(employee.tin_no);
+ $('#view_employee #view_philhealth_no').val(employee.philhealth_no);
+ $('#view_employee #view_sss_no').val(employee.sss_no);
+ $('#view_employee #view_pagibig_no').val(employee.pagibig_no);
+ $('#view_employee #view_is_active').val(employee.is_active);
+ $('#view_employee #view_position_id').val(employee.position_id);
+ $('#view_employee #view_monthly_pay').val(employee.monthly_pay);
+ if (employee.schedule == null) {
+ $('#view_employee #view_morning_in').val(employee.position.schedule.morning_in);
+ $('#view_employee #view_morning_out').val(employee.position.schedule.morning_out);
+ $('#view_employee #view_afternoon_in').val(employee.position.schedule.afternoon_in);
+ $('#view_employee #view_afternoon_out').val(employee.position.schedule.afternoon_out);
+ $('#view_employee .working_days').each(function (index) {
+ if (employee.position.schedule.working_days.includes(index)) {
+ $(this).prop("checked", true);
+ }
+ });
+ } else {
+ $('#view_employee #view_morning_in').val(employee.schedule.morning_in);
+ $('#view_employee #view_morning_out').val(employee.schedule.morning_out);
+ $('#view_employee #view_afternoon_in').val(employee.schedule.afternoon_in);
+ $('#view_employee #view_afternoon_out').val(employee.schedule.afternoon_out);
+ $('#view_employee .working_days').each(function (index) {
+ if (employee.schedule.working_days.includes(index)) {
+ $(this).prop("checked", true);
+ }
+ });
+ }
+ $('#view_employee #view_is_fixed_salary').val(employee.is_fixed_salary);
+ $('#view_employee #view_can_ot').val(employee.can_ot);
+ $('#view_employee #view_transportation_allowance').val(employee.transportation_allowance);
+ $('#view_employee #view_internet_allowance').val(employee.internet_allowance);
+ $('#view_employee #view_meal_allowance').val(employee.meal_allowance);
+ $('#view_employee #view_phone_allowance').val(employee.phone_allowance);
+ }
+ });
+ });
+
+ $('.edit_employee').on('click',function () {
+ $('#edit_employee').modal('show');
+ var id = $(this).data('id');
+ $.ajax({
+ url: "employee/get/" + id, success: function (result) {
+ var employee = JSON.parse(result);
+ $('#edit_id').val(employee.id);
+ $('#edit_employee #edit_firstname').val(employee.firstname);
+ $('#edit_employee #edit_middle').val(employee.middle);
+ $('#edit_employee #edit_lastname').val(employee.lastname);
+ $('#edit_employee .sex-radio').each(function () {
+ if($(this).val()==employee.gender){
+ $(this).prop('checked',true);
+ }
+ });
+ $('#edit_employee #edit_birth_date').val(employee.birth_date);
+ $('#edit_employee #edit_marital_status_id').val(employee.marital_status_id);
+ $('#edit_employee #edit_address').val(employee.address);
+ $('#edit_employee #edit_mobile_no').val(employee.mobile_no);
+ $('#edit_employee #edit_tel_no').val(employee.tel_no);
+ $('#edit_employee #edit_email').val(employee.email);
+ $('#edit_employee #edit_contact_person').val(employee.contact_person);
+ $('#edit_employee #edit_contact_person_no').val(employee.contact_person_no);
+ $('#edit_employee #edit_date_hired').val(employee.date_hired);
+ $('#edit_employee #edit_bank_name').val(employee.bank_name);
+ $('#edit_employee #edit_tin_no').val(employee.tin_no);
+ $('#edit_employee #edit_philhealth_no').val(employee.philhealth_no);
+ $('#edit_employee #edit_sss_no').val(employee.sss_no);
+ $('#edit_employee #edit_pagibig_no').val(employee.pagibig_no);
+ $('#edit_employee #edit_is_active').val(employee.is_active);
+ $('#edit_employee #edit_position_id').val(employee.position_id);
+ $('#edit_employee #edit_monthly_pay').val(employee.monthly_pay);
+ if(employee.schedule==null){
+ $('#edit_employee #edit_morning_in').val(employee.position.schedule.morning_in);
+ $('#edit_employee #edit_morning_out').val(employee.position.schedule.morning_out);
+ $('#edit_employee #edit_afternoon_in').val(employee.position.schedule.afternoon_in);
+ $('#edit_employee #edit_afternoon_out').val(employee.position.schedule.afternoon_out);
+ $('#edit_employee .working_days').each(function (index) {
+ if (employee.position.schedule.working_days.includes(index)) {
+ $(this).prop("checked",true);
+ }
+ });
+ }else{
+ $('#edit_employee #edit_morning_in').val(employee.schedule.morning_in);
+ $('#edit_employee #edit_morning_out').val(employee.schedule.morning_out);
+ $('#edit_employee #edit_afternoon_in').val(employee.schedule.afternoon_in);
+ $('#edit_employee #edit_afternoon_out').val(employee.schedule.afternoon_out);
+ $('#edit_employee .working_days').each(function (index) {
+ if (employee.schedule.working_days.includes(index)) {
+ $(this).prop("checked",true);
+ }
+ });
+ }
+ $('#edit_employee #edit_is_fixed_salary').val(employee.is_fixed_salary);
+ $('#edit_employee #edit_can_ot').val(employee.can_ot);
+ $('#edit_employee #edit_transportation_allowance').val(employee.transportation_allowance);
+ $('#edit_employee #edit_internet_allowance').val(employee.internet_allowance);
+ $('#edit_employee #edit_meal_allowance').val(employee.meal_allowance);
+ $('#edit_employee #edit_phone_allowance').val(employee.phone_allowance);
+ }
+ });
+ });
+
+ $('.delete_employee').on('click',function () {
+ $('#delete_employee').modal('show');
+ var id = $(this).data('id');
+ $('#delete_employee #delete_id').val(id);
+ });
+
+ $('.restore_employee').on('click',function () {
+ $('#restore_employee').modal('show');
+ var id = $(this).data('id');
+ $('#restore_employee #restore_id').val(id);
  });
  })(jQuery);
 </script>

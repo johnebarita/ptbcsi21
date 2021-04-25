@@ -31,9 +31,21 @@
  <tr>
  <td><?php echo \htmlentities($position->position, ENT_QUOTES, 'UTF-8', false); ?></td>
  <td><?php echo \htmlentities($position->rate, ENT_QUOTES, 'UTF-8', false); ?></td>
- <td data-id="<?php echo \htmlentities($position->schedule->id, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(\Carbon\Carbon::createFromFormat('G:i', $position->schedule->time_in)->format('h:i A') . ' - ' .
- \Carbon\Carbon::createFromFormat('G:i', $position->schedule->time_out)->format('h:i A'), ENT_QUOTES, 'UTF-8', false); ?>
+ <td data-id="<?php echo \htmlentities($position->schedule->id, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(\Carbon\Carbon::createFromFormat('G:i', $position->schedule->morning_in)->format('h:i A') . ' - ' .
+ \Carbon\Carbon::createFromFormat('G:i', $position->schedule->afternoon_out)->format('h:i A'), ENT_QUOTES, 'UTF-8', false); ?>
 
+ (<span>
+ <?php $__currentLoopData = explode(',',$position->schedule->working_days); $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $key=>$day): $loop = $this->incrementLoopIndices();  ?>
+ <?php $first = new \Carbon\Carbon('first Monday of January');?>
+ <?php echo \htmlentities($first->addDays($day)->format('D'), ENT_QUOTES, 'UTF-8', false); ?>
+
+ <?php if($key<count(explode(',',$position->schedule->working_days))-1): ?>
+ <?php echo \htmlentities(',  ', ENT_QUOTES, 'UTF-8', false); ?>
+
+ <?php endif; ?>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </span>)
  </td>
  <td>
  <div class="flex">
@@ -56,8 +68,8 @@
  </div>
 
  <?php echo $this->runChild('employee-management.position.partials.add_position'); ?>
- <?php echo $this->runChild('employee-management.position.partials.edit_position'); ?>
- <?php echo $this->runChild('employee-management.position.partials.delete_position'); ?>
+<?php /*               <?php echo $this->runChild('employee-management.position.partials.edit_position'); ?>*/ ?>
+<?php /*               <?php echo $this->runChild('employee-management.position.partials.delete_position'); ?>*/ ?>
  </div>
 <?php $this->stopSection(); ?>
 <?php if (isset($_shouldextend[1])) { echo $this->runChild('layouts.app'); } ?>
