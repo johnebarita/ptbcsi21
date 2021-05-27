@@ -6,7 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\Eloquent\SSSLookup;
 
 
-class SsscontributionController extends BaseController
+class SSSContributionController extends BaseController
 {
     public function index()
     {
