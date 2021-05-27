@@ -113,7 +113,7 @@ $routes->group('cash-advance-detail', function ($routes) {
 });
 
 $routes->group('sss-contribution-table', function ($routes) {
-    $routes->get('', 'SssContributionController::index', ['as' => 'sss-contribution-table.index']);
+    $routes->get('', 'SSSContributionController::index', ['as' => 'sss-contribution-table.index']);
     $routes->post('create', 'SssContributionController::create', ['as' => 'sss-contribution-table.create']);
     $routes->post('update', 'SssContributionController::update', ['as' => 'sss-contribution-table.update']);
     $routes->post('delete', 'SssContributionController::delete', ['as' => 'sss-contribution-table.delete']);
