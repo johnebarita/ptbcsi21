@@ -7,9 +7,6 @@
             <h1 class="h3 mb-0 text-gray-800">Overtime</h1>
         </div>
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
-            </div>
             <div class="card-body">
                 <a href="#" class="btn btn-primary mb-4" data-toggle="modal" data-target="#add_overtime">
                     <span class="text">Add Overtime</span>

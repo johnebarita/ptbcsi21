@@ -1,4 +1,5 @@
-<?php $active=substr(parse_url(current_url())['path'],1)?>
+<?php $active = substr(parse_url(current_url())['path'], 1) ?>
+
 <ul class="navbar-nav bg-gradient-primary sidebar  sidebar-dark accordion " id="accordionSidebar">
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route_to('dashboard.index')}}">
@@ -101,10 +102,23 @@
     </li>
 
     <!-- Nav Item - Deductions -->
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class="fas fa-receipt"></i>
-            <span>Deductions</span></a>
+    <li class="nav-item {{$active=="sss-contribution-table"?'active':
+                        ($active=="late-penalty"?'active':
+                        (($active=="pag-ibig-contribution-table"?'active':'')))}}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#deductionCollapse" aria-expanded="true"
+           aria-controls="deductionCollapse">
+            <i class="fas fa-chart-line"></i>
+            <span>Deduction</span>
+        </a>
+        <div id="deductionCollapse" class="on-top collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Deduction Management:</h6>
+                <a class="collapse-item {{$active=="sss-contribution-table"?'active':''}}" href="{{route_to('sss-contribution-table.index')}}">SSS Contribution</a>
+                <a class="collapse-item {{$active=="pag-ibig-contribution-table"?'active':''}} " href="{{route_to('pag-ibig-contribution-table.index')}}">Pag-ibig Contribution </a>
+                <a class="collapse-item {{$active=="phil-health-contribution-table"?'active':''}} " href="{{route_to('phil-health-contribution-table.index')}}">Philhealth Contribution</a>
+{{--                <a class="collapse-item {{$active=="late-penalty"?'active':''}} " href="{{route_to('late-penalty.index')}}">Late Penalty</a>--}}
+            </div>
+        </div>
     </li>
 
     <!-- Nav Item - Reports Collapse Menu -->

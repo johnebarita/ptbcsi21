@@ -12,6 +12,9 @@
                 <form action="{{ route_to('payroll.update') }}" method="post">
                     @csrf
                     <input type="text" class="form-control" id="id" name="id" value="" hidden>
+                    <input type="text" name="half" value="{{$half}}" hidden>
+                    <input type="text" name="month" value="{{$month}}" hidden>
+                    <input type="text" name="year" value="{{$year}}" hidden>
                     <div class="flex payroll_details_table">
                         <div class="w-50 mr-4 ">
                             <div class="mb-3">
@@ -214,7 +217,7 @@
                                         <td class="text-right">Allowance:</td>
                                         <td><input id="allowance" name="allowance" type="number" step="0.01" class="edit-payroll-num-input"></td>
                                         <td class="text-right">Thirteenth Month:</td>
-                                        <td><input id="" name="input"" type="number" step="0.01" class="edit-payroll-num-input"></td>
+                                        <td><input id="" name="thirteenth_month_pay" type="number" step="0.01" class="edit-payroll-num-input"></td>
                                     </tr>
                                     <tr>
                                         <td class="text-right">Other Income:</td>
@@ -223,13 +226,18 @@
                                     </tr>
                                     </tbody>
                                 </table>
+                                <div>
+                                   <p class="bg-gray-600 text-white p-1 mb-0">Note</p>
+                                    <textarea name="note" id="payroll_note" class="w-100" rows="2"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer mt-5">
+                    <div class="modal-footer mt-1">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
                         <input class="btn btn-primary" type="submit" value="Submit"/>
                     </div>
+
                 </form>
             </div>
         </div>

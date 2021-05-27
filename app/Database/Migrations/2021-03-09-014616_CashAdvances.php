@@ -32,6 +32,12 @@ class CashAdvances extends Migration
             ],
             'balance' => [
                 'type' => 'DOUBLE',
+            ]
+            ,'is_paid' => [
+                'type' => 'tinyint',
+                'constraint' => 1,
+                'null' => 0,
+                'default' => 0
             ],
             'purpose' => [
                 'type' => 'VARCHAR',

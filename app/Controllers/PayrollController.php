@@ -8,23 +8,32 @@ use App\Models\Eloquent\CashAdvance;
 use App\Models\Eloquent\CashAdvanceDetail;
 use App\Models\Eloquent\Employee;
 use App\Models\Eloquent\Holiday;
-use App\Models\Eloquent\Holidays;
 use App\Models\Eloquent\Leave;
+use App\Models\Eloquent\Note;
 use App\Models\Eloquent\Payroll;
 use App\Models\Eloquent\Position;
 use App\Models\Eloquent\Schedule;
 use App\Models\Eloquent\SSSLookup;
+use App\Models\Eloquent\TaxDeduction;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Carbon;
 
 class PayrollController extends BaseController
 {
+    public $half;
+    public $month;
+    public $year;
+
     public function index()
     {
 
-        $half = (isset($_POST['half']) ? $_POST['half'] : (Carbon::now()->format('d') < 15 ? 'A' : 'B'));
-        $month = (isset($_POST['month']) ? $_POST['month'] : Carbon::now()->format('m'));
-        $year = (isset($_POST['year']) ? $_POST['year'] : Carbon::now()->format('Y'));
+//        $payroll = Payroll::find(1);
+//        $payroll->notes()->create(['note'=>'test','employee_id'=>1]);
+//         $note = Note::with('employee')->find(1);
+//        dd($note);
+        $half = (isset($_POST['half']) ? $_POST['half'] : (session()->getFlashdata('half') ?? (Carbon::now()->format('d') < 15 ? 'A' : 'B')));
+        $month = (isset($_POST['month']) ? $_POST['month'] : (session()->getFlashdata('month') ?? Carbon::now()->format('m')));
+        $year = (isset($_POST['year']) ? $_POST['year'] : (session()->getFlashdata('year') ?? Carbon::now()->format('Y')));
         $start = ($half == "A" ? 1 : 16);
         $end = ($half == "A" ? 15 : Carbon::createFromFormat('m-Y', $month . '-2020')->endOfMonth()->format('d'));
         $data['half'] = $half;
@@ -45,26 +54,21 @@ class PayrollController extends BaseController
             $query
                 ->withTrashed()
                 ->with(['payrolls' => function ($q2) use ($s, $e) {
-                $q2->where(['from' => $s, 'to' => $e]);
-            }]);
+                    $q2->where(['from' => $s, 'to' => $e]);
+                }]);
         }])->orderBy('position')->get();
 
-//        foreach ($positions as $position){
-//            foreach ($position->employees as $employee){
-//                d($employee->payrolls->first());
-//            }
-//        }
-//        dd();
 
         $data['positions'] = $positions;
         $data['test'] = 'test';
-//        return view('template\template', $data);
         return $this->blade->run('payroll.payroll', $data);
     }
 
     public function get($id)
     {
-        return json_encode(Payroll::with('employee.position')->find($id)->toArray());
+        return json_encode(Payroll::with(['employee' => function ($query) {
+            $query->withTrashed()->with('position');
+        }])->find($id)->toArray());
     }
 
     private function calculate_payroll($start, $end, $half)
@@ -74,7 +78,6 @@ class PayrollController extends BaseController
             $query2->whereBetween('date', [$start, $end])->get();
         }])->get();
 
-        $holidays = Holiday::with('holiday_type')->whereBetween('start', [$start, $end])->get();
         $period = CarbonPeriod::create($start, $end);
         $now = Carbon::now()->format('Y-m-d');
 
@@ -114,7 +117,7 @@ class PayrollController extends BaseController
             $total_holiday_pay = 0;
             $other_income = 0;
             $with_tax = 0;
-            $cash_advance = ($ca ? ($ca->repayment > $ca->balance ? $ca->balance : $ca->repayment) : 0);
+            $cash_advance = ($ca && Carbon::parse($ca->from) <= Carbon::parse($end) ? ($ca->repayment > $ca->balance ? $ca->balance : $ca->repayment) : 0);
             $sss = 0;
             $hdmf = 0;
             $phi = 0;
@@ -128,15 +131,18 @@ class PayrollController extends BaseController
                 $day = $date->format('D');
                 $time_sheet = $employee->time_sheets->where('date', '=', Carbon::parse($d))->first();
                 $leave = Leave::where('employee_id', $employee->id)->whereRaw('? between request_start and request_end', [$d])->where('status', 'accepted')->first();
+                $holidays = Holiday::whereRaw('? between start and end', [$d])->get();
+
+
                 //TODO Check if employee has time_sheet data for this day ;
                 if ($leave) {
                     $dtr_time += 8;
                 } elseif ($time_sheet) {
                     //TODO Check if holiday before proceeding;
-                    $holidays_today = $holidays->where('start', '=', $d);
-                    if (count($holidays_today) > 0) {
+
+                    if (count($holidays) > 0) {
                         //TODO Count holiday for double pay
-                        if (count($holidays_today) > 1) {
+                        if (count($holidays) > 1) {
                             if ($day == 'Sun') {
                                 $rd_double_pre += (double)$time_sheet->pre;
                                 $rd_double_ot += (double)$time_sheet->ot;
@@ -145,9 +151,8 @@ class PayrollController extends BaseController
                                 $nd_double_ot += (double)$time_sheet->ot;
                             }
                         } else {
-                            //TODO Segregate according to holiday type
-                            $holiday = $holidays_today->first();
-                            if ($holiday->holiday_type->name == "Regular") {
+//                            //TODO Segregate according to holiday type
+                            if ($holidays[0]->type == "Regular") {
                                 if ($day == 'Sun') {
                                     $rd_regular_pre += (double)$time_sheet->pre;
                                     $rd_regular_ot += (double)$time_sheet->ot;
@@ -174,6 +179,8 @@ class PayrollController extends BaseController
                         }
                     }
                     $dtr_time += (double)$time_sheet->pre;
+
+
                     $late += (double)$time_sheet->late;
                     $total_ot += (double)$time_sheet->ot;
                 } elseif ($day != 'Sun' && $now > $d) {
@@ -184,23 +191,29 @@ class PayrollController extends BaseController
 
 
             $absent_pay = $absent * $daily_rate;
+
             $late_pay = ($daily_rate / 480) * $late;
+
             $basic_salary -= $absent_pay + $late_pay;
+
             $normal_ot_pay = (($daily_rate / 8) * $normal_ot) * 1.25;
             $rd_sunday_ot_pay = (($daily_rate / 8) * $rd_sunday_ot) * 1.69;
             $rd_regular_ot_pay = (($daily_rate / 8) * $rd_regular_ot) * 3.38;
             $rd_double_ot_pay = (($daily_rate / 8) * $rd_double_ot) * 5.07;
             $rd_special_ot_pay = (($daily_rate / 8) * $rd_special_ot) * 1.95;
+
             $rd_sunday_pre_pay = (($daily_rate / 8) * 1.3) * $rd_sunday_pre;
             $rd_regular_pre_pay = (($daily_rate / 8) * 2.6) * $rd_regular_pre;
             $rd_double_pre_pay = (($daily_rate / 8) * 3.0) * $rd_double_pre;
             $rd_special_pre_pay = (($daily_rate / 8) * 1.5) * $rd_special_pre;
+
             $nd_regular_ot_pay = (($daily_rate / 8) * $nd_regular_ot) * 2.6;
             $nd_double_ot_pay = (($daily_rate / 8) * $nd_double_ot) * 3.9;
             $nd_special_ot_pay = (($daily_rate / 8) * $nd_special_ot) * 1.69;
-            $nd_regular_pre_pay = (($daily_rate / 8) * 2.0) * $nd_regular_pre;
-            $nd_double_pre_pay = (($daily_rate / 8) * 3.0) * $nd_double_pre;
-            $nd_special_pre_pay = (($daily_rate / 8) * 1.3) * $nd_special_pre;
+
+            $nd_regular_pre_pay = $nd_regular_pre != 0 ? ((($daily_rate / 8) * 2.0) * $nd_regular_pre) - $daily_rate : 0;
+            $nd_double_pre_pay = $nd_double_pre != 0 ? ((($daily_rate / 8) * 3.0) * $nd_double_pre) - $daily_rate : 0;
+            $nd_special_pre_pay = $nd_special_pre != 0 ? ((($daily_rate / 8) * 1.3) * $nd_special_pre) - $daily_rate : 0;
 
             $total_ot_pay = $normal_ot_pay + $rd_sunday_ot_pay + $rd_regular_ot_pay + $rd_double_ot_pay + $rd_special_ot_pay + $nd_regular_ot_pay + $nd_double_ot_pay + $nd_special_ot_pay;
             $total_holiday_pay = $rd_sunday_pre_pay + $rd_regular_pre_pay + $rd_double_pre_pay + $rd_special_pre_pay + $nd_regular_pre_pay + $nd_double_pre_pay + $nd_special_pre_pay;
@@ -209,24 +222,25 @@ class PayrollController extends BaseController
             $gross_pay = $basic_salary + $employee->total_allowance + $rd_sunday_pre_pay + $rd_regular_pre_pay + $rd_double_pre_pay + $rd_special_pre_pay;
             $gross_pay += $nd_regular_pre_pay + $nd_double_pre_pay + $nd_special_pre_pay;
             $gross_pay += $other_income;
+
             if ($employee->can_ot == 1) {
                 $gross_pay += $normal_ot_pay + $rd_sunday_ot_pay + $rd_regular_ot_pay + $rd_double_ot_pay + $rd_special_ot_pay +
                     $nd_regular_ot_pay + $nd_double_ot_pay + $nd_special_ot_pay;
             }
 
-            //0.073669 (2018)
-            //.080 (2019 to present);
             if (!empty($employee->sss_no)) {
                 $sss_lookup = SSSLookup::where('from', '<=', $employee->monthly_pay)->where('to', '>=', $employee->monthly_pay)->first();
                 $sss = $sss_lookup->ss_ee / 2;
             }
             if (!empty($employee->pagibig_no)) {
-                $hdmf = ($employee->monthly_pay * .02) / 2;
+                $pagibig_lookup = TaxDeduction::where('from', Carbon::now()->startOfYear())->where('type', 'pag-ibig')->whereRaw('? between lowest and highest', [$employee->monthly_pay])->first();
+
+                $hdmf = ($employee->monthly_pay * ($pagibig_lookup->employee_share / 100)) / 2;
             }
             if (!empty($employee->philhealth_no)) {
-                $phi = ($employee->monthly_pay * .03) / 4;
+                $philhealth_lookup = TaxDeduction::where('from', Carbon::now()->startOfYear())->where('type', 'philhealth')->whereRaw('? between lowest and highest', [$employee->monthly_pay])->first();
+                $phi = ($employee->monthly_pay * ($philhealth_lookup->employee_share / 100)) / 2;
             }
-
 
             $total_deduction = $with_tax + $phi + $sss + $hdmf + $cash_advance + $sss_loan + $hdmf_loan + $other_deduction;
             $net_pay = $gross_pay - $total_deduction;
@@ -288,8 +302,7 @@ class PayrollController extends BaseController
                 ]
             );
 
-
-            if ($ca) {
+            if ($ca && Carbon::parse($ca->from) <= Carbon::parse($end)) {
 
                 $ca_detail = CashAdvanceDetail::updateOrCreate([
                     'cash_advance_id' => $ca->id,
@@ -307,12 +320,15 @@ class PayrollController extends BaseController
                     $ca->save();
                 }
             }
-
         }
     }
 
     public function update()
     {
+        session()->setFlashdata('half', $_POST['half']);
+        session()->setFlashdata('month', $_POST['month']);
+        session()->setFlashdata('year', $_POST['year']);
+
         $payroll = Payroll::find($_POST['id']);
         $payroll->late = $_POST['late'];
         $payroll->with_tax = $_POST['with_tax'];
@@ -343,6 +359,11 @@ class PayrollController extends BaseController
         $payroll->other_income = $_POST['other_income'];
         $payroll->edited = true;
         $status = $payroll->save();
+
+        if (strlen(trim($_POST['note'])) != 0) {
+            $payroll->notes()->create(['note' => trim($_POST['note']), 'employee_id' => 1]);
+        }
+
         $key = ($status ? "success" : "danger");
         $message = ($status ? "Schedule updated successfully!" : "Opps! There is an error while updating the schedule.");
         return redirect()->route('payroll.index')->with('status', ['key' => $key, 'message' => $message]);

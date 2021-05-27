@@ -12353,7 +12353,13 @@ body.sidebar-toggled footer.sticky-footer {
     background-color: #ff52524d !important;
 }
 
-.payroll-table tr:hover, .sticky-col tr:hover {
+.payroll-table tr:hover, .sticky-col th:hover {
+    /*background-color: #ffae42 !important;*/
+    background-color: #f1f0f0;
+
+}
+
+.payroll-selected th, .payroll-selected td {
     background-color: #ffae42 !important;
 }
 
@@ -12488,4 +12494,44 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
     -moz-appearance: textfield;
+}
+
+.sss-contribution-table th {
+    padding: 0.25rem !important;
+    background-color: #4e73df !important;
+    /*font-size: 15px;*/
+    color: #FFFFFF !important;
+    font-weight: 400 !important;
+    text-align: center;
+}
+
+.sss-contribution-table td {
+    text-align: right;
+    padding-right: 1rem !important;
+    padding-left: 2rem !important;
+}
+
+.sss-contribution-table tr:hover {
+    background-color: #ffae42 !important;
+}
+
+.pag-ibig-contribution-table th {
+    padding: 0.25rem !important;
+    background-color: #4e73df !important;
+    /*font-size: 15px;*/
+    color: #FFFFFF !important;
+    font-weight: 400 !important;
+    text-align: center;
+}
+
+.pag-ibig-contribution-table td {
+    text-align: center;
+}
+
+/*.pag-ibig-contribution-table tr:hover {*/
+/*    background-color: #ffae42 !important;*/
+/*}*/
+
+.w-ten {
+    width: 10% !important;
 }

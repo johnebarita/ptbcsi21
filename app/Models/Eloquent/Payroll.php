@@ -18,6 +18,11 @@ class Payroll extends Model
         return  $this->belongsTo(Employee::class);
     }
 
+    public function notes()
+    {
+        return $this->morphMany(Note::class, 'noteable')->orderBy('created_at','desc');
+    }
+
     public function cash_advance_details(){
         return $this->hasMany(CashAdvanceDetail::class);
     }

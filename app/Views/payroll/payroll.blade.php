@@ -7,9 +7,6 @@
         </div>
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
-            </div>
             <div class="card-body">
                 <div>
                     <div class="flex select-md">
@@ -121,9 +118,10 @@
                             $hdmf = 0;
                             $total_deductions = 0;
                             $total_pay = 0;
+                            $row_index=0;
                             ?>
                             @foreach ($positions as $position)
-                                <tr class="text-left">
+                                <tr class="text-left " data-id="{{$row_index++}}">
                                     <th colspan="46"
                                         class="bg-position">
                                         <i class="fas fa-users fa-sm"></i>
@@ -135,7 +133,7 @@
                                     $can_ot = "strikethrough";
 
                                     ?>
-                                    <tr class="{{ ($employee->is_fixed_salary == 1 ? 'fixed-salary' : '') }} {{$payroll->edited?'edited-salary':''}}">
+                                    <tr class="payroll-row {{ ($employee->is_fixed_salary == 1 ? 'fixed-salary' : '') }} {{$payroll->edited?'edited-salary':''}}"  data-id="{{$row_index++}}">
                                         <th>{{ $count++}}</th>
                                         <th>{{ strtoupper($employee->lastname . ' ' . $employee->firstname)}}
                                             <span class="font-italic font-weight-lighter">{{ ($employee->is_fixed_salary == 1 ? '(Fixed-salary)' : '') }}</span>
@@ -163,11 +161,11 @@
                                         <td>{{ ($payroll->rd_special_pay != 0 ? number_format($payroll->rd_special_pay,2) : '')}}</td>
                                         <td>{{ ($payroll->rd_double_pay != 0 ? number_format($payroll->rd_double_pay,2) : '')}}</td>
                                         <td class="{{ $can_ot }}">{{ ($payroll->nd_regular_ot != 0 ? $payroll->nd_regular_ot : '')}}</td>
-                                        <td class="{{ $can_ot }}">{{ ($payroll->nd_regular_pay != 0 ? number_format($payroll->nd_regular_pay,2) : '')}}</td>
+                                        <td class="{{ $can_ot }}">{{ ($payroll->nd_regular_ot_pay != 0 ? number_format($payroll->nd_regular_ot_pay,2) : '')}}</td>
                                         <td class="{{ $can_ot }}">{{ ($payroll->nd_special_ot != 0 ? $payroll->nd_special_ot : '')}}</td>
-                                        <td class="{{ $can_ot }}">{{ ($payroll->nd_special_pay != 0 ? number_format($payroll->nd_special_pay,2) : '')}}</td>
+                                        <td class="{{ $can_ot }}">{{ ($payroll->nd_special_ot_pay != 0 ? number_format($payroll->nd_special_ot_pay,2) : '')}}</td>
                                         <td class="{{ $can_ot }}">{{ ($payroll->nd_double_ot != 0 ? $payroll->nd_double_ot : '')}}</td>
-                                        <td class="{{ $can_ot }}">{{ ($payroll->nd_double_pay != 0 ? number_format($payroll->nd_double_pay,2) : '')}}</td>
+                                        <td class="{{ $can_ot }}">{{ ($payroll->nd_double_ot_pay != 0 ? number_format($payroll->nd_double_ot_pay,2) : '')}}</td>
                                         <td>{{ ($payroll->nd_regular_pay != 0 ? number_format($payroll->nd_regular_pay,2) : '')}}</td>
                                         <td>{{ ($payroll->nd_special_pay != 0 ? number_format($payroll->nd_special_pay,2) : '')}}</td>
                                         <td>{{ ($payroll->nd_double_pay != 0 ? number_format($payroll->nd_double_pay,2) : '')}}</td>
@@ -191,7 +189,7 @@
                                                    class="btn btn-primary btn-circle btn-sm btn-xs edit_payroll">
                                                     <i class="fas fa-pen fa-xs"></i>
                                                 </a>
-                                                <a href="#"  data-id="{{$payroll->id}}" class="btn btn-primary btn-circle btn-sm btn-xs ">
+                                                <a href="#"  data-id="{{$payroll->id}}" class="btn btn-primary btn-circle btn-sm btn-xs payroll_notes ">
                                                     <i class="fas fa-sticky-note fa-xs"></i>
                                                 </a>
                                                 <a href="#"data-id="{{$payroll->id}}" class="btn btn-primary btn-circle btn-sm btn-xs payslip">
@@ -232,6 +230,7 @@
             </div>
         </div>
         @include('payroll.partials.edit_payroll')
+        @include('payroll.partials.payroll_notes')
         @include('payroll.partials.payslip')
     </div>
 @endsection

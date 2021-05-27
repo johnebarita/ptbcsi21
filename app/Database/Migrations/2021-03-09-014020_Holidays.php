@@ -19,10 +19,9 @@ class Holidays extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 255
             ],
-            'holiday_type_id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
+            'type' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255
             ],
             'start' => [
                 'type' => 'DATETIME',
@@ -34,7 +33,6 @@ class Holidays extends Migration
             'updated_at datetime default current_timestamp on update current_timestamp',
         ]);
         $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('holiday_type_id', 'holiday_types', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('holidays');
     }
 

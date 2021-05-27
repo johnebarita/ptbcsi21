@@ -37,7 +37,6 @@
  <div>
  <label for="afternoon_out">Working Days</label>
  <div class="ml-2">
-
  <?php $__currentLoopData = range(0,6); $this->addLoop($__currentLoopData);$this->getFirstLoop();
  foreach($__currentLoopData as $number): $loop = $this->incrementLoopIndices();  ?>
  <?php $first = new \Carbon\Carbon('first Monday of January');?>

@@ -6,9 +6,6 @@
         </div>
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
-            </div>
             <div class="card-body">
                 <a href="#" class="btn btn-primary mb-4" data-toggle="modal" data-target="#add_cash_advance">
                     <span class="text">Add Cash Advance</span>
@@ -26,14 +23,13 @@
                                 <th>Amount</th>
                                 <th>Repayment</th>
                                 <th>Balance</th>
-                                <th hidden>Purpose</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach ($cash_advances as $cash_advance)
-                                <tr data-id="{{ $cash_advance->id }}"
-                                    data-json='{{$cash_advance->cash_advance_details}}'>
+                                <tr data-id="{{ $cash_advance->id }}">
                                     <td>{{ $cash_advance->request_date }}</td>
                                     <td>{{ strtoupper($cash_advance->employee->lastname . ' ' . $cash_advance->employee->firstname) }}</td>
                                     <td>{{ $cash_advance->employee->position->position }}</td>
@@ -41,7 +37,7 @@
                                     <td>{{ $cash_advance->amount }}</td>
                                     <td>{{ $cash_advance->repayment }}</td>
                                     <td>{{ $cash_advance->balance }}</td>
-                                    <td hidden>{{ $cash_advance->purpose }}</td>
+                                    <td>{{ $cash_advance->paid }}</td>
                                     <td>
                                         <div class="flex">
                                             <a href="#" data-id="{{ $cash_advance->id }}"

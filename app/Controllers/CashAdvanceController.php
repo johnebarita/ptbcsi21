@@ -31,7 +31,7 @@ class CashAdvanceController extends BaseController
                 'request_date'=>$_POST['request_date'],
                 'amount'=>$_POST['amount'],
                 'repayment'=>$_POST['repayment'],
-                'balance'=>$_POST['repayment'],
+                'balance'=>$_POST['amount'],
                 'purpose'=>$_POST['purpose']
             ]
         );
@@ -51,4 +51,6 @@ class CashAdvanceController extends BaseController
         $message = ($status?"Cash Advance updated successfully!":"Opps! There is an error while updating the cash advance request.");
         return redirect()->route('cash-advance.index')->with('status',['key'=>$key,'message'=>$message]);
     }
+
+
 }

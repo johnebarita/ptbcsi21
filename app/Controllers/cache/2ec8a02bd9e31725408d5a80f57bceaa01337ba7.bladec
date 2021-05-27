@@ -1,5 +1,5 @@
 <?php
-use App\Models\Eloquent\Leave;
+use App\Models\Eloquent\Holiday;use App\Models\Eloquent\Leave;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 ?>
@@ -129,9 +129,23 @@ use Carbon\CarbonPeriod;
  $leave = Leave::where('employee_id', $selected_employee)->whereRaw('? between request_start and request_end', [$date])->where('status', 'accepted')->first();
  $time_sheet = (count($time_sheets) ? $time_sheets->where('date', '=', Carbon::parse($date))->first() : null);
 
- $holiday = (count($holidays) ? $holidays->where('start', $date)->first() : null);
+ $holidays = Holiday::whereRaw('? between start and end', [$date])->get();
+
  ?>
- <tr class="<?php echo \htmlentities((($holiday) ? 'holiday' : ($D == "Sun" ? 'sunday' : '')), ENT_QUOTES, 'UTF-8', false); ?>" <?php echo \htmlentities(($holiday) ? 'data-toggle="tooltip" data-placement="top" title="' . $holiday->name . '"' : '', ENT_QUOTES, 'UTF-8', false); ?>>
+ <tr class="<?php echo \htmlentities(((count($holidays)>0) ? 'holiday' : ($D == "Sun" ? 'sunday' : '')), ENT_QUOTES, 'UTF-8', false); ?>"
+ <?php if(count($holidays)==1): ?>
+ data-toggle="tooltip" data-placement="top" title="<?php echo \htmlentities($holidays[0]->name, ENT_QUOTES, 'UTF-8', false); ?>"
+ <?php elseif(count($holidays)>1): ?>
+ <?php
+ $title='';
+ foreach($holidays as $holiday){
+ $title  .= $holiday->name.' , ';
+ }
+ $title =substr( $title,0, -2)
+ ?>
+ data-toggle="tooltip" data-placement="top" title="<?php echo \htmlentities($title, ENT_QUOTES, 'UTF-8', false); ?>"
+ <?php endif; ?>
+ >
  <td class=""><?php echo \htmlentities($d, ENT_QUOTES, 'UTF-8', false); ?></td>
  <td class=""><?php echo \htmlentities($D, ENT_QUOTES, 'UTF-8', false); ?></td>
  <?php if($leave): ?>

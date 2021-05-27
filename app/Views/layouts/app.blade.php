@@ -296,13 +296,13 @@
                 selectable: true,
                 eventLimit: true, // when too many events in a day, show the popover
                 {{--events: [--}}
-                {{--    <?php--}}
-                {{--    if (isset($events)) {--}}
-                {{--        foreach ($events as $event) {--}}
-                {{--            echo $event . ',';--}}
-                {{--        }--}}
-                {{--    }--}}
-                {{--    ?>],--}}
+                        {{--    <?php--}}
+                        {{--    if (isset($events)) {--}}
+                        {{--        foreach ($events as $event) {--}}
+                        {{--            echo $event . ',';--}}
+                        {{--        }--}}
+                        {{--    }--}}
+                        {{--    ?>],--}}
                 dateClick: function (info) {
                     console.log(calendar.getDate().toLocaleString());
                     $('#add_event').modal('show');
@@ -414,7 +414,7 @@
             $('#edit_schedule #edit_afternoon_out').val(convertTo24Hour(data[3]));
             $('#edit_schedule .working_days').each(function (index) {
                 if (working_days.includes(index)) {
-                    $(this).prop("checked",true);
+                    $(this).prop("checked", true);
                 }
             });
 
@@ -481,7 +481,7 @@
             $('#add_employee .working_days').each(function (index) {
                 if (schedule['working_days'].includes(index)) {
                     $(this).prop('checked', true);
-                }else{
+                } else {
                     $(this).prop('checked', false);
                 }
             });
@@ -563,6 +563,14 @@
 
         setInputFilter(document.getElementsByClassName("ca-num-input"), function (value) {
             return /^\d*$/.test(value) && (value === "" || parseInt(value) >= 1);
+        });
+
+        setInputFilter(document.getElementsByClassName("late-h"), function (value) {
+            return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 12);
+        });
+
+        setInputFilter(document.getElementsByClassName("late-m"), function (value) {
+            return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 59);
         });
 
         $('.time_h_input').on('blur', function () {
@@ -652,6 +660,7 @@
             var pre_data = $('.pre_time').map(function () {
                 return $(this).text();
             });
+
             pre_data.each(function (index, item) {
                 if (item.trim() != '') {
                     total_pre += parseFloat(item);
@@ -678,9 +687,9 @@
                 }
             });
 
-            $('#total_pre').text(total_pre);
-            $('#total_ot').text(total_ot);
-            $('#total_late').text(total_late);
+            $('#total_pre').text(total_pre.toFixed(2));
+            $('#total_ot').text(total_ot.toFixed(2));
+            $('#total_late').text(total_late.toFixed(2));
         }
 
         function getTimeDiff(in_h, in_m, out_h, out_m) {
@@ -734,56 +743,57 @@
 
         $('.ca-table tr').each(function () {
             $(this).on('click', function () {
-                var tr = $(this).closest('tr');
-                var ca = tr.children("td").map(function () {
-                    return $(this).text();
-                }).get();
-                var ca_details = $(this).data('json');
-                $('#ca_name').text(ca[1].toUpperCase());
-                -
-                    $('#ca_amount').text(ca[4]);
-                $('#ca_balance').text(ca[6]);
-                $('#ca_purpose').text(ca[7]);
-                $('#ca_request_date').text(ca[0]);
-                $('#ca_repayment').text(ca[5]);
-                $('#ca_paid').text((ca[6] == 0 ? 'Yes' : 'No'));
-                var total_paid = ca[4] - ca[6];
-                console.log(ca_details);
-                if (ca_details.length >= 1) {
-                    $('.ca-details-table tbody tr').remove();
-                    var body = $('.ca-details-table tbody');
-                    var i;
-                    var bal_amount = ca[6];
-                    for (i = 0; i < ca_details.length; i++) {
-                        var tr = document.createElement('tr');
-                        var range = document.createElement('td');
-                        var payrolll_no = document.createElement('td');
-                        var amount = document.createElement('td');
-                        var bal = document.createElement('td');
-                        range.innerHTML = ca_details[i]['payroll_range'];
-                        payrolll_no.innerHTML = ca_details[i]['payroll_id'];
-                        amount.innerHTML = ca_details[i]['amount_paid'];
-                        bal_amount -= ca_details[i]['amount_paid'];
-                        bal.innerHTML = bal_amount;
-                        tr.append(range);
-                        tr.append(payrolll_no);
-                        tr.append(amount);
-                        tr.append(bal);
-                        body.append(tr);
+                var id = $(this).data('id');
+                $.ajax({
+                    url: "cash-advance-detail/get/" + id, success: function (result) {
+                        var ca = JSON.parse(result);
+
+                        $('#ca_name').text(ca.employee.lastname.toUpperCase() + " " + ca.employee.firstname.toUpperCase());
+                        $('#ca_amount').text(ca.amount);
+                        $('#ca_balance').text(ca.balance);
+                        $('#ca_purpose').text(ca.purpose);
+                        $('#ca_request_date').text(ca.request_date);
+                        $('#ca_repayment').text(ca.repayment);
+                        $('#ca_paid').text((ca.balance == 0 ? 'Yes' : 'No'));
+                        var total_paid = ca.amount - ca.balance;
+                        if (ca.cash_advance_details.length >= 1) {
+                            console.log(ca.cash_advance_details);
+                            $('.ca-details-table tbody tr').remove();
+                            var body = $('.ca-details-table tbody');
+                            var bal_amount = ca.amount;
+                            for (var i = 0; i < ca.cash_advance_details.length; i++) {
+                                var tr = document.createElement('tr');
+                                var range = document.createElement('td');
+                                var payrolll_no = document.createElement('td');
+                                var amount = document.createElement('td');
+                                var bal = document.createElement('td');
+                                range.innerHTML = ca.cash_advance_details[i].payroll_range;
+                                payrolll_no.innerHTML = ca.cash_advance_details[i].payroll_id;
+                                amount.innerHTML = ca.cash_advance_details[i].amount_paid;
+                                bal_amount -= ca.cash_advance_details[i].amount_paid;
+                                bal.innerHTML = bal_amount;
+                                tr.append(range);
+                                tr.append(payrolll_no);
+                                tr.append(amount);
+                                tr.append(bal);
+                                body.append(tr);
+                            }
+                            var tra = document.createElement('tr');
+                            var tp = document.createElement('td');
+                            var tpa = document.createElement('td');
+                            var td = document.createElement('td');
+                            $(tp).attr('colspan', 2);
+                            $(tp).addClass('text-right');
+                            tp.innerHTML = "Total Paid :";
+                            tpa.innerHTML = total_paid;
+                            tra.append(tp);
+                            tra.append(tpa);
+                            tra.append(td);
+                            body.append(tra);
+                        }
                     }
-                    var tra = document.createElement('tr');
-                    var tp = document.createElement('td');
-                    var tpa = document.createElement('td');
-                    var td = document.createElement('td');
-                    $(tp).attr('colspan', 2);
-                    $(tp).addClass('text-right');
-                    tp.innerHTML = "Total Paid :";
-                    tpa.innerHTML = total_paid;
-                    tra.append(tp);
-                    tra.append(tpa);
-                    tra.append(td);
-                    body.append(tra);
-                }
+                });
+
             });
         });
 
@@ -842,12 +852,34 @@
             });
         });
 
+        $('.payroll-row').on('click', function () {
+            $('.payroll-selected').each(function () {
+                $(this).removeClass("payroll-selected");
+            });
+            var index = $(this).data('id');
+
+            var payroll_table = $('.payroll-table tbody').children()[index];
+            $(payroll_table).addClass('payroll-selected');
+
+            var sticky_col = $('.sticky-col tbody').children()[index];
+            $(sticky_col).addClass('payroll-selected');
+
+            var sticky_intersect = $('.sticky-intersect tbody').children()[index];
+            $(sticky_intersect).addClass('payroll-selected');
+
+        });
+
+        $('.payroll_notes').on('click',function () {
+            $('#payroll_notes ').modal('show');
+        });
+
         $('.payslip').on('click', function () {
             $('#payslip').modal('show');
             var id = $(this).data('id');
             $.ajax({
                 url: "payroll/get/" + id, success: function (result) {
                     var payroll = JSON.parse(result);
+
                     // $('#payslip #payslip_title').text(payroll.employee.firstname + " " + payroll.employee.lastname+" Payslip For "+
                     //     date_from.toLocaleString('default', { month: 'long' }) + " "+ date_from.getFullYear() + " "+date_from.getDate()+" - "+date_to.getDate());
 
@@ -880,16 +912,15 @@
                     $('#payslip #cash_advance').text(payroll.cash_advance);
                     $('#payslip #total_deduction').text(payroll.total_deduction);
                     $('#payslip #net_pay').text((payroll.net_pay).toFixed(2));
-                    $('#payslip #payslip_title').text(payroll.employee.firstname + " " + payroll.employee.lastname + " Payslip For " +
+                    $('#payslip #payslip_title').text(payroll.employee.firstname  + " " + payroll.employee.lastname + " Payslip For " +
                         date_from.toLocaleString('default', {month: 'long'}) + " " + date_from.getFullYear() + " " + date_from.getDate() + " - " + date_to.getDate());
 
-                    console.log(payroll);
                 }
             });
 
         });
 
-        $('.view_employee').on('click',function () {
+        $('.view_employee').on('click', function () {
             $('#view_employee').modal('show');
             var id = $(this).data('id');
             $.ajax({
@@ -954,7 +985,7 @@
             });
         });
 
-        $('.edit_employee').on('click',function () {
+        $('.edit_employee').on('click', function () {
             $('#edit_employee').modal('show');
             var id = $(this).data('id');
             $.ajax({
@@ -965,8 +996,8 @@
                     $('#edit_employee #edit_middle').val(employee.middle);
                     $('#edit_employee #edit_lastname').val(employee.lastname);
                     $('#edit_employee .sex-radio').each(function () {
-                        if($(this).val()==employee.gender){
-                            $(this).prop('checked',true);
+                        if ($(this).val() == employee.gender) {
+                            $(this).prop('checked', true);
                         }
                     });
                     $('#edit_employee #edit_birth_date').val(employee.birth_date);
@@ -986,24 +1017,24 @@
                     $('#edit_employee #edit_is_active').val(employee.is_active);
                     $('#edit_employee #edit_position_id').val(employee.position_id);
                     $('#edit_employee #edit_monthly_pay').val(employee.monthly_pay);
-                    if(employee.schedule==null){
+                    if (employee.schedule == null) {
                         $('#edit_employee #edit_morning_in').val(employee.position.schedule.morning_in);
                         $('#edit_employee #edit_morning_out').val(employee.position.schedule.morning_out);
                         $('#edit_employee #edit_afternoon_in').val(employee.position.schedule.afternoon_in);
                         $('#edit_employee #edit_afternoon_out').val(employee.position.schedule.afternoon_out);
                         $('#edit_employee .working_days').each(function (index) {
                             if (employee.position.schedule.working_days.includes(index)) {
-                                $(this).prop("checked",true);
+                                $(this).prop("checked", true);
                             }
                         });
-                    }else{
+                    } else {
                         $('#edit_employee #edit_morning_in').val(employee.schedule.morning_in);
                         $('#edit_employee #edit_morning_out').val(employee.schedule.morning_out);
                         $('#edit_employee #edit_afternoon_in').val(employee.schedule.afternoon_in);
                         $('#edit_employee #edit_afternoon_out').val(employee.schedule.afternoon_out);
                         $('#edit_employee .working_days').each(function (index) {
                             if (employee.schedule.working_days.includes(index)) {
-                                $(this).prop("checked",true);
+                                $(this).prop("checked", true);
                             }
                         });
                     }
@@ -1017,16 +1048,80 @@
             });
         });
 
-        $('.delete_employee').on('click',function () {
+        $('.delete_employee').on('click', function () {
             $('#delete_employee').modal('show');
             var id = $(this).data('id');
             $('#delete_employee #delete_id').val(id);
         });
 
-        $('.restore_employee').on('click',function () {
+        $('.restore_employee').on('click', function () {
             $('#restore_employee').modal('show');
             var id = $(this).data('id');
             $('#restore_employee #restore_id').val(id);
         });
+        $('.ss_input').on('blur', function () {
+            $('#edit_sss_lookup #edit_ss_total').val((parseFloat($('#edit_sss_lookup #edit_ss_er').val()) + parseFloat($('#edit_sss_lookup #edit_ss_ee').val())).toFixed(2));
+            $('#edit_sss_lookup #add_ss_total').val((parseFloat($('#edit_sss_lookup #add_ss_er').val()) + parseFloat($('#edit_sss_lookup #add_ss_ee').val())).toFixed(2));
+        });
+
+        $('.tc_input').on('blur', function () {
+            $('#edit_sss_lookup #edit_tc_total').val((parseFloat($('#edit_sss_lookup #edit_tc_er').val()) + parseFloat($('#edit_sss_lookup #edit_tc_ee').val())).toFixed(2));
+            $('#edit_sss_lookup #add_tc_total').val((parseFloat($('#edit_sss_lookup #add_tc_er').val()) + parseFloat($('#edit_sss_lookup #add_tc_ee').val())).toFixed(2));
+        });
+
+        $('.edit_sss_lookup').on('click', function () {
+            $('#edit_sss_lookup').modal('show');
+            var id = $(this).data('id');
+            var tr = $(this).closest('tr');
+            var data = tr.children("td").map(function () {
+                return $(this).text();
+            }).get();
+
+            $('#edit_sss_lookup #edit_sss_lookup_id').val(id);
+            $('#edit_sss_lookup #edit_from').val(data[0].replace(',', ''));
+            $('#edit_sss_lookup #edit_to').val(data[1].replace(',', ''));
+            $('#edit_sss_lookup #edit_salary_credit').val(data[2].replace(',', ''));
+            $('#edit_sss_lookup #edit_ss_er').val(data[3].replace(',', ''));
+            $('#edit_sss_lookup #edit_ss_ee').val(data[4].replace(',', ''));
+            $('#edit_sss_lookup #edit_ss_total').val(data[5].replace(',', ''));
+            $('#edit_sss_lookup #edit_ec_er').val(data[6].replace(',', ''));
+            $('#edit_sss_lookup #edit_tc_er').val(data[7].replace(',', ''));
+            $('#edit_sss_lookup #edit_tc_ee').val(data[8].replace(',', ''));
+            $('#edit_sss_lookup #edit_tc_total').val(data[9].replace(',', ''));
+        });
+
+        $("#edit_sss_lookup").on("keypress", function (event) {
+            var keyPressed = event.keyCode || event.which;
+            if (keyPressed === 13) {
+                event.preventDefault();
+            }
+        });
+
+        $('.delete_sss_lookup').on('click', function () {
+            $('#delete_sss_lookup').modal('show');
+            $('#delete_sss_lookup #delete_id').val($(this).data('id'));
+        });
+
+        $('.edit_penalty').on('click', function () {
+            $('#edit_late_penalty').modal('show');
+            var id = $(this).data('id');
+            var tr = $(this).closest('tr');
+            var data = tr.children("td").map(function () {
+                return $(this).text();
+            }).get();
+            $('#edit_late_penalty #edit_id').val(id);
+            $('#edit_late_penalty #edit_from_h').val(data[0].split(':')[0]);
+            $('#edit_late_penalty #edit_from_m').val(data[0].split(':')[1]);
+            $('#edit_late_penalty #edit_to_h').val(data[1].split(':')[0]);
+            $('#edit_late_penalty #edit_to_m').val(data[1].split(':')[1]);
+            $('#edit_late_penalty #edit_equivalent_h').val(data[2].split(':')[0]);
+            $('#edit_late_penalty #edit_equivalent_m').val(data[2].split(':')[1]);
+        });
+
+        $('.delete_penalty').on('click', function () {
+            $('#delete_late_penalty').modal('show');
+            $('#delete_late_penalty #delete_id').val($(this).data('id'));
+        });
     })(jQuery);
 </script>
+`

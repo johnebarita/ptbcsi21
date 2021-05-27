@@ -35,7 +35,7 @@ class DtrController extends BaseController
         $data['employees'] = Employee::all();
         $selected = Employee::first();
         $data['time_sheets'] = [];
-        $data['holidays'] = Holiday::with('holiday_type')->whereBetween('start', [$year . '-' . $month . '-' . $start, $year . '-' . $month . '-' . $end])->get();
+        $data['holidays'] = Holiday::whereBetween('start', [$year . '-' . $month . '-' . $start, $year . '-' . $month . '-' . $end])->get();
 
         $selected_id = $this->session->getFlashdata('selected_employee') ?? (isset($_POST['selected_employee']) ? $_POST['selected_employee'] : $selected->id);
         $data['selected_employee'] = $selected_id;

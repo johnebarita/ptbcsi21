@@ -29,7 +29,7 @@
  </div>
  <div class="form-group">
  <label for="repayment">Repayment Amount Every Payroll</label>
- <input type="text" id="repayment" class="form-control ca-num-input" name="repayment" required>
+ <input type="number" id="repayment" class="form-control ca-num-input" name="repayment" min="500" value="500" required>
  </div>
  <div class="form-group">
  <label for="purpose">Purpose</label>

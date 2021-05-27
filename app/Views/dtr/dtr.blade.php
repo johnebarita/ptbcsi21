@@ -1,5 +1,5 @@
 <?php
-use App\Models\Eloquent\Leave;
+use App\Models\Eloquent\Holiday;use App\Models\Eloquent\Leave;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 ?>
@@ -124,9 +124,23 @@ use Carbon\CarbonPeriod;
                                 $leave = Leave::where('employee_id', $selected_employee)->whereRaw('? between request_start and request_end', [$date])->where('status', 'accepted')->first();
                                 $time_sheet = (count($time_sheets) ? $time_sheets->where('date', '=', Carbon::parse($date))->first() : null);
 
-                                $holiday = (count($holidays) ? $holidays->where('start', $date)->first() : null);
+                                $holidays = Holiday::whereRaw('? between start and end', [$date])->get();
+
                                 ?>
-                                <tr class="{{ (($holiday) ? 'holiday' : ($D == "Sun" ? 'sunday' : ''))}}" {{($holiday) ? 'data-toggle="tooltip" data-placement="top" title="' . $holiday->name . '"' : ''}}>
+                                <tr class="{{ ((count($holidays)>0) ? 'holiday' : ($D == "Sun" ? 'sunday' : ''))}}"
+                                            @if(count($holidays)==1)
+                                            data-toggle="tooltip" data-placement="top" title="{{$holidays[0]->name}}"
+                                            @elseif(count($holidays)>1)
+                                                <?php
+                                                    $title='';
+                                                    foreach($holidays as $holiday){
+                                                        $title  .= $holiday->name.' , ';
+                                                    }
+                                                    $title =substr( $title,0, -2)
+                                                ?>
+                                            data-toggle="tooltip" data-placement="top" title="{{$title}}"
+                                            @endif
+                                >
                                     <td class="">{{ $d }}</td>
                                     <td class="">{{ $D }}</td>
                                     @if ($leave)
