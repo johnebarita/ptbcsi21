@@ -56,7 +56,7 @@ class BugReportController extends BaseController
             if ($file->isValid() && !$file->hasMoved()) {
                 $newName = $file->getRandomName();
                 $file->move('../public/uploads', $newName);
-                if($bug->reference==""){
+                if($bug->reference!=""){
                     unlink("../public/uploads/" . $bug->reference);
                 }
 
