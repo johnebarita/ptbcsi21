@@ -1,0 +1,242 @@
+<?php $_shouldextend[1]=1; ?>
+
+<?php $this->startSection('content'); ?>
+ <div class="container-fluid">
+ <div class="d-sm-flex align-items-center justify-content-between mb-4">
+ <h1 class="h3 mb-0 text-gray-800">Payroll <?php echo \htmlentities($test, ENT_QUOTES, 'UTF-8', false); ?></h1>
+ </div>
+
+ <div class="card shadow mb-4">
+ <div class="card-body">
+ <div>
+ <div class="flex select-md">
+ <div class="flex-sm-grow-1 ">
+ <form action="<?php echo \htmlentities(route_to('payroll.index'), ENT_QUOTES, 'UTF-8', false); ?>" method="post">
+ <input type='hidden' name='<?php  echo '_token'; ?>' value='<?php echo $this->csrf_token; ?>'/>
+ <div class="form-group flex ml-auto">
+ <label for="half" class="m-auto pr-2">Filter: </label>
+ <select class="form-control  mr-2 select-small" name="half" id="half">
+ <option <?php echo \htmlentities(($half == "A" ? "selected" : ''), ENT_QUOTES, 'UTF-8', false); ?>>A</option>
+ <option <?php echo \htmlentities(($half == "B" ? "selected" : ''), ENT_QUOTES, 'UTF-8', false); ?>>B</option>
+ </select>
+ <select class="form-control mr-2 w-50" name="month" id="month">
+ <?php $__currentLoopData = range(1, 12); $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $number): $loop = $this->incrementLoopIndices();  ?>
+ <option value='<?php echo \htmlentities($number, ENT_QUOTES, 'UTF-8', false); ?>' <?php echo \htmlentities(($month == $number ? 'selected' : ''), ENT_QUOTES, 'UTF-8', false); ?> <?php echo \htmlentities($number>\Carbon\Carbon::now()->format('m')?'disabled':'', ENT_QUOTES, 'UTF-8', false); ?>><?php echo \htmlentities(Carbon\Carbon::create()->day(1)->month($number)->format('F'), ENT_QUOTES, 'UTF-8', false); ?></option>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </select>
+ <select class="form-control  mr-2 w-25" name="year" id="year">
+ <?php $__currentLoopData = range(date('Y'), 2019, -1); $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $y): $loop = $this->incrementLoopIndices();  ?>
+ <option <?php echo \htmlentities(($year == $y ? "selected" : ''), ENT_QUOTES, 'UTF-8', false); ?>><?php echo \htmlentities($y, ENT_QUOTES, 'UTF-8', false); ?></option>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </select>
+ <input type="submit" class="btn btn-primary" value="GO"/>
+ </div>
+ </form>
+ </div>
+ </div>
+ </div>
+ <div>
+ <div style="height:60vh;width:100%;" class="payroll-table-container">
+ <table id="payroll-table"
+ class=" text-center table payroll-table table-bordered table-condensed ">
+ <thead>
+ <tr>
+ <th rowspan="2">No.</th>
+ <th>Employee</th>
+ <th>Daily</th>
+ <th>Monthly</th>
+ <th>DTR</th>
+ <th># Day(s)</th>
+ <th rowspan="2">Late(min)</th>
+ <th>Basic</th>
+ <th rowspan="2">Allowance</th>
+ <th colspan="2">Normal Day OT</th>
+ <th colspan="8">Rest Day And Sunday Holiday Overtime</th>
+ <th colspan="4">Rest Day and Sunday Holiday</th>
+ <th colspan="6">Holiday Overtime</th>
+ <th colspan="3">Holiday Rate</th>
+ <th>Total hrs</th>
+ <th>Other</th>
+ <th rowspan="2">Gross Pay</th>
+ <th>With</th>
+ <th rowspan="2">Phi</th>
+ <th rowspan="2">SSS</th>
+ <th rowspan="2">HDMF</th>
+ <th>Cash</th>
+ <th>SSS</th>
+ <th>PAG-IBIG</th>
+ <th>Other</th>
+ <th>Total</th>
+ <th rowspan="2">Net Pay</th>
+ <th rowspan="2">Action</th>
+ </tr>
+ <tr>
+ <th>Name</th>
+ <th>Rate</th>
+ <th>Rate</th>
+ <th>Time</th>
+ <th>Absent</th>
+ <th>Salary</th>
+ <th># of hrs</th>
+ <th>OT</th>
+ <th># of hrs</th>
+ <th>Sunday OT</th>
+ <th># of hrs</th>
+ <th>Regular OT</th>
+ <th># of hrs</th>
+ <th>Special OT</th>
+ <th># of hrs</th>
+ <th>Double OT</th>
+ <th>Sunday</th>
+ <th>Regular</th>
+ <th>Special</th>
+ <th>Double</th>
+ <th># of hrs</th>
+ <th>Regular OT</th>
+ <th># of hrs</th>
+ <th>Special OT</th>
+ <th># of hrs</th>
+ <th>Double OT</th>
+ <th>Regular</th>
+ <th>Special</th>
+ <th>Double</th>
+ <th>OT</th>
+ <th>Income</th>
+ <th>Tax</th>
+ <th>Advance</th>
+ <th>Loan</th>
+ <th>Loan</th>
+ <th>Deduction</th>
+ <th>Deduction</th>
+ </tr>
+ </thead>
+ <tbody>
+ <?php
+ $count = 1;
+ $phi = 0;
+ $sss = 0;
+ $hdmf = 0;
+ $total_deductions = 0;
+ $total_pay = 0;
+ $row_index=0;
+ ?>
+ <?php $__currentLoopData = $positions; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $position): $loop = $this->incrementLoopIndices();  ?>
+ <tr class="text-left " data-id="<?php echo \htmlentities($row_index++, ENT_QUOTES, 'UTF-8', false); ?>">
+ <th colspan="46"
+ class="bg-position">
+ <i class="fas fa-users fa-sm"></i>
+ <?php echo \htmlentities(ucfirst($position->position), ENT_QUOTES, 'UTF-8', false); ?></th>
+ </tr>
+ <?php $__currentLoopData = $position->employees; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $employee): $loop = $this->incrementLoopIndices();  ?>
+ <?php
+ $payroll = $employee->payrolls->first();
+ $can_ot = "strikethrough";
+
+ ?>
+ <tr class="payroll-row <?php echo \htmlentities(($employee->is_fixed_salary == 1 ? 'fixed-salary' : ''), ENT_QUOTES, 'UTF-8', false); ?> <?php echo \htmlentities($payroll->edited?'edited-salary':'', ENT_QUOTES, 'UTF-8', false); ?>"  data-id="<?php echo \htmlentities($row_index++, ENT_QUOTES, 'UTF-8', false); ?>">
+ <th><?php echo \htmlentities($count++, ENT_QUOTES, 'UTF-8', false); ?></th>
+ <th><?php echo \htmlentities(strtoupper($employee->lastname . ' ' . $employee->firstname), ENT_QUOTES, 'UTF-8', false); ?>
+
+ <span class="font-italic font-weight-lighter"><?php echo \htmlentities(($employee->is_fixed_salary == 1 ? '(Fixed-salary)' : ''), ENT_QUOTES, 'UTF-8', false); ?></span>
+ </th>
+ <td><?php echo \htmlentities(number_format($employee->basic_pay,2), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(number_format($employee->monthly_pay,2), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->dtr_time != 0 ? $payroll->dtr_time : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->absent != 0 ? $payroll->absent : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->late != 0 ? $payroll->late : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->basic_salary != 0 ? number_format($payroll->basic_salary,2) : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->allowance != 0 ? number_format($payroll->allowance,2) : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->normal_ot != 0 ? $payroll->normal_ot : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->normal_ot_pay != 0 ? number_format($payroll->normal_ot_pay,2) : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->rd_sunday_ot != 0 ? $payroll->rd_sunday_ot : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->rd_sunday_pay != 0 ? number_format($payroll->rd_sunday_pay ,2): ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->rd_regular_ot != 0 ? $payroll->rd_regular_ot : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->rd_regular_pay != 0 ? number_format($payroll->rd_regular_pay ,2): ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->rd_special_ot != 0 ? $payroll->rd_special_ot : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->rd_special_pay != 0 ? number_format($payroll->rd_special_pay ,2): ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->rd_double_ot != 0 ? $payroll->rd_double_ot : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->rd_double_pay != 0 ? number_format($payroll->rd_double_pay ,2): ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->rd_sunday_pay != 0 ? number_format($payroll->rd_sunday_pay,2) : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->rd_regular_pay != 0 ? number_format($payroll->rd_regular_pay,2) : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->rd_special_pay != 0 ? number_format($payroll->rd_special_pay,2) : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->rd_double_pay != 0 ? number_format($payroll->rd_double_pay,2) : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->nd_regular_ot != 0 ? $payroll->nd_regular_ot : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->nd_regular_ot_pay != 0 ? number_format($payroll->nd_regular_ot_pay,2) : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->nd_special_ot != 0 ? $payroll->nd_special_ot : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->nd_special_ot_pay != 0 ? number_format($payroll->nd_special_ot_pay,2) : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->nd_double_ot != 0 ? $payroll->nd_double_ot : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->nd_double_ot_pay != 0 ? number_format($payroll->nd_double_ot_pay,2) : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->nd_regular_pay != 0 ? number_format($payroll->nd_regular_pay,2) : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->nd_special_pay != 0 ? number_format($payroll->nd_special_pay,2) : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->nd_double_pay != 0 ? number_format($payroll->nd_double_pay,2) : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td class="<?php echo \htmlentities($can_ot, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(($payroll->total_ot != 0 ? $payroll->total_ot : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+
+ <td><?php echo \htmlentities(($payroll->other_income != 0 ? $payroll->other_income : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->gross_pay != 0 ? number_format($payroll->gross_pay,2) : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->with_tax != 0 ? $payroll->with_tax : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->phi != 0 ? $payroll->phi : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->sss != 0 ? $payroll->sss : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->hdmf != 0 ? $payroll->hdmf : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->cash_advance != 0 ? $payroll->cash_advance : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->sss_loan != 0 ? $payroll->sss_loan : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->hdmf_loan != 0 ? $payroll->hdmf_loan : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->other_deduction != 0 ? $payroll->other_deduction : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->total_deduction != 0 ? $payroll->total_deduction : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(($payroll->net_pay != 0 ? number_format($payroll->net_pay,2) : ''), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td>
+ <div class="flex ml-2 mr-2">
+ <a href="#" data-id="<?php echo \htmlentities($payroll->id, ENT_QUOTES, 'UTF-8', false); ?>"
+ class="btn btn-primary btn-circle btn-sm btn-xs edit_payroll">
+ <i class="fas fa-pen fa-xs"></i>
+ </a>
+ <a href="#"  data-id="<?php echo \htmlentities($payroll->id, ENT_QUOTES, 'UTF-8', false); ?>" class="btn btn-primary btn-circle btn-sm btn-xs payroll_notes ">
+ <i class="fas fa-sticky-note fa-xs"></i>
+ </a>
+ <a href="#"data-id="<?php echo \htmlentities($payroll->id, ENT_QUOTES, 'UTF-8', false); ?>" class="btn btn-primary btn-circle btn-sm btn-xs payslip">
+ <i class="fas fa-file-invoice fa-xs"></i>
+ </a>
+ </div>
+
+ </td>
+ <td hidden><?php echo \htmlentities($payroll->id, ENT_QUOTES, 'UTF-8', false); ?></td>
+ </tr>
+ <?php
+ $phi += $payroll->phi;
+ $sss += $payroll->sss;
+ $hdmf += $payroll->hdmf;
+ $total_deductions += $payroll->total_deduction;
+ $total_pay += $payroll->net_pay;
+ ?>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <tr>
+ <th colspan="2"></th>
+ <td colspan="34" class="text-right">TOTAL :</td>
+ <td><?php echo \htmlentities($phi, ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities($sss, ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities($hdmf, ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td></td>
+ <td></td>
+ <td style="background-color: white !important;"></td>
+ <td></td>
+ <td><?php echo \htmlentities($total_deductions, ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td style="background-color: white !important;"><?php echo \htmlentities($total_pay, ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td></td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+ </div>
+ </div>
+ <?php echo $this->runChild('payroll.partials.edit_payroll'); ?>
+ <?php echo $this->runChild('payroll.partials.payroll_notes'); ?>
+ <?php echo $this->runChild('payroll.partials.payslip'); ?>
+ </div>
+<?php $this->stopSection(); ?>
+<?php if (isset($_shouldextend[1])) { echo $this->runChild('layouts.app'); } ?>

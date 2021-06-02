@@ -154,6 +154,14 @@ $routes->group('payroll-report', function ($routes) {
     $routes->post('update', 'PayrollReportController::update', ['as' => 'payroll-report.update']);
 });
 
+$routes->group('bug-report', function ($routes) {
+    $routes->get('', 'BugReportController::index', ['as' => 'bug-report.index']);
+    $routes->post('create', 'BugReportController::create', ['as' => 'bug-report.create']);
+    $routes->post('update', 'BugReportController::update', ['as' => 'bug-report.update']);
+    $routes->post('fixed', 'BugReportController::fixed', ['as' => 'bug-report.fixed']);
+    $routes->post('delete', 'BugReportController::delete', ['as' => 'bug-report.delete']);
+});
+
 $routes->group('', ['namespace' => 'App\Controllers\Auth'], function ($routes) {
     // Registration
     $routes->get('register', 'RegistrationController::register', ['as' => 'register']);

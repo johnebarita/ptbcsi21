@@ -15,6 +15,8 @@ class Leave extends  Model
 {
     protected $guarded =[];
 
+
+
     public function employee(){
         return $this->belongsTo(Employee::class);
     }
@@ -22,4 +24,10 @@ class Leave extends  Model
     public function leave_type(){
         return $this->belongsTo(LeaveType::class);
     }
+
+    public function notes()
+    {
+        return $this->morphMany(Note::class, 'noteable')->orderBy('created_at','desc');
+    }
+
 }

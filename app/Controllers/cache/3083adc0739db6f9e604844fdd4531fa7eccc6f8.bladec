@@ -1,0 +1,55 @@
+<?php $_shouldextend[1]=1; ?>
+<?php $this->startSection('content'); ?>
+ <div class="container-fluid">
+ <div class="d-sm-flex align-items-center justify-content-between mb-4">
+ <h1 class="h3 mb-0 text-gray-800">Philhealth Contribution Table </h1>
+ </div>
+ <?php if(session()->has('success')): ?>
+ <div class="alert alert-success alert-dismissible fade show " role="alert">
+ <?php echo \htmlentities(session('success'), ENT_QUOTES, 'UTF-8', false); ?>
+
+ <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+ <span aria-hidden="true">&times;</span>
+ </button>
+ </div>
+ <?php endif; ?>
+ <div class="card shadow mb-4">
+ <div class="card-body">
+ <?php /*                <a href="#" class="btn btn-primary mb-4" data-toggle="modal" data-target="#add_sss_lookup">*/ ?>
+ <?php /*                    <span class="text">Add Philhealth Lookup</span>*/ ?>
+ <?php /*                </a>*/ ?>
+ <table class="pag-ibig-contribution-table w-100 table-bordered">
+ <thead>
+ <tr>
+ <th rowspan="2">Year</th>
+ <th colspan="2">Compensation</th>
+ <th rowspan="2">Employeer Share (%)</th>
+ <th rowspan="2">Employee Share (%)</th>
+ </tr>
+ <tr>
+ <th>From</th>
+ <th>To</th>
+ </tr>
+ </thead>
+ <tbody>
+ <?php $count = 1;?>
+ <?php $__currentLoopData = $philhealth_lookups; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $key=>$lookup): $loop = $this->incrementLoopIndices();  ?>
+ <tr >
+ <td ><?php echo \htmlentities(\Carbon\Carbon::parse($lookup->from)->format('Y'), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities(number_format($lookup->lowest,2), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities($lookup->highest==10000?'Over':number_format($lookup->highest,2), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities($lookup->employer_share, ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities($lookup->employee_share, ENT_QUOTES, 'UTF-8', false); ?></td>
+ </tr>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </tbody>
+ </table>
+ </div>
+ </div>
+ <?php /*        <?php echo $this->runChild('deduction.sss-contribution.partials.add_sss_lookup'); ?>*/ ?>
+ <?php /*        <?php echo $this->runChild('deduction.sss-contribution.partials.edit_sss_lookup'); ?>*/ ?>
+ <?php /*        <?php echo $this->runChild('deduction.sss-contribution.partials.delete_sss_lookup'); ?>*/ ?>
+ </div>
+<?php $this->stopSection(); ?>
+<?php if (isset($_shouldextend[1])) { echo $this->runChild('layouts.app'); } ?>

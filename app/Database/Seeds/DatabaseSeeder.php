@@ -15,7 +15,6 @@ class DatabaseSeeder extends Seeder
         $this->call('LatePenaltySeeder');
         $this->call('HolidaySeeder');
         $this->call('TimeSheetSeeder');
-
         $this->call('TaxDeductionSeeder');
     }
 }

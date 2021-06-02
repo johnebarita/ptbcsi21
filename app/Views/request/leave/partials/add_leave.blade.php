@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="request_end">Date From</label>
+                        <label for="request_end">Date To</label>
                         <input type="date" id="request_end" class="form-control" name="request_end"
                                value="{{\Carbon\Carbon::now()->format('Y-m-d')}}" required>
                     </div>
@@ -40,8 +40,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="exampleFormControlTextarea1">Note</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" required></textarea>
+                        <label for="notes">Note</label>
+                        <textarea class="form-control" id="note" name="note" rows="3" required></textarea>
                     </div>
                     <div class="modal-footer mt-5">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>

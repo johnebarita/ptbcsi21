@@ -27,7 +27,10 @@ class OvertimeController extends BaseController
     public function create()
     {
         $overtime = Overtime::updateOrCreate(
-            ['employee_id' => $_POST['employee_id'], 'request_date' => $_POST['request_date']],
+            [
+                'employee_id' => $_POST['employee_id'],
+                'request_date' => $_POST['request_date']
+            ],
             $_POST
         );
         $key = ($overtime->wasRecentlyCreated ? "success" : "danger");
@@ -48,7 +51,7 @@ class OvertimeController extends BaseController
                 $time_sheet->overtime_time = number_format(Carbon::createFromFormat('G:i', $overtime->overtime_in)->diffInMinutes($overtime->overtime_out) / 60.0, 2);
                 $time_sheet->ot += $time_sheet->overtime_time;
             } else {
-                $time_sheet->ot -=$time_sheet->overtime_time;
+                $time_sheet->ot -= $time_sheet->overtime_time;
                 $time_sheet->overtime_in = null;
                 $time_sheet->overtime_out = null;
                 $time_sheet->overtime_time = null;

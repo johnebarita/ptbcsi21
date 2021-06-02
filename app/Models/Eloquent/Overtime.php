@@ -15,7 +15,14 @@ class Overtime extends Model
 {
     protected $guarded = [];
 
-    public function employee(){
+
+    public function employee()
+    {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function notes()
+    {
+        return $this->morphMany(Note::class, 'noteable')->orderBy('created_at', 'desc');
     }
 }

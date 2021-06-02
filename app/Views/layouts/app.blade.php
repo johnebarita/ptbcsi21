@@ -869,7 +869,7 @@
 
         });
 
-        $('.payroll_notes').on('click',function () {
+        $('.payroll_notes').on('click', function () {
             $('#payroll_notes ').modal('show');
         });
 
@@ -912,7 +912,7 @@
                     $('#payslip #cash_advance').text(payroll.cash_advance);
                     $('#payslip #total_deduction').text(payroll.total_deduction);
                     $('#payslip #net_pay').text((payroll.net_pay).toFixed(2));
-                    $('#payslip #payslip_title').text(payroll.employee.firstname  + " " + payroll.employee.lastname + " Payslip For " +
+                    $('#payslip #payslip_title').text(payroll.employee.firstname + " " + payroll.employee.lastname + " Payslip For " +
                         date_from.toLocaleString('default', {month: 'long'}) + " " + date_from.getFullYear() + " " + date_from.getDate() + " - " + date_to.getDate());
 
                 }
@@ -1121,6 +1121,36 @@
         $('.delete_penalty').on('click', function () {
             $('#delete_late_penalty').modal('show');
             $('#delete_late_penalty #delete_id').val($(this).data('id'));
+        });
+
+        //TODO Bug Report
+
+        $('.edit_bug_report').on('click', function () {
+            $('#edit_bug_report').modal('show');
+            var id = $(this).data('id');
+            var tr = $(this).closest('tr');
+            var data = tr.children("td").map(function () {
+                return $(this).text();
+            }).get();
+            $('#edit_bug_report #edit_id').val(id);
+            $('#edit_bug_report #edit_bug').val(data[0]);
+            $('#edit_bug_report #edit_tester').val(data[2]);
+            $('#edit_bug_report #edit_urgency').val(data[3]);
+            $('#edit_bug_report #edit_date_reported').val(data[4]);
+            $('#edit_bug_report #edit_status').val(data[5]);
+            console.log(data);
+        });
+
+        $('.fixed_bug_report').on('click', function () {
+            $('#fixed_bug_report').modal('show');
+            var id = $(this).data('id');
+            $('#fixed_bug_report #fixed_id').val(id);
+        });
+
+        $('.delete_bug_report').on('click', function () {
+            $('#delete_bug_report').modal('show');
+            var id = $(this).data('id');
+            $('#delete_bug_report #delete_id').val(id);
         });
     })(jQuery);
 </script>

@@ -1,0 +1,52 @@
+<?php $_shouldextend[1]=1; ?>
+
+<?php $this->startSection('content'); ?>
+ <div class="container-fluid ">
+ <div class="d-sm-flex align-items-center justify-content-between mb-4">
+ <h1 class="h3 mb-0 text-gray-800">Calendar</h1>
+ </div>
+
+ <div class="card shadow mb-4  flex">
+ <div class="card-body flex">
+ <div class="todo-sidebar">
+ <div class="p-2 bg-primary text-white"><span><i class="fa fa-tasks mr-2"></i></span>TODO</div>
+ <a href="#" class="btn btn-primary m-2 mt-3" data-toggle="modal" data-target="#add_event">
+ <span class="text">Add Todo</span>
+ </a>
+ <div class="flex-sm-grow-1 ml-2 mr-2 mt-3">
+ <form action="<?php echo \htmlentities(route_to('calendar.index'), ENT_QUOTES, 'UTF-8', false); ?>" method="post">
+ <input type='hidden' name='<?php  echo '_token'; ?>' value='<?php echo $this->csrf_token; ?>'/>
+ <div class="form-group flex ml-auto">
+ <label for="half" class="mt-auto pr-2">Filter: </label>
+ <select class="form-control mr-2 w-40" name="month" id="month">
+ <?php $__currentLoopData = range(1, 12); $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $number): $loop = $this->incrementLoopIndices();  ?>
+ <option value='<?php echo \htmlentities($number, ENT_QUOTES, 'UTF-8', false); ?>' <?php echo \htmlentities(($month == $number ? 'selected' : ''), ENT_QUOTES, 'UTF-8', false); ?>><?php echo \htmlentities(\Carbon\Carbon::createFromFormat('m', $number)->format('F'), ENT_QUOTES, 'UTF-8', false); ?></option>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </select>
+ <select class="form-control  mr-2 w-25" name="year" id="year">
+ <?php $__currentLoopData = range(date('Y'), 2019, -1); $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $y): $loop = $this->incrementLoopIndices();  ?>
+ <option <?php echo \htmlentities(($year == $y ? "selected" : ''), ENT_QUOTES, 'UTF-8', false); ?>> <?php echo \htmlentities($y, ENT_QUOTES, 'UTF-8', false); ?> </option>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </select>
+ <input type="submit" class="btn btn-primary" value="GO"/>
+ </div>
+ </form>
+ </div>
+ <div class="overflow-auto h-50 m-2">
+ <?php $__currentLoopData = $events; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $event): $loop = $this->incrementLoopIndices();  ?>
+ <p class="p-2 bg-primary text-white rounded event_sidebar"  data-id="<?php echo \htmlentities($event->id, ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities($event->title, ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </div>
+ </div>
+ <div class="calendar" id='calendar'></div>
+ </div>
+ </div>
+ <?php echo $this->runChild('calendar.partials.add_event'); ?>
+ <?php echo $this->runChild('calendar.partials.edit_event'); ?>
+ <?php echo $this->runChild('calendar.partials.move_event'); ?>
+ </div>
+<?php $this->stopSection(); ?>
+<?php if (isset($_shouldextend[1])) { echo $this->runChild('layouts.app'); } ?>

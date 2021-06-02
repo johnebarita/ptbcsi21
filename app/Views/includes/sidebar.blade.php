@@ -137,6 +137,12 @@
         </div>
     </li>
 
+    <li class="nav-item {{$active=="bug-report"?'active':''}}">
+        <a class="nav-link" href="{{route_to('bug-report.index')}}">
+            <i class="fas fa-money-bill"></i>
+            <span>Bug Report</span></a>
+    </li>
+
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 

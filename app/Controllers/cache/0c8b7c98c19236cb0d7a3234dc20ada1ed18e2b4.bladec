@@ -1,0 +1,71 @@
+<?php $_shouldextend[1]=1; ?>
+<?php $this->startSection('content'); ?>
+ <div class="container-fluid">
+ <div class="d-sm-flex align-items-center justify-content-between mb-4">
+ <h1 class="h3 mb-0 text-gray-800">Schedule</h1>
+ </div>
+
+ <div class="card shadow mb-4">
+ <div class="card-body">
+ <a href="#" class="btn btn-primary mb-4" data-toggle="modal" data-target="#add_schedule">
+ <span class="text">Add Schedule</span>
+ </a>
+ <div class="table-responsive">
+ <table class="schedule-table table table-bordered" id="dataTable" width="100%" cellspacing="0">
+ <thead>
+ <tr>
+ <th>Morning In</th>
+ <th>Morning Out</th>
+ <th>Afternoon In</th>
+ <th>Afternoon Out</th>
+ <th>Working Days</th>
+ <th>Action</th>
+ </tr>
+ </thead>
+ <tbody>
+
+ <?php $__currentLoopData = $schedules; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $schedule): $loop = $this->incrementLoopIndices();  ?>
+ <tr>
+ <td><?php echo \htmlentities($time = \Carbon\Carbon::createFromFormat('G:i', $schedule->morning_in)->format('h:i A'), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities($time = \Carbon\Carbon::createFromFormat('G:i', $schedule->morning_out)->format('h:i A'), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities($time = \Carbon\Carbon::createFromFormat('G:i', $schedule->afternoon_in)->format('h:i A'), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td><?php echo \htmlentities($time = \Carbon\Carbon::createFromFormat('G:i', $schedule->afternoon_out)->format('h:i A'), ENT_QUOTES, 'UTF-8', false); ?></td>
+ <td>
+ <?php $__currentLoopData = explode(',',$schedule->working_days); $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $key=>$day): $loop = $this->incrementLoopIndices();  ?>
+ <?php $first = new \Carbon\Carbon('first Monday of January');?>
+ <?php echo \htmlentities($first->addDays($day)->format('D'), ENT_QUOTES, 'UTF-8', false); ?>
+
+ <?php if($key<count(explode(',',$schedule->working_days))-1): ?>
+ <?php echo \htmlentities(',  ', ENT_QUOTES, 'UTF-8', false); ?>
+
+ <?php endif; ?>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </td>
+ <?php /*                                <td data-working-days="<?php echo \htmlentities((implode(",", json_decode($schedule->working_days))), ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities(ucwords(implode(", ", json_decode($schedule->working_days))), ENT_QUOTES, 'UTF-8', false); ?></td>*/ ?>
+ <td>
+ <div class="flex">
+ <a href="#" data-id="<?php echo \htmlentities($schedule->id, ENT_QUOTES, 'UTF-8', false); ?>" data-days="<?php echo \htmlentities($schedule->working_days, ENT_QUOTES, 'UTF-8', false); ?>" title="Edit"
+ class="btn btn-success btn-circle btn-sm m-auto edit_schedule">
+ <i class="fas fa-pen"></i>
+ </a>
+ <a href="#" data-id="<?php echo \htmlentities($schedule->id, ENT_QUOTES, 'UTF-8', false); ?>"
+ class="btn btn-danger btn-circle btn-sm m-auto delete_schedule">
+ <i class="fas fa-trash fa-sm"></i>
+ </a>
+ </div>
+ </td>
+ </tr>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </tbody>
+ </table>
+ </div>
+ </div>
+ </div>
+ <?php echo $this->runChild('schedule.partials.add_schedule'); ?>
+ <?php echo $this->runChild('schedule.partials.edit_schedule'); ?>
+ <?php echo $this->runChild('schedule.partials.delete_schedule'); ?>
+ </div>
+<?php $this->stopSection(); ?>
+<?php if (isset($_shouldextend[1])) { echo $this->runChild('layouts.app'); } ?>

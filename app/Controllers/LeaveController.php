@@ -23,7 +23,7 @@ class LeaveController extends BaseController
         $data['employees'] = Employee::all();
         $data['leave_types'] = LeaveType::all();
 //        return view('template\template', $data);
-        return $this->blade->run('request.leave.leave',$data);
+        return $this->blade->run('request.leave.leave', $data);
     }
 
     public function create()
@@ -31,11 +31,11 @@ class LeaveController extends BaseController
         $leave = Leave::updateOrCreate(
             [
                 'employee_id' => $_POST['employee_id'],
-                'request_start'=>$_POST['request_start'],
-                'request_end'=>$_POST['request_end']
-            ],
-            $_POST
+                'request_start' => $_POST['request_start'],
+                'request_end' => $_POST['request_end'],
+            ], $_POST
         );
+
         $key = ($leave->wasRecentlyCreated ? "success" : "danger");
         $message = ($leave->wasRecentlyCreated ? "Leave requested successfully!" : "Leave request already exist!");
         return redirect()->route('leave.index')->with('status', ['key' => $key, 'message' => $message]);
