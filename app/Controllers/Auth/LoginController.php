@@ -2,6 +2,7 @@
 namespace App\Controllers\Auth;
 
 use App\Controllers\BaseController;
+use App\Models\Eloquent\Employee;
 use App\Models\UserModel;
 use CodeIgniter\Controller;
 use Config\Services;
@@ -41,7 +42,7 @@ class LoginController extends BaseController
 	public function login()
 	{
 		if ($this->session->isLoggedIn) {
-			return redirect()->to('account');
+			return redirect()->back();
 		}
 
         return $this->blade->run('auth.login');
@@ -56,7 +57,7 @@ class LoginController extends BaseController
 	{
 		// validate request
 		$rules = [
-			'email'		=> 'required|valid_email',
+			'username'		=> 'required',
 			'password' 	=> 'required|min_length[5]',
 		];
 
@@ -67,31 +68,33 @@ class LoginController extends BaseController
 		}
 
 		// check credentials
-		$users = new UserModel();
-		$user = $users->where('email', $this->request->getPost('email'))->first();
-		if (
-			is_null($user) ||
-			! password_verify($this->request->getPost('password'), $user['password_hash'])
-		) {
+	    $user = Employee::where('username',$this->request->getPost('username'))->get();
+		if (count($user)==0 || ! password_verify($this->request->getPost('password'), $user[0]->password_hash)) {
 			return redirect()->to('login')->withInput()->with('error', lang('Auth.wrongCredentials'));
 		}
 
 		// check activation
-		if (!$user['active']) {
+		if (!$user[0]->is_active) {
 			return redirect()->to('login')->withInput()->with('error', lang('Auth.notActivated'));
 		}
 
 		// login OK, save user data to session
 		$this->session->set('isLoggedIn', true);
 		$this->session->set('userData', [
-		    'id' 			=> $user['id'],
-		    'name' 			=> $user['name'],
-		    'email' 		=> $user['email'],
-		    'new_email' 	=> $user['new_email']
+		    'id' 			=> $user[0]->id  ,
+		    'name' 			=> $user[0]->firstname.' '.$user[0]->lastname,
+		    'email' 		=> $user[0]->email,
+		    'new_email' 	=> $user[0]->new_email,
+		    'role' 	=> $user[0]->role()->role->name,
 		]);
 
-        return redirect()->to('account');
-	}
+		if($user[0]->role()->role->name=='Employee'){
+            return redirect()->to('dtr');
+        }
+        return redirect()->to('dashboard');
+
+
+    }
 
     //--------------------------------------------------------------------
 

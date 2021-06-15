@@ -125,34 +125,34 @@
 			</div>
 		</div> <!-- change email -->
 
-		<hr class="my-5">
+{{--		<hr class="my-5">--}}
 
-		<div class="email-information flex row">
+{{--		<div class="email-information flex row">--}}
 
-			<div class="label col-sm">
-				<h5 class="font-weight-bold">{{ lang('Auth.deleteAccount') }}</h5>
-				<p class="faded font-weight-light">{!! lang('Auth.deleteAccountInfo') !!}</p>
-			</div>
-			<div class="bg-white rounded shadow-sm col-7">
+{{--			<div class="label col-sm">--}}
+{{--				<h5 class="font-weight-bold">{{ lang('Auth.deleteAccount') }}</h5>--}}
+{{--				<p class="faded font-weight-light">{!! lang('Auth.deleteAccountInfo') !!}</p>--}}
+{{--			</div>--}}
+{{--			<div class="bg-white rounded shadow-sm col-7">--}}
 
-				<form method="POST" action="{{ route_to('delete-account') }}" accept-charset="UTF-8">
-					@csrf
-					<div class="box  p-3">
+{{--				<form method="POST" action="{{ route_to('delete-account') }}" accept-charset="UTF-8">--}}
+{{--					@csrf--}}
+{{--					<div class="box  p-3">--}}
 
-						<div class="form-group pb-4">
-							<label for="new_email">{{ lang('Auth.currentPassword') }}</label>
-							<input required type="password" name="password" class="form-control" value=""/>
-						</div>
+{{--						<div class="form-group pb-4">--}}
+{{--							<label for="new_email">{{ lang('Auth.currentPassword') }}</label>--}}
+{{--							<input required type="password" name="password" class="form-control" value=""/>--}}
+{{--						</div>--}}
 
-					</div>
+{{--					</div>--}}
 
-					<footer class="profile-card-footer p-3 flex">
-						<button class="btn btn-danger ml-auto" onclick="return confirm('{{ lang('Auth.areYouSure') }}')">{{ lang('Auth.deleteAccount') }}</button>
-					</footer>
-				</form>
+{{--					<footer class="profile-card-footer p-3 flex">--}}
+{{--						<button class="btn btn-danger ml-auto" onclick="return confirm('{{ lang('Auth.areYouSure') }}')">{{ lang('Auth.deleteAccount') }}</button>--}}
+{{--					</footer>--}}
+{{--				</form>--}}
 
-			</div>
-		</div> <!-- delete account -->
+{{--			</div>--}}
+{{--		</div> <!-- delete account -->--}}
 
 	</div>
 </div>

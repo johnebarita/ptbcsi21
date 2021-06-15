@@ -47,6 +47,7 @@ class PasswordController extends Controller
 
     //--------------------------------------------------------------------
 
+    
 	public function attemptForgotPassword()
 	{
 		// validate request

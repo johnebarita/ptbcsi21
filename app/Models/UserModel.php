@@ -12,7 +12,7 @@ class UserModel extends Model
 
 	// this happens first, model removes all other fields from input data
 	protected $allowedFields = [
-		'name', 'email', 'new_email', 'password', 'password_confirm',
+		'username', 'email', 'new_email', 'password', 'password_confirm',
 		'activate_hash', 'reset_hash', 'reset_expires', 'active'
 	];
 
@@ -26,7 +26,7 @@ class UserModel extends Model
 	// we need different rules for registration, account update, etc
 	protected $dynamicRules = [
 		'registration' => [
-			'name' 				=> 'required|min_length[2]',
+			'username' 			=> 'required|min_length[2]',
 			'email' 			=> 'required|valid_email|is_unique[users.email]',
 			'password'			=> 'required|min_length[5]',
 			'password_confirm'	=> 'matches[password]'

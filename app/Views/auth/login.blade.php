@@ -22,7 +22,7 @@
                         @csrf
                         <div class="form-group">
                             <label for="email"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                            <input type="email" name="email" id="email" placeholder="Email"/>
+                            <input type="text" name="username" id="username" placeholder="Username"/>
                         </div>
                         <div class="form-group">
                             <label for="password"><i class="zmdi zmdi-lock"></i></label>

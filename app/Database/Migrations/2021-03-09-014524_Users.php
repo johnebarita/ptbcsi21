@@ -13,7 +13,7 @@ class Users extends Migration
             'email'					=> ['type' => 'varchar', 'constraint' => 191],
             'new_email'             => ['type' => 'varchar', 'constraint' => 191, 'null' => true],
             'password_hash'			=> ['type' => 'varchar', 'constraint' => 191],
-            'name'					=> ['type' => 'varchar', 'constraint' => 191],
+            'username'				=> ['type' => 'varchar', 'constraint' => 191],
             'activate_hash'			=> ['type' => 'varchar', 'constraint' => 191, 'null' => true],
             'reset_hash'            => ['type' => 'varchar', 'constraint' => 191, 'null' => true],
             'reset_expires'        	=> ['type' => 'bigint', 'null' => true],

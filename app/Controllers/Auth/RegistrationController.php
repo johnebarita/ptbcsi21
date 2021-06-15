@@ -60,7 +60,7 @@ class RegistrationController extends BaseController
 		$getRule = $users->getRule('registration');
 		$users->setValidationRules($getRule);
         $user = [
-            'name'          	=> $this->request->getPost('name'),
+            'username'          => $this->request->getPost('name'),
             'email'         	=> $this->request->getPost('email'),
             'password'     		=> $this->request->getPost('password'),
             'password_confirm'	=> $this->request->getPost('password_confirm'),
@@ -72,8 +72,8 @@ class RegistrationController extends BaseController
         }
 
 		// send activation email
-		helper('auth');
-        send_activation_email($user['email'], $user['activate_hash']);
+//		helper('auth');
+//        send_activation_email($user['email'], $user['activate_hash']);
 
 		// success
         return redirect()->to('login')->with('success', lang('Auth.registrationSuccess'));

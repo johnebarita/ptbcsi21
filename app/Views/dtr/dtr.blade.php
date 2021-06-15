@@ -128,18 +128,18 @@ use Carbon\CarbonPeriod;
 
                                 ?>
                                 <tr class="{{ ((count($holidays)>0) ? 'holiday' : ($D == "Sun" ? 'sunday' : ''))}}"
-                                            @if(count($holidays)==1)
-                                            data-toggle="tooltip" data-placement="top" title="{{$holidays[0]->name}}"
-                                            @elseif(count($holidays)>1)
-                                                <?php
-                                                    $title='';
-                                                    foreach($holidays as $holiday){
-                                                        $title  .= $holiday->name.' , ';
-                                                    }
-                                                    $title =substr( $title,0, -2)
-                                                ?>
-                                            data-toggle="tooltip" data-placement="top" title="{{$title}}"
-                                            @endif
+                                    @if(count($holidays)==1)
+                                    data-toggle="tooltip" data-placement="top" title="{{$holidays[0]->name}}"
+                                    @elseif(count($holidays)>1)
+                                    <?php
+                                    $title = '';
+                                    foreach ($holidays as $holiday) {
+                                        $title .= $holiday->name . ' , ';
+                                    }
+                                    $title = substr($title, 0, -2)
+                                    ?>
+                                    data-toggle="tooltip" data-placement="top" title="{{$title}}"
+                                        @endif
                                 >
                                     <td class="">{{ $d }}</td>
                                     <td class="">{{ $D }}</td>
@@ -149,7 +149,7 @@ use Carbon\CarbonPeriod;
                                         <td></td>
                                         <td></td>
                                         <?php  $pre += (isset($time_sheet) ? ((float)$time_sheet->pre) : 0);?>
-                                    @elseif (!$time_sheet && $D != "Sun" && $now > $date && $selected_employee != 0)
+                                    @elseif (!$time_sheet && $D != "Sun" && $now > $date && $selected_employee != 0 && session()->userData['role']=='Employee')
                                         <td colspan="9" class="text-center justify-content-center absent">ABSENT</td>
                                         <td></td>
                                         <td></td>
@@ -157,22 +157,26 @@ use Carbon\CarbonPeriod;
                                     @else
                                         <td data-time="{{$time_sheet->morning_in??"null"}}">
                                             <div class="flex-center">
-                                                <input type="text" class="time_h_input" {{$date>$now?'disabled':''}}
-                                                {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
-                                                value="{{ (isset($time_sheet->morning_in) ? substr(Carbon::createFromFormat('G:i',$time_sheet->morning_in)->format('h:i'), 0, 2) : '')}}">:
-                                                <input type="text" class="time_m_input" {{$date>$now?'disabled':''}}
-                                                {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
-                                                value="{{ (isset($time_sheet->morning_in) ? substr(Carbon::createFromFormat('G:i',$time_sheet->morning_in)->format('h:i'), 3) : '')}}">
+                                                <input type="text" class="time_h_input"
+                                                       {{$date>$now|| session()->userData['role']=='Employee'?'disabled':''}}
+                                                       {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
+                                                       value="{{ (isset($time_sheet->morning_in) ? substr(Carbon::createFromFormat('G:i',$time_sheet->morning_in)->format('h:i'), 0, 2) : '')}}">:
+                                                <input type="text" class="time_m_input"
+                                                       {{$date>$now|| session()->userData['role']=='Employee'?'disabled':''}}
+                                                       {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
+                                                       value="{{ (isset($time_sheet->morning_in) ? substr(Carbon::createFromFormat('G:i',$time_sheet->morning_in)->format('h:i'), 3) : '')}}">
                                             </div>
                                         </td>
                                         <td data-time="{{$time_sheet->morning_out??"null"}}">
                                             <div class="flex-center">
-                                                <input type="text" class="time_h_input" {{$date>$now?'disabled':''}}
-                                                {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
-                                                value="{{ (isset($time_sheet->morning_out) ? substr(Carbon::createFromFormat('G:i', $time_sheet->morning_out)->format('h:i'), 0, 2) : '')}}">:
-                                                <input type="text" class="time_m_input" {{$date>$now?'disabled':''}}
-                                                {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
-                                                value="{{ (isset($time_sheet->morning_out) ? substr(Carbon::createFromFormat('G:i', $time_sheet->morning_out)->format('h:i'), 3) : '')}}">
+                                                <input type="text" class="time_h_input"
+                                                       {{$date>$now|| session()->userData['role']=='Employee'?'disabled':''}}
+                                                       {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
+                                                       value="{{ (isset($time_sheet->morning_out) ? substr(Carbon::createFromFormat('G:i', $time_sheet->morning_out)->format('h:i'), 0, 2) : '')}}">:
+                                                <input type="text" class="time_m_input"
+                                                       {{$date>$now|| session()->userData['role']=='Employee'?'disabled':''}}
+                                                       {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
+                                                       value="{{ (isset($time_sheet->morning_out) ? substr(Carbon::createFromFormat('G:i', $time_sheet->morning_out)->format('h:i'), 3) : '')}}">
                                             </div>
                                         </td>
                                         <td>
@@ -181,24 +185,28 @@ use Carbon\CarbonPeriod;
                                                    value="{{ (isset($time_sheet) ? ($time_sheet->morning_time) : '')}}"
                                                    {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}  class="m_time_i">
                                         </td>
-                                        <td data-time ="{{$time_sheet->afternoon_in??"null"}}">
+                                        <td data-time="{{$time_sheet->afternoon_in??"null"}}">
                                             <div class="flex-center">
-                                                <input type="text" class="time_h_input" {{$date>$now?'disabled':''}}
-                                                {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
-                                                value="{{ (isset($time_sheet->afternoon_in) ? substr(Carbon::createFromFormat('G:i', $time_sheet->afternoon_in)->format('h:i'), 0, 2) : '')}}">:
-                                                <input type="text" class="time_m_input" {{$date>$now?'disabled':''}}
-                                                {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
-                                                value="{{ (isset($time_sheet->afternoon_in) ? substr(Carbon::createFromFormat('G:i', $time_sheet->afternoon_in)->format('h:i'), 3) : '')}}">
+                                                <input type="text" class="time_h_input"
+                                                       {{$date>$now|| session()->userData['role']=='Employee'?'disabled':''}}
+                                                       {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
+                                                       value="{{ (isset($time_sheet->afternoon_in) ? substr(Carbon::createFromFormat('G:i', $time_sheet->afternoon_in)->format('h:i'), 0, 2) : '')}}">:
+                                                <input type="text" class="time_m_input"
+                                                       {{$date>$now|| session()->userData['role']=='Employee'?'disabled':''}}
+                                                       {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
+                                                       value="{{ (isset($time_sheet->afternoon_in) ? substr(Carbon::createFromFormat('G:i', $time_sheet->afternoon_in)->format('h:i'), 3) : '')}}">
                                             </div>
                                         </td>
                                         <td data-time="{{$time_sheet->afternoon_out??"null"}}">
                                             <div class="flex-center">
-                                                <input type="text" class="time_h_input" {{$date>$now?'disabled':''}}
-                                                {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
-                                                value="{{ (isset($time_sheet->afternoon_out) ? substr(Carbon::createFromFormat('G:i', $time_sheet->afternoon_out)->format('h:i'), 0, 2) : '')}}">:
-                                                <input type="text" class="time_m_input" {{$date>$now?'disabled':''}}
-                                                {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
-                                                value="{{ (isset($time_sheet->afternoon_out) ? substr(Carbon::createFromFormat('G:i', $time_sheet->afternoon_out)->format('h:i'), 3) : '')}}">
+                                                <input type="text" class="time_h_input"
+                                                       {{$date>$now|| session()->userData['role']=='Employee'?'disabled':''}}
+                                                       {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
+                                                       value="{{ (isset($time_sheet->afternoon_out) ? substr(Carbon::createFromFormat('G:i', $time_sheet->afternoon_out)->format('h:i'), 0, 2) : '')}}">:
+                                                <input type="text" class="time_m_input"
+                                                       {{$date>$now|| session()->userData['role']=='Employee'?'disabled':''}}
+                                                       {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
+                                                       value="{{ (isset($time_sheet->afternoon_out) ? substr(Carbon::createFromFormat('G:i', $time_sheet->afternoon_out)->format('h:i'), 3) : '')}}">
                                             </div>
                                         </td>
                                         <td>
@@ -209,22 +217,26 @@ use Carbon\CarbonPeriod;
                                         </td>
                                         <td data-time="{{$time_sheet->overtime_in??"null"}}">
                                             <div class="flex-center">
-                                                <input type="text" class="time_h_input" {{$date>$now?'disabled':''}}
-                                                {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
-                                                value="{{ (isset($time_sheet->overtime_in) ? substr(Carbon::createFromFormat('G:i', $time_sheet->overtime_in)->format('h:i'),0, 2) : '')}}">
-                                                <input type="text" class="time_m_input" {{$date>$now?'disabled':''}}
-                                                {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
-                                                value="{{ (isset($time_sheet->overtime_in) ? substr(Carbon::createFromFormat('G:i', $time_sheet->overtime_in)->format('h:i'), 3) : '')}}">
+                                                <input type="text" class="time_h_input"
+                                                       {{$date>$now|| session()->userData['role']=='Employee'?'disabled':''}}
+                                                       {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
+                                                       value="{{ (isset($time_sheet->overtime_in) ? substr(Carbon::createFromFormat('G:i', $time_sheet->overtime_in)->format('h:i'),0, 2) : '')}}">:
+                                                <input type="text" class="time_m_input"
+                                                       {{$date>$now|| session()->userData['role']=='Employee'?'disabled':''}}
+                                                       {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
+                                                       value="{{ (isset($time_sheet->overtime_in) ? substr(Carbon::createFromFormat('G:i', $time_sheet->overtime_in)->format('h:i'), 3) : '')}}">
                                             </div>
                                         </td>
                                         <td data-time="{{$time_sheet->overtime_out??"null"}}">
                                             <div class="flex-center">
-                                                <input type="text" class="time_h_input" {{$date>$now?'disabled':''}}
-                                                {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
-                                                value="{{ (isset($time_sheet->overtime_out) ? substr(Carbon::createFromFormat('G:i', $time_sheet->overtime_out)->format('h:i'),0, 2) : '')}}">
-                                                <input type="text" class="time_m_input" {{$date>$now?'disabled':''}}
-                                                {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
-                                                value="{{ (isset($time_sheet->overtime_out) ? substr(Carbon::createFromFormat('G:i', $time_sheet->overtime_out)->format('h:i'), 3) : '')}}">
+                                                <input type="text" class="time_h_input"
+                                                       {{$date>$now|| session()->userData['role']=='Employee'?'disabled':''}}
+                                                       {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
+                                                       value="{{ (isset($time_sheet->overtime_out) ? substr(Carbon::createFromFormat('G:i', $time_sheet->overtime_out)->format('h:i'),0, 2) : '')}}">:
+                                                <input type="text" class="time_m_input"
+                                                       {{$date>$now|| session()->userData['role']=='Employee'?'disabled':''}}
+                                                       {{$date<=$now ? 'name=timesheet['.($time_sheet!=null? $time_sheet->id : $date).'][]':''}}
+                                                       value="{{ (isset($time_sheet->overtime_out) ? substr(Carbon::createFromFormat('G:i', $time_sheet->overtime_out)->format('h:i'), 3) : '')}}">
                                             </div>
                                         </td>
                                         <td>
@@ -267,9 +279,11 @@ use Carbon\CarbonPeriod;
                             <td id="total_late">{{$late }}</td>
                         </tr>
                     </table>
-                    <div class="mt-2 flex justify-content-end">
-                        <input class="btn btn-primary" form="edit_dtr" type="submit" value="Save Changes"/>
-                    </div>
+                    @if(session()->userData['role']!='Employee')
+                        <div class="mt-2 flex justify-content-end">
+                            <input class="btn btn-primary" form="edit_dtr" type="submit" value="Save Changes"/>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

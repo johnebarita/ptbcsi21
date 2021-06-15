@@ -93,10 +93,6 @@ class Employees extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '50',
             ],
-            'is_active' => [
-                'type' => 'TINYINT',
-                'constraint' => '1',
-            ],
             'position_id' => [
                 'type' => 'INT',
                 'constraint' => '11',
@@ -138,21 +134,38 @@ class Employees extends Migration
             'total_allowance' => [
                 'type' => 'DOUBLE',
             ],
-
-//            'is_archived'=>[
-//                'type' => 'TINYINT',
-//                'constraint' => '1',
-//                'default' => 0
-//            ],
-//            'employee_login_id' => [
-//                'type' => 'INT',
-//                'constraint' => '11',
-//            ],
-//            'address_id'         => [
-//                'type'           => 'INT',
-//                'constraint'     => '11',
-//                'unsigned'       => true,
-//            ],
+            'is_active' => [
+                'type' => 'TINYINT',
+                'constraint' => '1',
+                'null' => 0,
+            ],
+            'username' => [
+                'type' => 'varchar',
+                'constraint' => 50
+            ],
+            'new_email' => [
+                'type' => 'varchar',
+                'constraint' => 191,
+                'null' => true
+            ],
+            'password_hash' => [
+                'type' => 'varchar',
+                'constraint' => 191
+            ],
+            'activate_hash' => [
+                'type' => 'varchar',
+                'constraint' => 191,
+                'null' => true
+            ],
+            'reset_hash' => [
+                'type' => 'varchar',
+                'constraint' => 191,
+                'null' => true
+            ],
+            'reset_expires' => [
+                'type' => 'bigint',
+                'null' => true
+            ],
 //            'employee_status' => [
 //                'type' => 'VARCHAR',
 //                'constraint' => '50',
@@ -162,35 +175,7 @@ class Employees extends Migration
 //                'type' => 'INT',
 //                'constraint' => '11',
 //            ],
-//            'new_email' => [
-//                'type' => 'varchar',
-//                'constraint' => 191,
-//                'null' => true
-//            ],
-//            'password_hash' => [
-//                'type' => 'varchar',
-//                'constraint' => 191
-//            ],
-//            'activate_hash' => [
-//                'type' => 'varchar',
-//                'constraint' => 191,
-//                'null' => true
-//            ],
-//            'activated' => [
-//                'type' => 'tinyint',
-//                'constraint' => 1,
-//                'null' => 0,
-//                'default' => 0
-//            ],
-//            'reset_hash' => [
-//                'type' => 'varchar',
-//                'constraint' => 191,
-//                'null' => true
-//            ],
-//            'reset_expires' => [
-//                'type' => 'bigint',
-//                'null' => true
-//            ],
+
             'created_at datetime default current_timestamp',
             'updated_at datetime default current_timestamp on update current_timestamp',
             'deleted_at datetime default null',
@@ -198,7 +183,6 @@ class Employees extends Migration
 
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('marital_status_id', 'marital_statuses', 'id', 'CASCADE', "CASCADE");
-//        $this->forge->addForeignKey('address_id','addresses','id');
         $this->forge->addForeignKey('schedule_id', 'schedules', 'id', 'CASCADE', "CASCADE");
         $this->forge->addForeignKey('position_id', 'positions', 'id', 'CASCADE', "CASCADE");
         $this->forge->createTable('employees');

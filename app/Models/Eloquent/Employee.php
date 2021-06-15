@@ -7,6 +7,7 @@
  */
 
 namespace App\Models\Eloquent;
+use App\Database\Migrations\AssignedRoles;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
@@ -16,7 +17,6 @@ class Employee extends Model
 {
     use SoftDeletes;
     protected $guarded = [];
-
     public function position(){
         return $this->belongsTo(Position::class);
     }
@@ -39,5 +39,9 @@ class Employee extends Model
 
     public function schedule(){
         return $this->belongsTo(Schedule::class);
+    }
+
+    public function role(){
+        return $this->hasOne(AssignedRole::class,'employee_id')->first();
     }
 }

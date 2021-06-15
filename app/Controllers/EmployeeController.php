@@ -93,6 +93,7 @@ class EmployeeController extends BaseController
                 'total_allowance' => $total_allowance,
             ]);
             $status = $employee->wasRecentlyCreated;
+
             //        if($this->zk->connect()){
 //            $this->zk->setUser($employee->id, $employee->id, strtoupper($employee->lastname . ' ' . $employee->firstname),'');
 //            $this->zk->disconnect();

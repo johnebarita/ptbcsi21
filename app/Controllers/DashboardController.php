@@ -15,6 +15,7 @@ use App\Models\Eloquent\Employee;
 use App\Models\Eloquent\Holiday;
 use App\Models\Eloquent\Position;
 use App\Models\Eloquent\TimeSheet;
+use App\Models\Eloquent\User;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use CodeIgniter\Database\Database;
@@ -35,9 +36,8 @@ class DashboardController extends BaseController
 
     public function index()
     {
-
+//        dd($this->session->userData['role']);
         $employees = Employee::all();
-//        d($employees);
 
         $time_sheets = TimeSheet::with('employee.position.schedule')->whereDate('date', Carbon::now())->get();
         $lates = 0;
