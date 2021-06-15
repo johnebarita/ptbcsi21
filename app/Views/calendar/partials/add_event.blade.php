@@ -17,8 +17,7 @@
                     </div>
                     <div class="form-group">
                         <label for="start">Start</label>
-                        <input type="date" id="start" class="form-control" name="start" value="{{date('Y-m-d')}}"
-                               required>
+                        <input type="date" id="start" class="form-control" name="start" value="{{date('Y-m-d')}}" required>
                     </div>
 
                     <div class="form-group">
