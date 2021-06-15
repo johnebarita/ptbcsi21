@@ -39,6 +39,15 @@ class LoginController extends BaseController
 	/**
 	 * Displays login form or redirects if user is already logged in.
 	 */
+
+	public function index(){
+        if ($this->session->isLoggedIn) {
+            return redirect()->back();
+        }
+
+        return $this->blade->run('auth.login');
+    }
+
 	public function login()
 	{
 		if ($this->session->isLoggedIn) {

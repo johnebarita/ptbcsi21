@@ -11,6 +11,9 @@ class PayrollFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
+        if(!isset(session()->userData)){
+            return redirect()->to('login');
+        }
        if(session()->userData['role']=='Employee'){
            return redirect()->back();
        }
