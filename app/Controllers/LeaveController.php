@@ -12,6 +12,7 @@ namespace App\Controllers;
 use App\Models\Eloquent\LeaveType;
 use App\Models\Eloquent\Employee;
 use App\Models\Eloquent\Leave;
+use App\Models\Eloquent\Overtime;
 
 class LeaveController extends BaseController
 {
@@ -19,8 +20,16 @@ class LeaveController extends BaseController
     public function index()
     {
         $data['view'] = 'leave\index';
-        $data['leaves'] = Leave::with('employee')->with('leave_type')->get();
-        $data['employees'] = Employee::all();
+
+
+        if(session()->userData['role']=='Employee'){
+            $data['leaves'] = Leave::with('employee')->with('leave_type')->where('employee_id',session()->userData['id'])->get();
+            $data['employees'] = Employee::where('id',session()->userData['id'])->get();
+        }else{
+            $data['leaves'] = Leave::with('employee')->with('leave_type')->get();
+            $data['employees'] = Employee::all();
+        }
+
         $data['leave_types'] = LeaveType::all();
 //        return view('template\template', $data);
         return $this->blade->run('request.leave.leave', $data);

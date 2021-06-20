@@ -19,8 +19,13 @@ class OvertimeController extends BaseController
 
     public function index()
     {
-        $data['overtimes'] = Overtime::with('employee')->get();
-        $data['employees'] = Employee::all();
+        if(session()->userData['role']=='Employee'){
+            $data['overtimes'] = Overtime::with('employee')->where('employee_id',session()->userData['id'])->get();
+            $data['employees'] = Employee::where('id',session()->userData['id'])->get();
+        }else{
+            $data['overtimes'] = Overtime::with('employee')->get();
+            $data['employees'] = Employee::all();
+        }
         return $this->blade->run('request.overtime.overtime', $data);
     }
 

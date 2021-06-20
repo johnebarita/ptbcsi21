@@ -824,6 +824,9 @@
                     $('#edit_payroll #phi').val(payroll.phi);
                     $('#edit_payroll #sss').val(payroll.sss);
                     $('#edit_payroll #hdmf').val(payroll.hdmf);
+                    // if (payroll.cash_advance == 0) {
+                    //     $('#edit_payroll #cash_advance').prop('disabled',true);
+                    // }
                     $('#edit_payroll #cash_advance').val(payroll.cash_advance);
                     $('#edit_payroll #sss_loan').val(payroll.sss_loan);
                     $('#edit_payroll #other_deduction').val(payroll.other_deduction);

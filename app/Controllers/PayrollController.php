@@ -79,17 +79,30 @@ class PayrollController extends BaseController
         }])->get();
 
         $period = CarbonPeriod::create($start, $end);
+
         $now = Carbon::now()->format('Y-m-d');
 
         foreach ($employees as $employee) {
 //            $leaves = Leave::where('employee_id',$employee->id)->where('status','accepted')->get();
 //            d($leaves);
             $ca = CashAdvance::where([['employee_id', $employee->id], ['balance', '!=', 0]])->get()->first();
+            $payroll = Payroll::where(['employee_id' => $employee->id, 'from' => $start, 'to' => $end])->get();
+            if (count($payroll) != 0) {
+                $payroll = $payroll[0];
+            } else {
+                $payroll = null;
+            }
+
+
             $daily_rate = $employee->basic_pay;
             $dtr_time = 0;
             $absent = 0;
             $late = 0;
+
             $basic_salary = $employee->monthly_pay / 2;
+            $allowance = ($payroll != null ? $payroll->allowance : $employee->total_allowance);
+
+
             $normal_ot = 0;
 
             // REST DAY AND SUNDAY HOLIDAYS
@@ -115,15 +128,20 @@ class PayrollController extends BaseController
             $total_ot = 0;
             $total_ot_pay = 0;
             $total_holiday_pay = 0;
-            $other_income = 0;
-            $with_tax = 0;
-            $cash_advance = ($ca && Carbon::parse($ca->from) <= Carbon::parse($end) ? ($ca->repayment > $ca->balance ? $ca->balance : $ca->repayment) : 0);
-            $sss = 0;
-            $hdmf = 0;
-            $phi = 0;
-            $sss_loan = 0;
-            $hdmf_loan = 0;
-            $other_deduction = 0;
+            $other_income = $payroll != null ? $payroll->other_income : 0;;
+            $with_tax = $payroll != null ? $payroll->with_tax : 0;;;
+            if ($payroll !== null) {
+                $cash_advance = $payroll->cash_advance;
+            } else {
+                $cash_advance = ($ca && Carbon::parse($ca->from) <= Carbon::parse($end) ? ($ca->repayment > $ca->balance ? $ca->balance : $ca->repayment) : 0);
+            }
+
+            $sss = $payroll != null ? $payroll->sss : 0;;;
+            $hdmf = $payroll != null ? $payroll->hdmf : 0;;;
+            $phi = $payroll != null ? $payroll->phi : 0;;;
+            $sss_loan = $payroll != null ? $payroll->sss_loan : 0;;;
+            $hdmf_loan = $payroll != null ? $payroll->hdmf_loan : 0;;;
+            $other_deduction = $payroll != null ? $payroll->other_deduction : 0;
 
             foreach ($period as $date) {
 
@@ -181,7 +199,7 @@ class PayrollController extends BaseController
                     $dtr_time += (double)$time_sheet->pre;
 
 
-                    $late += (double)$time_sheet->late;
+                    $late += (double)$time_sheet->late * 60;
                     $total_ot += (double)$time_sheet->ot;
                 } elseif ($day != 'Sun' && $now > $d) {
                     //TODO Check absent here;
@@ -189,10 +207,11 @@ class PayrollController extends BaseController
                 }
             }
 
+            $late = ($payroll != null ? ($late >= $payroll->late ? $late : $payroll->late) : $late);
 
             $absent_pay = $absent * $daily_rate;
 
-            $late_pay = ($daily_rate / 480) * $late;
+            $late_pay = ($daily_rate / 480) * ($late);
 
             $basic_salary -= $absent_pay + $late_pay;
 
@@ -219,7 +238,7 @@ class PayrollController extends BaseController
             $total_holiday_pay = $rd_sunday_pre_pay + $rd_regular_pre_pay + $rd_double_pre_pay + $rd_special_pre_pay + $nd_regular_pre_pay + $nd_double_pre_pay + $nd_special_pre_pay;
 
 
-            $gross_pay = $basic_salary + $employee->total_allowance + $rd_sunday_pre_pay + $rd_regular_pre_pay + $rd_double_pre_pay + $rd_special_pre_pay;
+            $gross_pay = $basic_salary + $allowance + $rd_sunday_pre_pay + $rd_regular_pre_pay + $rd_double_pre_pay + $rd_special_pre_pay;
             $gross_pay += $nd_regular_pre_pay + $nd_double_pre_pay + $nd_special_pre_pay;
             $gross_pay += $other_income;
 
@@ -246,8 +265,11 @@ class PayrollController extends BaseController
             $net_pay = $gross_pay - $total_deduction;
 
             $payroll = Payroll::updateOrCreate(
-                ['employee_id' => $employee->id, 'from' => $start, 'to' => $end],
                 [
+                    'employee_id' => $employee->id,
+                    'from' => $start,
+                    'to' => $end
+                ], [
                     'employee_id' => $employee->id,
                     'from' => $start,
                     'to' => $end,
@@ -255,7 +277,7 @@ class PayrollController extends BaseController
                     'absent' => $absent,
                     'late' => $late,
                     'basic_salary' => round($basic_salary, 2),
-                    'allowance' => round($employee->total_allowance, 2),
+                    'allowance' => round($allowance, 2),
                     'normal_ot' => round($normal_ot, 2),
                     'normal_ot_pay' => round($normal_ot_pay, 2),
 
@@ -302,8 +324,8 @@ class PayrollController extends BaseController
                 ]
             );
 
-            if ($ca && Carbon::parse($ca->from) <= Carbon::parse($end)) {
 
+            if ($ca && Carbon::parse($ca->from) <= Carbon::parse($end)) {
                 $ca_detail = CashAdvanceDetail::updateOrCreate([
                     'cash_advance_id' => $ca->id,
                     'payroll_range' => Carbon::createFromFormat('Y-m-d', $start)->format('m-Y') . '-' . $half,
@@ -329,7 +351,28 @@ class PayrollController extends BaseController
         session()->setFlashdata('month', $_POST['month']);
         session()->setFlashdata('year', $_POST['year']);
 
+
+        $payroll_range = $_POST['month'] . '-' . $_POST['year'] . '-' . $_POST['half'];
+
         $payroll = Payroll::find($_POST['id']);
+
+        if ($payroll->cash_advance != $_POST['cash_advance']) {
+            $ca_details = CashAdvanceDetail::where(['payroll_id' => $payroll->id, 'payroll_range' => $payroll_range])->get();
+            if (count($ca_details) != 0) {
+                $ca_details[0]->amount_paid = $_POST['cash_advance'];
+                $ca_details[0]->save();
+                $ca_details = CashAdvanceDetail::where('cash_advance_id', $ca_details[0]->cash_advance_id)->get();
+                $amount_paid = 0;
+                foreach ($ca_details as $detail) {
+                    $amount_paid += $detail->amount_paid;
+                }
+                $ca = CashAdvance::find($ca_details[0]->cash_advance_id);
+                $ca->balance = $ca->amount - $amount_paid;
+                $ca->save();
+
+            }
+        }
+
         $payroll->late = $_POST['late'];
         $payroll->with_tax = $_POST['with_tax'];
         $payroll->phi = $_POST['phi'];
@@ -359,6 +402,7 @@ class PayrollController extends BaseController
         $payroll->other_income = $_POST['other_income'];
         $payroll->edited = true;
         $status = $payroll->save();
+
 
         if (strlen(trim($_POST['note'])) != 0) {
             $payroll->notes()->create(['note' => trim($_POST['note']), 'employee_id' => 1]);

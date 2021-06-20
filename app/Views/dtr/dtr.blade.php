@@ -19,7 +19,7 @@ use Carbon\CarbonPeriod;
                         <div class="flex-sm-grow-1">
                             <form action="{{route_to('dtr.index')}}" id="filter" method="post">
                                 @csrf
-                                <div class="form-group flex ml-auto">
+                                <div class="form-group flex ml-auto ">
                                     <label for="half" class="m-auto pr-2">Filter: </label>
                                     <select class="form-control  mr-2 select-small" name="half" id="half">
                                         <option {{($half == "A" ? "selected" : '') }}>A</option>
@@ -35,12 +35,14 @@ use Carbon\CarbonPeriod;
                                             <option {{($year == $y ? "selected" : '') }}>{{$y}}</option>
                                         @endforeach
                                     </select>
-                                    <select class="form-control mr-2 " type="text" id="selected_employee"
-                                            name="selected_employee">
-                                        @foreach ($employees as $employee)
-                                            <option value={{$employee->id}} {{($selected_employee == $employee->id ? 'selected' : '')}}>{{strtoupper($employee->lastname . ' ' . $employee->firstname . ' ' . $employee->middle)}}</option>
-                                        @endforeach
-                                    </select>
+                                    @if(session()->userData['role']!="Employee")
+                                        <select class="form-control mr-2 " type="text" id="selected_employee"
+                                                name="selected_employee">
+                                            @foreach ($employees as $employee)
+                                                <option value={{$employee->id}} {{($selected_employee == $employee->id ? 'selected' : '')}}>{{strtoupper($employee->lastname . ' ' . $employee->firstname . ' ' . $employee->middle)}}</option>
+                                            @endforeach
+                                        </select>
+                                    @endif
                                     <input type="submit" form="filter" class="btn btn-primary" value="GO"/>
                                 </div>
                             </form>
