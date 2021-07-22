@@ -5,6 +5,7 @@ namespace App\Controllers;
 
 
 use App\Models\Eloquent\CashAdvance;
+use App\Models\Eloquent\CashAdvanceDetail;
 use App\Models\Eloquent\Employee;
 use App\Models\Eloquent\Overtime;
 use App\Models\Eloquent\Schedule;
@@ -41,11 +42,20 @@ class CashAdvanceController extends BaseController
     }
 
     public function update(){
+
         $cash_advance = CashAdvance::where('id',$_POST['cash_advance_id'])->first();
         $cash_advance->request_date= $_POST['request_date'];
         $cash_advance->amount= $_POST['amount'];
         $cash_advance->repayment= $_POST['repayment'];
         $cash_advance->purpose= $_POST['purpose'];
+
+        $ca_details = CashAdvanceDetail::where('cash_advance_id',$_POST['cash_advance_id'])->get();
+        $amount_paid = 0;
+        foreach ($ca_details as $detail){
+            $amount_paid+=$detail->amount_paid;
+        }
+
+        $cash_advance->balance = $cash_advance->amount- $amount_paid;
         $status = $cash_advance->save();
         $key = ($status?"success":"danger");
         $message = ($status?"Cash Advance updated successfully!":"Opps! There is an error while updating the cash advance request.");

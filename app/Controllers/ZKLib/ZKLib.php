@@ -21,7 +21,7 @@ class ZKLib
         $this->_ip = $ip;
         $this->_port = $port;
 
-        $this->_zkclient = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+        $this->_zkclient = socket_create(AF_INET6, SOCK_DGRAM, SOL_UDP);
 
         $timeout = ['sec' => 5, 'usec' => 500000];
         socket_set_option($this->_zkclient, SOL_SOCKET, SO_RCVTIMEO, $timeout);

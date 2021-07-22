@@ -13,8 +13,8 @@
                     @csrf
                     <div class="form-group">
                         <label for="employee_name">Employee Name</label>
-                        <input type="text" hidden id="cash_advance_id" class="form-control" name="cash_advance_id"/>
-                        <input type="text" id="employee_name" class="form-control" disabled/>
+                        <input type="text" hidden id="edit_cash_advance_id" class="form-control" name="cash_advance_id"/>
+                        <input type="text" id="edit_employee_name" class="form-control" disabled/>
                     </div>
                     <div class="form-group">
                         <label for="edit_request_date">Date Requested</label>

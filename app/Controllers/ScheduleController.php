@@ -13,6 +13,7 @@ namespace App\Controllers;
 
 use App\Models\Eloquent\Position;
 use App\Models\Eloquent\Schedule;
+use Carbon\Carbon;
 use http\Client\Request;
 use Symfony\Contracts\EventDispatcher\Event;
 
@@ -71,7 +72,15 @@ class ScheduleController extends BaseController
             $flag = "Schedule already exist!";
             $status = false;
         } else {
-            $status = $schedule->save();
+
+            $now =  Carbon::now()->format('d');
+            if(count($schedule->positions) !=0 && $now!=1 || $now!=16 ){
+                $key = "danger";
+                $message = "Schedule can only be updated at the beginning of the payroll period";
+                return redirect()->route('schedule.index')->with('status', ['key' => $key, 'message' => $message]);
+            }else{
+                $status = $schedule->save();
+            }
         }
         $key = ($status ? "success" : "danger");
         $message = ($status ? "Schedule updated successfully!" : ($flag ?? "Opps! There is an error while updating the schedule."));

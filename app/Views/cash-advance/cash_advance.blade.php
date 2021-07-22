@@ -24,6 +24,7 @@
                                 <th>Repayment</th>
                                 <th>Balance</th>
                                 <th>Status</th>
+                                <th hidden>Status</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
@@ -38,6 +39,7 @@
                                     <td>{{ $cash_advance->repayment }}</td>
                                     <td>{{ $cash_advance->balance }}</td>
                                     <td>{{ $cash_advance->paid }}</td>
+                                    <td hidden>{{ $cash_advance->purpose }}</td>
                                     <td>
                                         <div class="flex">
                                             <a href="#" data-id="{{ $cash_advance->id }}"

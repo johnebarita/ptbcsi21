@@ -15,6 +15,7 @@ use App\Models\Eloquent\Employee;
 use App\Models\Eloquent\Position;
 use App\Models\Eloquent\Address;
 use App\Models\Eloquent\Schedule;
+use Carbon\Carbon;
 
 class EmployeeController extends BaseController
 {
@@ -94,10 +95,10 @@ class EmployeeController extends BaseController
             ]);
             $status = $employee->wasRecentlyCreated;
 
-            //        if($this->zk->connect()){
-//            $this->zk->setUser($employee->id, $employee->id, strtoupper($employee->lastname . ' ' . $employee->firstname),'');
-//            $this->zk->disconnect();
-//        }
+            if ($this->zk->connect()) {
+                $this->zk->setUser($employee->id, $employee->id, strtoupper($employee->lastname . ' ' . $employee->firstname), '');
+                $this->zk->disconnect();
+            }
         } else {
             $status = false;
         }
@@ -113,21 +114,29 @@ class EmployeeController extends BaseController
 
         $schedule = Schedule::where([
             ['morning_in', '=', $_POST['morning_in']],
-            ['morning_out', '=',$_POST['morning_out']],
-            ['afternoon_in', '=',$_POST['afternoon_in']],
+            ['morning_out', '=', $_POST['morning_out']],
+            ['afternoon_in', '=', $_POST['afternoon_in']],
             ['afternoon_out', '=', $_POST['afternoon_out']],
             ['working_days', '=', implode(',', $_POST['working_days'])],
         ])->first();
 
+
         if ($schedule == null) {
-            $schedule = Schedule::create([
-                'morning_in' => $_POST['morning_in'],
-                'morning_out' => $_POST['morning_out'],
-                'afternoon_in' => $_POST['afternoon_in'],
-                'afternoon_out' => $_POST['afternoon_out'],
-                'working_days' => implode(',', $_POST['working_days']),
-                'custom' => true
-            ]);
+            $now = Carbon::now()->format('d');
+//            if ($now == 1 || $now == 16) {
+                $schedule = Schedule::create([
+                    'morning_in' => $_POST['morning_in'],
+                    'morning_out' => $_POST['morning_out'],
+                    'afternoon_in' => $_POST['afternoon_in'],
+                    'afternoon_out' => $_POST['afternoon_out'],
+                    'working_days' => implode(',', $_POST['working_days']),
+                    'custom' => true
+                ]);
+//            }else{
+//                $key = "danger";
+//                $message = "Schedule can only be updated at the beginning of the payroll period";
+//                return redirect()->route('employee.index')->with('status', ['key' => $key, 'message' => $message]);
+//            }
         }
 
         if ($schedule->wasRecentlyCreated) {
@@ -136,7 +145,7 @@ class EmployeeController extends BaseController
             $schedule_id = $schedule->id;
         } elseif ($schedule->custom == true) {
             $schedule_id = $schedule->id;
-        }else{
+        } else {
             $schedule_id = null;
         }
 
@@ -183,12 +192,15 @@ class EmployeeController extends BaseController
         return redirect()->route('employee.index')->with('status', ['key' => $key, 'message' => $message]);
     }
 
-    public function delete(){
+    public function delete()
+    {
         $employee = Employee::find($_POST['id']);
         $employee->delete();
         return redirect()->route('employee.index');
     }
-    public function restore(){
+
+    public function restore()
+    {
         $employee = Employee::withTrashed()->find($_POST['id']);
         $employee->restore();
         return redirect()->route('employee.index');

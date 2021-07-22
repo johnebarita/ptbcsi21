@@ -11,6 +11,7 @@ namespace App\Controllers;
 
 use App\Controllers\ZKLib\ZKController;
 use App\Models\Eloquent\AttendanceSummary;
+use App\Models\Eloquent\CiSession;
 use App\Models\Eloquent\Employee;
 use App\Models\Eloquent\Holiday;
 use App\Models\Eloquent\Position;
@@ -36,6 +37,10 @@ class DashboardController extends BaseController
 
     public function index()
     {
+
+//            $session = CiSession::all();
+//            dd($session);
+
 //        dd($this->session->userData['role']);
         $employees = Employee::all();
 

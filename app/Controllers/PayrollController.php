@@ -130,11 +130,13 @@ class PayrollController extends BaseController
             $total_holiday_pay = 0;
             $other_income = $payroll != null ? $payroll->other_income : 0;;
             $with_tax = $payroll != null ? $payroll->with_tax : 0;;;
-            if ($payroll !== null) {
-                $cash_advance = $payroll->cash_advance;
-            } else {
+//            if ($payroll !== null) {
+//                $cash_advance = $payroll->cash_advance;
+//            } else {
                 $cash_advance = ($ca && Carbon::parse($ca->from) <= Carbon::parse($end) ? ($ca->repayment > $ca->balance ? $ca->balance : $ca->repayment) : 0);
-            }
+//            }
+
+//            dd($cash_advance);
 
             $sss = $payroll != null ? $payroll->sss : 0;;;
             $hdmf = $payroll != null ? $payroll->hdmf : 0;;;

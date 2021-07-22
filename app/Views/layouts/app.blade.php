@@ -729,12 +729,12 @@
                 return $(this).text();
             }).get();
 
-            $('#edit_cash_advance #cash_advance_id').val(id);
-            $('#edit_cash_advance #employee_name').val(data[1]);
-            $('#edit_cash_advance #request_date').val(data[0]);
-            $('#edit_cash_advance #amount').val(data[4]);
-            $('#edit_cash_advance #repayment').val(data[5]);
-            $('#edit_cash_advance #purpose').val(data[7]);
+            $('#edit_cash_advance #edit_cash_advance_id').val(id);
+            $('#edit_cash_advance #edit_employee_name').val(data[1]);
+            $('#edit_cash_advance #edit_request_date').val(data[0]);
+            $('#edit_cash_advance #edit_amount').val(data[4]);
+            $('#edit_cash_advance #edit_repayment').val(data[5]);
+            $('#edit_cash_advance #edit_purpose').val(data[8]);
         });
 
         $('.delete_cash_advance').on('click', function () {

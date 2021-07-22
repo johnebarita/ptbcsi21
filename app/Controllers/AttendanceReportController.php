@@ -15,12 +15,8 @@ class AttendanceReportController extends BaseController
 
     public function index()
     {
+        $data['filter'] = 'monthly';
 
-        $data = [
-            'blog_title' => 'My Blog Title',
-            'blog_heading' => 'My Blog Heading'
-        ];
-
-        return $this->blade->run('reports.attendance.index', $data);
+        return $this->blade->run('reports.attendance.attendance', $data);
     }
 }

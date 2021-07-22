@@ -36,7 +36,6 @@ $routes->setAutoRoute(true);
 //$routes->get('login','Auth\login::index',['as'=>'login.index']);
 //$routes->post('login','Auth\Login::login',['as'=>'login.login']);
 //$routes->get('logout','Auth\Login::logout',['as'=>'login.logout']);
-
 $routes->group('', ['filter' => 'auth'], function ($routes) {
 
     $routes->group('dtr', function ($routes) {
@@ -162,6 +161,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
             $routes->group('attendance-report', function ($routes) {
                 $routes->get('', 'AttendanceReportController::index', ['as' => 'attendance-report.index']);
+                $routes->post('', 'AttendanceReportController::index', ['as' => 'attendance-report.index']);
                 $routes->post('create', 'AttendanceReportController::create', ['as' => 'attendance-report.create']);
                 $routes->post('update', 'AttendanceReportController::update', ['as' => 'attendance-report.update']);
             });
@@ -199,6 +199,9 @@ $routes->group('', ['namespace' => 'App\Controllers\Auth'], function ($routes) {
 });
 
 $routes->cli('cli-push', 'Cli/AttendancePusher::push');
+
+
+
 /**
  * --------------------------------------------------------------------
  * Additional Routing

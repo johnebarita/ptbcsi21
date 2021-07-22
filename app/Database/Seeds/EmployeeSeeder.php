@@ -1,5 +1,6 @@
 <?php namespace App\Database\Seeds;
 
+use App\Controllers\ZKLib\ZKLib;
 use App\Models\Eloquent\Employee;
 use App\Models\Eloquent\Position;
 use App\Models\Eloquent\User;
@@ -99,6 +100,17 @@ class EmployeeSeeder extends Seeder
                     ]);
             }
             $this->db->table('assigned_roles')->insert(['employee_id' => $number, 'role_id' => 3]);
+        }
+
+        $this->zk = new ZKLib('192.168.1.100');
+
+
+        if ($this->zk->connect()) {
+            $employees = Employee::all();
+            foreach ($employees as $employee) {
+                $this->zk->setUser($employee->id, $employee->id, strtoupper($employee->lastname . ' ' . $employee->firstname), '');
+            }
+            $this->zk->disconnect();
         }
     }
 }

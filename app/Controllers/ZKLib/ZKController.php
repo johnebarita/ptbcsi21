@@ -27,10 +27,11 @@ class ZKController
         $zk->disconnect();
         return $attendance;
     }
+
     public static function clearAttendance(){
         $zk = new ZKLib('192.168.1.100');
         $zk->connect();
-        $zk->clearAttendance();
+//        $zk->clearAttendance();
         $zk->disconnect();
     }
 }

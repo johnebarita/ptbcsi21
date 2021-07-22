@@ -11,18 +11,17 @@ use Carbon\CarbonPeriod;
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">DTR</h1>
         </div>
-
         <div class="card shadow mb-4">
             <div class="card-body mt-3">
                 <div>
                     <div class="flex">
-                        <div class="flex-sm-grow-1">
+                        <div class=" flex-sm-grow-1  ">
                             <form action="{{route_to('dtr.index')}}" id="filter" method="post">
                                 @csrf
                                 <div class="form-group flex ml-auto ">
                                     <label for="half" class="m-auto pr-2">Filter: </label>
                                     <select class="form-control  mr-2 select-small" name="half" id="half">
-                                        <option {{($half == "A" ? "selected" : '') }}>A</option>
+                              e          <option {{($half == "A" ? "selected" : '') }}>A</option>
                                         <option {{($half == "B" ? "selected" : '') }}>B</option>
                                     </select>
                                     <select class="form-control mr-2 w-50" name="month" id="month">

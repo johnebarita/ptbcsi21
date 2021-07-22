@@ -50,6 +50,10 @@ class BaseController extends Controller
         $this->session = \Config\Services::session();
         $this->security = \Config\Services::security();
         $this->zk = new ZKLib('192.168.1.100');
+//        $status = $this->zk->connect();
+//        if($status){
+//            $this->zk->setTime(Carbon::now()->timezone('GMT+8')->format('h:i'));
+//        }
 
         $views = __DIR__ . '/../Views';
         $cache = __DIR__ . '/cache';
