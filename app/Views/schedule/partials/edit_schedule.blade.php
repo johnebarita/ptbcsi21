@@ -38,7 +38,7 @@
                             @foreach(range(0,6) as $number)
                                 <?php $first = new \Carbon\Carbon('first Monday of January');?>
                                 <div class="form-check">
-                                    <input type="checkbox" class="form-check-input working_days" id="edit_{{$number}}-day" value="{{$number}}" name="working_days[]">
+                                    <input type="checkbox" class="form-check-input edit_working_days" id="edit_{{$number}}-day" value="{{$number}}" name="working_days[]">
                                     <label class="form-check-label" for="{{$number}}-day">{{$first->addDays($number)->format('l')}}</label>
                                 </div>
                             @endforeach

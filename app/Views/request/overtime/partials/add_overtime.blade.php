@@ -26,13 +26,13 @@
                     </div>
                     <div class="form-group">
                         <label for="overtime_in">Overtime In</label>
-                        <input type="time" class="form-control" id="overtime_in" name="overtime_in" value="17:00" =""
+                        <input type="time" class="form-control" id="overtime_in" name="overtime_in" value="17:00"
                         required="">
                     </div>
 
                     <div class="form-group">
                         <label for="overtime_out">Overtime Out</label>
-                        <input type="time" class="form-control" id="overtime_out" name="overtime_out" value="20:00" =""
+                        <input type="time" class="form-control" id="overtime_out" name="overtime_out" value="20:00"
                         required="">
                     </div>
                     <div class="form-group">

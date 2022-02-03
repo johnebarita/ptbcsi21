@@ -21,7 +21,8 @@ class ScheduleController extends BaseController
 {
     public function index()
     {
-        $data['schedules'] = Schedule::all();
+        $data['schedules'] = Schedule::with('positions')->where('custom',0)->get();
+
         return $this->blade->run('schedule.schedule', $data);
     }
 
@@ -72,7 +73,6 @@ class ScheduleController extends BaseController
             $flag = "Schedule already exist!";
             $status = false;
         } else {
-
             $now =  Carbon::now()->format('d');
             if(count($schedule->positions) !=0 && $now!=1 || $now!=16 ){
                 $key = "danger";

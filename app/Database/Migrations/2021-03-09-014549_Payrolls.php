@@ -145,6 +145,12 @@ class Payrolls extends Migration
             'cash_advance' => [
                 'type' => 'DOUBLE',
             ],
+            'skip_cash_advance' => [
+                'type' => 'tinyint',
+                'constraint' => 1,
+                'null' => 0,
+                'default' => 0
+            ],
             'sss_loan' => [
                 'type' => 'DOUBLE',
             ],
@@ -160,7 +166,6 @@ class Payrolls extends Migration
             'net_pay' => [
                 'type' => 'DOUBLE',
             ],
-
             'can_ot' => [
                 'type' => 'TINYINT',
                 'constraint' => '1',

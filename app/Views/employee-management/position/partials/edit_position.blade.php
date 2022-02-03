@@ -9,29 +9,55 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{route_to('position.update')}}" method="post" id="edit_position">
+                <form action="{{route_to('position.update')}}" method="post" id="edit_position_form">
                    @csrf
                     <div class="form-group">
                         <label for="position">Position</label>
-                        <input type="text" class="form-control" id="id" name="id" value="" hidden>
-                        <input type="text" class="form-control" id="position" name="position" required="">
+                        <input type="text" class="form-control" id="edit_id" name="id" value="" hidden>
+                        <input type="text" class="form-control" id="edit_position" name="position" required="">
+                        <input type="text" class="form-control" id="edit_schedule_id" name="schedule_id" hidden>
                     </div>
 
                     <div class="form-group">
                         <label for="rate">Rate</label>
-                        <input type="text" class="form-control" id="rate" name="rate" required="">
+                        <input type="text" class="form-control" id="edit_rate" name="rate" required="">
                     </div>
 
-                    <div class="form-group">
-                        <label for="schedule_id">Schedule</label>
-                        <select class="form-control" type="number" id="schedule_id" name="schedule_id">
-                            @foreach ($schedules as $schedule)
-                                <option value={{$schedule->id}}>
-                                    {{ \Carbon\Carbon::createFromFormat('G:i', $schedule->time_in)->format('h:i A').' - '.
-                                    \Carbon\Carbon::createFromFormat('G:i', $schedule->time_out)->format('h:i A')}}
-                                </option>
+                    <div class="flex w-100">
+                        <div class="form-group w-50 mr-2">
+                            <label for="morning_in">Morning In</label>
+                            <input type="time" class="form-control" id="edit_morning_in" name="morning_in" required>
+                        </div>
+
+                        <div class="form-group w-50 ml-2">
+                            <label for="morning_out">Morning Out</label>
+                            <input type="time" class="form-control" id="edit_morning_out" name="morning_out" required>
+                        </div>
+                    </div>
+
+                    <div class="flex w-100">
+                        <div class="form-group w-50 mr-2">
+                            <label for="afternoon_in">Afternoon In</label>
+                            <input type="time" class="form-control" id="edit_afternoon_in" name="afternoon_in" required>
+                        </div>
+
+                        <div class="form-group w-50 ml-2">
+                            <label for="afternoon_out">Afternoon Out</label>
+                            <input type="time" class="form-control" id="edit_afternoon_out" name="afternoon_out" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="afternoon_out">Working Days</label>
+                        <div class="ml-2">
+                            @foreach(range(0,6) as $number)
+                                <?php $first = new \Carbon\Carbon('first Monday of January');?>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input working_days" id="edit_{{$number}}-day" value="{{$number}}" name="working_days[]">
+                                    <label class="form-check-label" for="{{$number}}-day">{{$first->addDays($number)->format('l')}}</label>
+                                </div>
                             @endforeach
-                        </select>
+                        </div>
                     </div>
                     <div class="modal-footer mt-5">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>

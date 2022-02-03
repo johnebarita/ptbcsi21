@@ -13,13 +13,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Schedule extends Model
 {
-    protected $guarded=[];
+    protected $guarded = [];
 
-    public function positions(){
+    public function positions()
+    {
         return $this->hasMany(Position::class);
     }
 
-    public function employee(){
+    public function employee()
+    {
         return $this->hasMany(Employee::class);
     }
+
 }

@@ -31,7 +31,7 @@ class Overtimes extends Migration
             'overtime_out' => [
                 'type' => 'VARCHAR',
                 'constraint' => '50',
-
+                'default' => '',
             ],
             'note' => [
                 'type' => 'VARCHAR',

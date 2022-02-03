@@ -18,27 +18,22 @@
                         <tr>
                             <th>Position</th>
                             <th>Rate</th>
-                            <th>Schedule</th>
+                            <th>Morning In</th>
+                            <th>Morning Out</th>
+                            <th>Afternoon In</th>
+                            <th>Afternoon Out</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach ($positions as $position)
-                            <tr>
+                            <tr data-schedule="{{$position->schedule->working_days}}" data-id="{{$position->schedule->id}}">
                                 <td>{{$position->position}}</td>
                                 <td>{{$position->rate}}</td>
-                                <td data-id="{{$position->schedule->id}}">{{ \Carbon\Carbon::createFromFormat('G:i', $position->schedule->morning_in)->format('h:i A') . ' - ' .
-                            \Carbon\Carbon::createFromFormat('G:i', $position->schedule->afternoon_out)->format('h:i A')}}
-                                    (<span>
-                                        @foreach(explode(',',$position->schedule->working_days) as $key=>$day)
-                                            <?php $first = new \Carbon\Carbon('first Monday of January');?>
-                                            {{$first->addDays($day)->format('D')}}
-                                            @if($key<count(explode(',',$position->schedule->working_days))-1)
-                                                {{',  '}}
-                                            @endif
-                                        @endforeach
-                                    </span>)
-                                </td>
+                                <td>{{ $time = \Carbon\Carbon::createFromFormat('G:i', $position->schedule->morning_in)->format('h:i A')}}</td>
+                                <td>{{ $time = \Carbon\Carbon::createFromFormat('G:i', $position->schedule->morning_out)->format('h:i A')}}</td>
+                                <td>{{ $time = \Carbon\Carbon::createFromFormat('G:i', $position->schedule->afternoon_in)->format('h:i A')}}</td>
+                                <td>{{ $time = \Carbon\Carbon::createFromFormat('G:i', $position->schedule->afternoon_out)->format('h:i A')}}</td>
                                 <td>
                                     <div class="flex">
                                         <a href="#" data-id="{{$position->id}}" title="test"
@@ -60,7 +55,7 @@
         </div>
 
                @include('employee-management.position.partials.add_position')
-{{--               @include('employee-management.position.partials.edit_position')--}}
-{{--               @include('employee-management.position.partials.delete_position')--}}
+               @include('employee-management.position.partials.edit_position')
+               @include('employee-management.position.partials.delete_position')
     </div>
 @endsection

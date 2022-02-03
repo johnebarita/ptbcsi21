@@ -112,42 +112,35 @@ class EmployeeController extends BaseController
     public function update()
     {
 
-        $schedule = Schedule::where([
-            ['morning_in', '=', $_POST['morning_in']],
-            ['morning_out', '=', $_POST['morning_out']],
-            ['afternoon_in', '=', $_POST['afternoon_in']],
-            ['afternoon_out', '=', $_POST['afternoon_out']],
-            ['working_days', '=', implode(',', $_POST['working_days'])],
-        ])->first();
+        $schedule = Schedule::find($_POST['schedule_id']);
+        $schedule->morning_in = $_POST['morning_in'];
+        $schedule->morning_out = $_POST['morning_out'];
+        $schedule->afternoon_in = $_POST['afternoon_in'];
+        $schedule->afternoon_out = $_POST['afternoon_out'];
+        $schedule->working_days = implode(',', $_POST['working_days']);
 
-
-        if ($schedule == null) {
+        if ($schedule->isDirty()) {
             $now = Carbon::now()->format('d');
-//            if ($now == 1 || $now == 16) {
-                $schedule = Schedule::create([
-                    'morning_in' => $_POST['morning_in'],
-                    'morning_out' => $_POST['morning_out'],
-                    'afternoon_in' => $_POST['afternoon_in'],
-                    'afternoon_out' => $_POST['afternoon_out'],
-                    'working_days' => implode(',', $_POST['working_days']),
-                    'custom' => true
-                ]);
-//            }else{
-//                $key = "danger";
-//                $message = "Schedule can only be updated at the beginning of the payroll period";
-//                return redirect()->route('employee.index')->with('status', ['key' => $key, 'message' => $message]);
-//            }
+            if ($now == 1 || $now == 16) {
+                if ($_POST['schedule_type'] == 'employee') {
+                    $schedule->save();
+                } else {
+                    $schedule = Schedule::create([
+                        'morning_in' => $_POST['morning_in'],
+                        'morning_out' => $_POST['morning_out'],
+                        'afternoon_in' => $_POST['afternoon_in'],
+                        'afternoon_out' => $_POST['afternoon_out'],
+                        'working_days' => implode(',', $_POST['working_days']),
+                        'custom' => true
+                    ]);
+                }
+            } else {
+                $key = "danger";
+                $message = "Schedule can only be updated at the beginning of the payroll period";
+                return redirect()->route('employee.index')->with('status', ['key' => $key, 'message' => $message]);
+            }
         }
 
-        if ($schedule->wasRecentlyCreated) {
-            $schedule->custom = 1;
-            $schedule->save();
-            $schedule_id = $schedule->id;
-        } elseif ($schedule->custom == true) {
-            $schedule_id = $schedule->id;
-        } else {
-            $schedule_id = null;
-        }
 
         $total_allowance = ($_POST['transportation_allowance'] == '' ? 0 : $_POST['transportation_allowance']) +
             ($_POST['meal_allowance'] == '' ? 0 : $_POST['meal_allowance']) +
@@ -177,7 +170,7 @@ class EmployeeController extends BaseController
         $employee->position_id = $_POST['position_id'];
         $employee->monthly_pay = round($_POST['monthly_pay'], 2);
         $employee->basic_pay = round($_POST['monthly_pay'] * 12 / 313, 2);//todo update basic pay based on his schedule
-        $employee->schedule_id = $schedule_id;
+        $employee->schedule_id = $schedule->id;
         $employee->is_fixed_salary = $_POST['is_fixed_salary'];
         $employee->can_ot = $_POST['can_ot'];
         $employee->transportation_allowance = $_POST['transportation_allowance'] == '' ? 0 : $_POST['transportation_allowance'];

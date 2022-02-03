@@ -32,6 +32,12 @@ class CashAdvanceDetails extends Migration
             'amount_paid' => [
                 'type' => 'DOUBLE',
             ],
+            'amount_changed' => [
+                'type' => 'tinyint',
+                'constraint' => 1,
+                'null' => 0,
+                'default' => 0
+            ],
             'created_at datetime default current_timestamp',
             'updated_at datetime default current_timestamp on update current_timestamp',
         ]);

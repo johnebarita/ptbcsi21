@@ -10,9 +10,9 @@
             </div>
             <div class="modal-body">Are you sure you want to delete this position?</div>
             <div class="modal-footer">
-                <form action="{{route_to('position.delete')}}" method="post" id="add_position">
+                <form action="{{route_to('position.delete')}}" method="post" id="delete_position">
                    @csrf
-                    <input type="text" name="id" id="id" value="" hidden>
+                    <input type="text" name="id" id="delete_id" value="" hidden>
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                     <input class="btn btn-danger" type="submit" value="Delete"/>
                 </form>

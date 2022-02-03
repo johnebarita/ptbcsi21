@@ -28,20 +28,22 @@
 
                         @foreach ($overtimes as $overtime)
                             <tr>
-                                <td>{{ Carbon::createFromFormat('Y-m-d H:i:s', $overtime->created_at)->format('Y-m-d')}}</td>
+                                <td>{{ Carbon::createFromFormat('Y-m-d', $overtime->request_date)->format('Y-m-d')}}</td>
                                 <td>{{strtoupper($overtime->employee->lastname . ' ' . $overtime->employee->firstname . ' ' . $overtime->employee->middle)}}</td>
                                 <td>{{ Carbon::createFromFormat('G:i', $overtime->overtime_in)->format('h:i A')}}</td>
-                                <td>{{ Carbon::createFromFormat('G:i', $overtime->overtime_out)->format('h:i A')}}</td>
+                                <td>{{ $overtime->overtime_out!=''? Carbon::createFromFormat('G:i', $overtime->overtime_out)->format('h:i A'):'TBD'}}</td>
                                 <td>{{ $overtime->note}}</td>
                                 <td>{{ ucfirst($overtime->status)}}</td>
                                 <td>
                                     <div class="flex">
+                                        @if(session()->userData['role']!='Employee')
                                         <a href="#" data-id="{{$overtime->id}}"
                                            class="btn btn-success btn-circle btn-sm m-auto accept_overtime">
                                             <i class="fas fa-check"></i>
                                         </a>
+                                        @endif
                                         <a href="#" data-id="{{$overtime->id}}"
-                                           class="btn btn-danger btn-circle btn-sm m-auto reject_overtime">
+                                           class="btn btn-danger btn-circle btn-sm m-auto reject_overtime {{$overtime->status=='accepted' && session()->userData['role']=='Employee' ?'disabled':''}}">
                                             <i class="fas fa-trash fa-sm"></i>
                                         </a>
                                     </div>

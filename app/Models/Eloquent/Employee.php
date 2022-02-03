@@ -37,6 +37,10 @@ class Employee extends Model
         return $this->hasMany(CashAdvance::class);
     }
 
+    public function cash_advance(){
+        return $this->hasOne(CashAdvance::class)->where('balance'!=0);
+    }
+
     public function schedule(){
         return $this->belongsTo(Schedule::class);
     }

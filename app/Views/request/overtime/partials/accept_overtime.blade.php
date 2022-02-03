@@ -12,8 +12,9 @@
             <div class="modal-footer">
                 <form action="{{route_to('overtime.update')}}" method="post" id="accept_overtime">
                    @csrf
-                    <input type="text" name="id" id="id" value="" hidden/>
-                    <input type="text" name="status" id="status" value="accepted" hidden/>
+                    <input type="text" name="id" id="accept_id" value="" hidden/>
+                    <input type="text" name="status" id="accept_status" value="accepted" hidden/>
+                    <input type="text" name="action" id="accept_action" value="accept" hidden/>
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                     <input class="btn btn-primary"  type="submit" value="Accept"/>
                 </form>

@@ -14,6 +14,10 @@ class CashAdvance extends Model
         return $this->belongsTo(Employee::class);
     }
 
+    public function cash_advance_detail(){
+        return $this->hasOne(CashAdvanceDetail::class)->latest();
+    }
+
     public function cash_advance_details(){
         return $this->hasMany(CashAdvanceDetail::class);
     }

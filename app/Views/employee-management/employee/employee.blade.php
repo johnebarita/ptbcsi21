@@ -29,17 +29,7 @@
                                 <td>
                                     {{\Carbon\Carbon::createFromFormat('G:i', $employee->position->schedule->morning_in)->format('h:i A').' - '.
                                       \Carbon\Carbon::createFromFormat('G:i', $employee->position->schedule->afternoon_out)->format('h:i A').''}}
-                                    (<span>
-                                        @foreach(explode(',',$employee->position->schedule->working_days) as $key=>$day)
-                                            <?php $first = new \Carbon\Carbon('first Monday of January');?>
-                                            {{$first->addDays($day)->format('D')}}
-                                            @if($key<count(explode(',',$employee->position->schedule->working_days))-1)
-                                                {{',  '}}
-                                            @endif
-                                        @endforeach
-                                    </span>)
                                 </td>
-                                {{--                                <td>{{$employee->date_hired}}</td>--}}
                                 <td>{{\Carbon\Carbon::now()->format('Y-m-d')}}</td>
                                 <td>
                                     <div class="flex">

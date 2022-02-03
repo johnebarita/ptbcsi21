@@ -12,6 +12,9 @@
                 <form action="{{ route_to('employee.update') }}" method="post">
                     @csrf
                     <input type="text" id="edit_id" name="id" hidden>
+                    <input type="text" id="edit_schedule_id" name="schedule_id" hidden>
+                    <input type="text" id="edit_schedule_type" name="schedule_type" hidden>
+
                     <div class="font-weight-bold mb-2">BASIC INFORMATION</div>
                     <div class="form-row">
                         <div class="col-md-27 mb-2">

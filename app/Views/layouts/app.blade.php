@@ -406,13 +406,12 @@
                 return $(this).text();
             }).get();
             var working_days = $(this).data('days');
-
             $('#edit_schedule #edit_id').val(id);
-            $('#edit_schedule #edit_morning_in').val(convertTo24Hour(data[0]));
-            $('#edit_schedule #edit_morning_out').val(convertTo24Hour(data[1]));
-            $('#edit_schedule #edit_afternoon_in').val(convertTo24Hour(data[2]));
-            $('#edit_schedule #edit_afternoon_out').val(convertTo24Hour(data[3]));
-            $('#edit_schedule .working_days').each(function (index) {
+            $('#edit_schedule #edit_morning_in').val(convertTo24Hour(data[1]));
+            $('#edit_schedule #edit_morning_out').val(convertTo24Hour(data[2]));
+            $('#edit_schedule #edit_afternoon_in').val(convertTo24Hour(data[3]));
+            $('#edit_schedule #edit_afternoon_out').val(convertTo24Hour(data[4]));
+            $('#edit_schedule .edit_working_days').each(function (index) {
                 if (working_days.includes(index)) {
                     $(this).prop("checked", true);
                 }
@@ -432,31 +431,42 @@
             var data = tr.children("td").map(function () {
                 return $(this).text();
             }).get();
-            var schedule = $(tr.children("td")[2]).data('id');
+            var working_days = $(tr).data('schedule').split(',');
+            var schedule_id = $(tr).data('id');
 
-            $('#edit_position #id').val(id);
-            $('#edit_position #position').val(data[0]);
-            $('#edit_position #rate').val(data[1]);
-            $('#edit_position #schedule_id').val(schedule)
+            $('#edit_position #edit_id').val(id);
+            $('#edit_position #edit_schedule_id').val(schedule_id);
+            $('#edit_position #edit_position').val(data[0]);
+            $('#edit_position #edit_rate').val(data[1]);
+            $('#edit_position #edit_morning_in').val(convertTo24Hour(data[2]));
+            $('#edit_position #edit_morning_out').val(convertTo24Hour(data[3]));
+            $('#edit_position #edit_afternoon_in').val(convertTo24Hour(data[4]));
+            $('#edit_position #edit_afternoon_out').val(convertTo24Hour(data[5]));
+
+            $('#edit_position .working_days').each(function (index) {
+                if (working_days.includes(String.fromCharCode(48 + index))) {
+                    $(this).prop("checked", true);
+                }
+            });
 
         });
 
         $('.delete_position').on('click', function () {
             $('#delete_position').modal('show');
             var id = $(this).data('id');
-            $('#delete_position #id').val(id);
+            $('#delete_position #delete_id').val(id);
         });
 
         $('.accept_overtime').on('click', function () {
             $('#accept_overtime').modal('show');
             var id = $(this).data('id');
-            $('#accept_overtime #id').val(id);
+            $('#accept_overtime #accept_id').val(id);
         });
 
         $('.reject_overtime').on('click', function () {
             $('#reject_overtime').modal('show');
             var id = $(this).data('id');
-            $('#reject_overtime #id').val(id);
+            $('#reject_overtime #reject_id').val(id);
         });
 
         $('.accept_leave').on('click', function () {
@@ -571,6 +581,10 @@
 
         setInputFilter(document.getElementsByClassName("late-m"), function (value) {
             return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 59);
+        });
+
+        setInputFilter(document.getElementsByClassName("edit-payroll-num-input"), function (value) {
+            return /^\d*$/.test(value) && (value === "" || parseInt(value) >= 0);
         });
 
         $('.time_h_input').on('blur', function () {
@@ -850,7 +864,13 @@
                     $('#edit_payroll #nd_double_pay').val(payroll.nd_double_pay);
                     $('#edit_payroll #allowance').val(payroll.allowance);
                     $('#edit_payroll #other_income').val(payroll.other_income);
-                    console.log(payroll);
+                    if(payroll.skip_cash_advance==0 && payroll.cash_advance == 0){
+                        $('#edit_payroll #cash_advance').prop('disabled', true);
+                    }else{
+                        $('#edit_payroll #cash_advance').prop('disabled', false);
+                    }
+                    console.log(payroll.skip_cash_advance);
+
                 }
             });
         });
@@ -1019,8 +1039,10 @@
                     $('#edit_employee #edit_pagibig_no').val(employee.pagibig_no);
                     $('#edit_employee #edit_is_active').val(employee.is_active);
                     $('#edit_employee #edit_position_id').val(employee.position_id);
-                    $('#edit_employee #edit_monthly_pay').val(employee.monthly_pay);
+                    $('#edit_employee #edit_monthly_pay').val(employee.monthly_pay)
                     if (employee.schedule == null) {
+                        $('#edit_employee #edit_schedule_id').val(employee.position.schedule.id);
+                        $('#edit_employee #edit_schedule_type').val('position');
                         $('#edit_employee #edit_morning_in').val(employee.position.schedule.morning_in);
                         $('#edit_employee #edit_morning_out').val(employee.position.schedule.morning_out);
                         $('#edit_employee #edit_afternoon_in').val(employee.position.schedule.afternoon_in);
@@ -1031,6 +1053,8 @@
                             }
                         });
                     } else {
+                        $('#edit_employee #edit_schedule_id').val(employee.schedule.id);
+                        $('#edit_employee #edit_schedule_type').val('employee');
                         $('#edit_employee #edit_morning_in').val(employee.schedule.morning_in);
                         $('#edit_employee #edit_morning_out').val(employee.schedule.morning_out);
                         $('#edit_employee #edit_afternoon_in').val(employee.schedule.afternoon_in);
@@ -1152,9 +1176,11 @@
 
         $('.delete_bug_report').on('click', function () {
             $('#delete_bug_report').modal('show');
+            $('#delete_bug_report').modal('show');
             var id = $(this).data('id');
             $('#delete_bug_report #delete_id').val(id);
         });
+
     })(jQuery);
 </script>
 `

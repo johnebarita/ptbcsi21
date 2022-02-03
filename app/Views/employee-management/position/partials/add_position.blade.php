@@ -18,20 +18,36 @@
 
                     <div class="form-group">
                         <label for="rate">Rate</label>
-                        <input type="text" class="form-control" id="rate" name="rate" required="">
+                        <input type="number" class="form-control" id="rate" name="rate" required="">
+                    </div>
+                    <div class="flex w-100">
+                        <div class="form-group w-50 mr-2">
+                            <label for="morning_in">Morning In</label>
+                            <input type="time" class="form-control" id="add_morning_in" name="morning_in" value="08:00"
+                                   required>
+                        </div>
+
+                        <div class="form-group w-50 ml-2">
+                            <label for="morning_out">Morning Out</label>
+                            <input type="time" class="form-control" id="add_morning_out" name="morning_out" value="12:00"
+                                   required>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="schedule_id">Schedule</label>
-                        <select class="form-control" type="number" id="schedule_id" name="schedule_id">
-                            @foreach ($schedules as $schedule)
-                                <option value={{$schedule->id}}>
-                                    {{ \Carbon\Carbon::createFromFormat('G:i', $schedule->morning_in)->format('h:i A').' - '.
-                                    \Carbon\Carbon::createFromFormat('G:i', $schedule->afternoon_out)->format('h:i A')}}
-                                </option>
-                            @endforeach
-                        </select>
+                    <div class="flex w-100">
+                        <div class="form-group w-50 mr-2">
+                            <label for="afternoon_in">Afternoon In</label>
+                            <input type="time" class="form-control" id="add_afternoon_in" name="afternoon_in" value="13:00"
+                                   required>
+                        </div>
+
+                        <div class="form-group w-50 ml-2">
+                            <label for="afternoon_out">Afternoon Out</label>
+                            <input type="time" class="form-control" id="add_afternoon_out" name="afternoon_out" value="17:00"
+                                   required>
+                        </div>
                     </div>
+
                     <div>
                         <label for="afternoon_out">Working Days</label>
                         <div class="ml-2">

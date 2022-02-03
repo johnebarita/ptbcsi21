@@ -6,6 +6,6 @@ class PositionSeeder extends Seeder
 {
 	public function run()
 	{
-        $this->db->table('positions')->insert(['position'=>'Programming','rate'=>16000,'schedule_id'=>1]);
+        $this->db->table('positions')->insert(['position'=>'Programmer','rate'=>16000,'schedule_id'=>1]);
 	}
 }

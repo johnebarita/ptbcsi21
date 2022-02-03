@@ -69,6 +69,7 @@ class PayrollController extends BaseController
         return json_encode(Payroll::with(['employee' => function ($query) {
             $query->withTrashed()->with('position');
         }])->find($id)->toArray());
+
     }
 
     private function calculate_payroll($start, $end, $half)
@@ -76,25 +77,41 @@ class PayrollController extends BaseController
 
         $employees = Employee::withTrashed()->with(['time_sheets' => function ($query2) use ($start, $end) {
             $query2->whereBetween('date', [$start, $end])->get();
-        }])->get();
+        }, 'schedule', 'position.schedule'])->get();
 
         $period = CarbonPeriod::create($start, $end);
 
         $now = Carbon::now()->format('Y-m-d');
 
         foreach ($employees as $employee) {
+
+            $schedule = $employee->schedule != null ? $employee->schedule : $employee->position->schedule;
+            $working_days = count(explode(',', $schedule->working_days));
+
+
+            $sm_in = Carbon::createFromFormat('G:i', $schedule->morning_in);
+            $sm_out = Carbon::createFromFormat('G:i', $schedule->morning_out);
+            $sa_in = Carbon::createFromFormat('G:i', $schedule->afternoon_in);
+            $sa_out = Carbon::createFromFormat('G:i', $schedule->afternoon_out);
+
+            $sm_hrs = $sm_in->diffInSeconds($sm_out) / 3600;
+            $sa_hrs = $sa_in->diffInSeconds($sa_out) / 3600;
+            $s_pre = $sm_hrs + $sa_hrs;
+
 //            $leaves = Leave::where('employee_id',$employee->id)->where('status','accepted')->get();
 //            d($leaves);
-            $ca = CashAdvance::where([['employee_id', $employee->id], ['balance', '!=', 0]])->get()->first();
+
+            $ca =CashAdvance::where([['employee_id', $employee->id], ['balance', '!=', 0]])->orWhere('date_paid',Carbon::createFromFormat('Y-m-d', $start)->format('m-Y') . '-' . $half)->first();
             $payroll = Payroll::where(['employee_id' => $employee->id, 'from' => $start, 'to' => $end])->get();
             if (count($payroll) != 0) {
                 $payroll = $payroll[0];
             } else {
                 $payroll = null;
             }
+            $daily_rate = round(($employee->monthly_pay * 12) / ceil($working_days * (365 / 7)), 2);
+            $employee->basic_pay = $daily_rate;
+            $employee->save();
 
-
-            $daily_rate = $employee->basic_pay;
             $dtr_time = 0;
             $absent = 0;
             $late = 0;
@@ -128,15 +145,17 @@ class PayrollController extends BaseController
             $total_ot = 0;
             $total_ot_pay = 0;
             $total_holiday_pay = 0;
-            $other_income = $payroll != null ? $payroll->other_income : 0;;
-            $with_tax = $payroll != null ? $payroll->with_tax : 0;;;
-//            if ($payroll !== null) {
-//                $cash_advance = $payroll->cash_advance;
-//            } else {
-                $cash_advance = ($ca && Carbon::parse($ca->from) <= Carbon::parse($end) ? ($ca->repayment > $ca->balance ? $ca->balance : $ca->repayment) : 0);
-//            }
+            $other_income = $payroll != null ? $payroll->other_income : 0;
+            $with_tax = $payroll != null ? $payroll->with_tax : 0;
+            if ($ca && Carbon::parse($ca->from) <= Carbon::parse($end) &&  !$payroll->skip_cash_advance) {
+                $payroll_range = Carbon::createFromFormat('Y-m-d', $start)->format('m-Y') . '-' . $half;
+                $ca_detail = CashAdvanceDetail::where(['payroll_id' => $payroll->id, 'payroll_range' => $payroll_range])->first();
+                $cash_advance = $ca_detail == null ? ($ca->repayment > $ca->balance ? $ca->balance : $ca->repayment) : $ca_detail->amount_paid;
+            } else {
+                $cash_advance = 0;
+            }
 
-//            dd($cash_advance);
+
 
             $sss = $payroll != null ? $payroll->sss : 0;;;
             $hdmf = $payroll != null ? $payroll->hdmf : 0;;;
@@ -156,7 +175,7 @@ class PayrollController extends BaseController
 
                 //TODO Check if employee has time_sheet data for this day ;
                 if ($leave) {
-                    $dtr_time += 8;
+                    $dtr_time += $s_pre;
                 } elseif ($time_sheet) {
                     //TODO Check if holiday before proceeding;
 
@@ -255,7 +274,6 @@ class PayrollController extends BaseController
             }
             if (!empty($employee->pagibig_no)) {
                 $pagibig_lookup = TaxDeduction::where('from', Carbon::now()->startOfYear())->where('type', 'pag-ibig')->whereRaw('? between lowest and highest', [$employee->monthly_pay])->first();
-
                 $hdmf = ($employee->monthly_pay * ($pagibig_lookup->employee_share / 100)) / 2;
             }
             if (!empty($employee->philhealth_no)) {
@@ -265,7 +283,6 @@ class PayrollController extends BaseController
 
             $total_deduction = $with_tax + $phi + $sss + $hdmf + $cash_advance + $sss_loan + $hdmf_loan + $other_deduction;
             $net_pay = $gross_pay - $total_deduction;
-
             $payroll = Payroll::updateOrCreate(
                 [
                     'employee_id' => $employee->id,
@@ -328,21 +345,27 @@ class PayrollController extends BaseController
 
 
             if ($ca && Carbon::parse($ca->from) <= Carbon::parse($end)) {
-                $ca_detail = CashAdvanceDetail::updateOrCreate([
-                    'cash_advance_id' => $ca->id,
-                    'payroll_range' => Carbon::createFromFormat('Y-m-d', $start)->format('m-Y') . '-' . $half,
-                    'payroll_id' => $payroll->id
-                ], [
-                    'cash_advance_id' => $ca->id,
-                    'payroll_range' => Carbon::createFromFormat('Y-m-d', $start)->format('m-Y') . '-' . $half,
-                    'payroll_id' => $payroll->id,
-                    'amount_paid' => $cash_advance
-                ]);
+                $payroll_range = Carbon::createFromFormat('Y-m-d', $start)->format('m-Y') . '-' . $half;
+                $ca_detail = CashAdvanceDetail::where(['payroll_id' => $payroll->id, 'payroll_range' => $payroll_range])->first();
 
-                if ($ca_detail->wasRecentlyCreated) {
+                if ($ca_detail == null && !$payroll->skip_cash_advance) {
+                    $ca_detail = CashAdvanceDetail::create(
+                        [
+                            'cash_advance_id' => $ca->id,
+                            'payroll_range' => Carbon::createFromFormat('Y-m-d', $start)->format('m-Y') . '-' . $half,
+                            'payroll_id' => $payroll->id,
+                            'amount_paid' => $cash_advance
+                        ]
+                    );
+                    $ca_detail->save();
                     $ca->balance = $ca->balance - $cash_advance;
+                    if( $ca->balance==0){
+                        $ca->is_paid = true;
+                        $ca->date_paid= Carbon::createFromFormat('Y-m-d', $start)->format('m-Y') . '-' . $half;
+                    }
                     $ca->save();
                 }
+
             }
         }
     }
@@ -357,22 +380,54 @@ class PayrollController extends BaseController
         $payroll_range = $_POST['month'] . '-' . $_POST['year'] . '-' . $_POST['half'];
 
         $payroll = Payroll::find($_POST['id']);
+        $ca = CashAdvance::where([['employee_id', $payroll->employee->id], ['balance', '!=', 0]])->get()->first();
 
         if ($payroll->cash_advance != $_POST['cash_advance']) {
-            $ca_details = CashAdvanceDetail::where(['payroll_id' => $payroll->id, 'payroll_range' => $payroll_range])->get();
-            if (count($ca_details) != 0) {
-                $ca_details[0]->amount_paid = $_POST['cash_advance'];
-                $ca_details[0]->save();
-                $ca_details = CashAdvanceDetail::where('cash_advance_id', $ca_details[0]->cash_advance_id)->get();
+
+            $ca_detail = CashAdvanceDetail::where(['payroll_id' => $payroll->id, 'payroll_range' => $payroll_range])->first();
+
+            if ($ca_detail != null) {
+                $ca_detail->amount_paid = $_POST['cash_advance'];
+                $ca_detail->amount_changed = true;
+                $ca_detail->save();
+
+//                if( $ca->balance==0){
+//                    $ca->is_paid = true;
+//                    $ca->date_paid= Carbon::createFromFormat('Y-m-d', $start)->format('m-Y') . '-' . $half;
+//                    $ca_detail->save();
+//                }
+
+                if ($ca_detail->amount_paid == 0) {
+                    $ca_detail->delete();
+                    $payroll->skip_cash_advance = true;
+                }
+
+            } elseif ($payroll->skip_cash_advance) {
+                $ca_detail = CashAdvanceDetail::create(
+                    [
+                        'cash_advance_id' => $ca->id,
+                        'payroll_range' => $payroll_range,
+                        'payroll_id' => $payroll->id,
+                        'amount_paid' => $_POST['cash_advance']
+                    ]
+                );
+                $ca_detail->save();
+                $payroll->skip_cash_advance = false;
+            }
+
+            if ($ca != null) {
+
+                $ca_details = CashAdvanceDetail::where('cash_advance_id', $ca->id)->get();
+
                 $amount_paid = 0;
                 foreach ($ca_details as $detail) {
                     $amount_paid += $detail->amount_paid;
                 }
-                $ca = CashAdvance::find($ca_details[0]->cash_advance_id);
+
                 $ca->balance = $ca->amount - $amount_paid;
                 $ca->save();
-
             }
+
         }
 
         $payroll->late = $_POST['late'];
@@ -411,7 +466,7 @@ class PayrollController extends BaseController
         }
 
         $key = ($status ? "success" : "danger");
-        $message = ($status ? "Schedule updated successfully!" : "Opps! There is an error while updating the schedule.");
+        $message = ($status ? "Payroll details updated successfully!" : "Opps! There is an error while updating the payroll details.");
         return redirect()->route('payroll.index')->with('status', ['key' => $key, 'message' => $message]);
     }
 }
